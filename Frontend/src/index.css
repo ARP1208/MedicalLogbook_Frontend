@@ -380,7 +380,9 @@ top: 120px;
 .top-32{
   top: 128px;
 }
-
+.h-40vh{
+  height: 40vh;
+}
   /* .navbar{
     @apply bg-gray-300 overflow-hidden mt-35 fixed;
   }

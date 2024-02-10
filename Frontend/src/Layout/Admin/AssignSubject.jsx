@@ -102,7 +102,7 @@ const AssignSubject = () => {
               Name
               <input
                 id="name"
-                placeholder="Enter the student`s Name"
+                placeholder="Enter the student`s Name (comma-separated if multiple)"
                 className="shadow appearance-none border rounded w-full py-1 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </label>

@@ -1,19 +1,26 @@
 import React, { Component, useState } from 'react'
 import EditTaskFaculty from './EditTaskFaculty';
+import PreviewTask from './PreviewTask';
 
 const  Dashboardpglog = () => {
 const[showedittaskfaculty,setshowedittaskfaculty]=useState(false);
+const[showpreviewtask,setshowpreviewtask]=useState(false);
 
 const handleedittaskfaculty = (component) =>{
   if(component === "Edit"){
     setshowedittaskfaculty(true);
+    setshowpreviewtask(false);
+  }else if(component ==="Preview"){
+    setshowedittaskfaculty(false);
+    setshowpreviewtask(true);
   }
 }
 
   return (
     <section className="left-50 absolute">
-      {showedittaskfaculty ? (<EditTaskFaculty/>
-      ):(
+      {showpreviewtask && <PreviewTask/>}
+      {showedittaskfaculty && <EditTaskFaculty/>}
+      {!showpreviewtask && !showedittaskfaculty && (
         <>
     <div className="absolute flex left-5 top-4 w-auto ">
       <button className="bg-sky-500 rounded-md w-auto text-lg">
@@ -45,7 +52,7 @@ const handleedittaskfaculty = (component) =>{
                     <th className="border col-span-4 bg-blue-950 text-white px-4 py-2">
                       Task Name
                     </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
+                    <th className="border bg-blue-950 text-white px-4 py-2" onClick={()=>handleedittaskfaculty("Preview")}>
                       Preview
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2" onClick={()=>handleedittaskfaculty("Edit")}>
@@ -61,7 +68,7 @@ const handleedittaskfaculty = (component) =>{
                     </td>
                     <td className="w-20 border border-black px-4 py-1 text-center">
                       <button
-                        className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1">
+                        className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1" onClick={()=>handleedittaskfaculty("Preview")}>
                         Preview
                       </button>
                       </td>

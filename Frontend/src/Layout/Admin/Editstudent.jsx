@@ -29,7 +29,6 @@ const Editstudent = () => {
   const location = useLocation();
 
   useEffect(() => {
-   
     handleAddEditStudentClick();
 
     if (location.state && location.state.studentData) {
@@ -745,7 +744,9 @@ const Editstudent = () => {
   const renderStudentForm = () => {
     return (
       <section className="md:p-4 sm:p-6">
-        <div className="col-span-2 md:text-6 pb-1 pt-5 sm:text-2xl">Student Details</div>
+        <div className="col-span-2 md:text-6 pb-1 pt-5 sm:text-2xl">
+          Student Details
+        </div>
         <form
           className="lg:w-275 md:w-3/4 sm:w-3/4 ml-10 md:h-auto md:text-4 sm:text-xl text-left"
           onSubmit={handleUpdateStudentDetails}
@@ -1158,11 +1159,11 @@ const Editstudent = () => {
   const renderParentForm = () => {
     return (
       <section className="md:p-4 sm:p-6">
-         <div className="col-span-2 md:text-6 pb-1 pt-5 sm:text-2xl">
+        <div className="col-span-2 md:text-6 pb-1 pt-5 sm:text-2xl">
           Parent Details
         </div>
         <form
-         className="lg:w-275 md:3/4 h-99 ml-10 md:text-4 text-left sm:w-3/4"
+          className="lg:w-275 md:3/4 h-99 ml-10 md:text-4 text-left sm:w-3/4"
           onSubmit={handleparentdetails}
         >
           <div className="grid md:grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 md:gap-4 sm:gap-2 mt-8">
@@ -1413,7 +1414,7 @@ const Editstudent = () => {
               type="submit"
               name="parentSave"
               value="parentSave"
-              className=" bg-blue-500 rounded-md w-20 h-auto text-white text-22"
+              className=" bg-blue-500 rounded-md w-40 h-auto text-white text-22"
             >
               Save changes
             </button>
@@ -1425,48 +1426,48 @@ const Editstudent = () => {
 
   return (
     <section>
-     <LogoNav/>
-     <Navbar/>
-     {/* <Regsidebar/> */}
-     <Regback/>
-    <div className="container">
-      {/* Your other components go here */}
-      <div className="fixed left-15 top-36 flex ml-40 sm:block sm:w-auto sm:h-auto">
-        <button
-          className={`w-48 h-10 ml-5 pl-1 pt-1 text-lg focus:outline-none ${
-            addEditStudentClicked
-              ? "bg-white text-blue-500 focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300"
-              : "bg-blue-500 text-white rounded-lg"
-          }`}
-          onClick={handleAddEditStudentClick}
-        >
-          Edit Student Details
-        </button>
+      <LogoNav />
+      <Navbar />
+      {/* <Regsidebar/> */}
+      <Regback />
+      <div className="container">
+        {/* Your other components go here */}
+        <div className="fixed left-15 top-36 flex ml-40 sm:block sm:w-auto sm:h-auto">
+          <button
+            className={`w-48 h-10 ml-5 pl-1 pt-1 text-lg focus:outline-none ${
+              addEditStudentClicked
+                ? "bg-white text-blue-500 focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300"
+                : "bg-blue-500 text-white rounded-lg"
+            }`}
+            onClick={handleAddEditStudentClick}
+          >
+            Edit Student Details
+          </button>
 
-        <button
-          className={`w-48 h-10 ml-10 pl-1 pt-1 text-lg focus:outline-none ${
-            parentDetailsClicked
-              ? "bg-white text-blue-500 focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300"
-              : "bg-blue-500 text-white   rounded-lg "
-          }`}
-          onClick={handleParentDetailsClick}
-        >
-          Parent Details
-        </button>
+          <button
+            className={`w-48 h-10 ml-10 pl-1 pt-1 text-lg focus:outline-none ${
+              parentDetailsClicked
+                ? "bg-white text-blue-500 focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300"
+                : "bg-blue-500 text-white   rounded-lg "
+            }`}
+            onClick={handleParentDetailsClick}
+          >
+            Edit Parent Details
+          </button>
+        </div>
+
+        {showStudentCard && (
+          <div className="fixed overflow-scroll w-auto h-100 top-56 ml-60 h-60vh pb-80 border-1 border-black rounded-2xl">
+            {renderStudentForm()}
+          </div>
+        )}
+
+        {showParentCard && (
+          <div className="fixed overflow-scroll w-auto top-56 ml-60 h-100 pb-80 border-1 border-black rounded-2xl">
+            {renderParentForm()}
+          </div>
+        )}
       </div>
-
-      {showStudentCard && (
-        <div className="fixed overflow-scroll w-auto h-100 top-56 ml-60 h-60vh pb-80 border-1 border-black rounded-2xl">
-          {renderStudentForm()}
-        </div>
-      )}
-
-      {showParentCard && (
-        <div className="fixed overflow-scroll w-auto top-56 ml-60 h-100 pb-80 border-1 border-black rounded-2xl">
-          {renderParentForm()}
-        </div>
-      )}
-    </div>
     </section>
   );
 };

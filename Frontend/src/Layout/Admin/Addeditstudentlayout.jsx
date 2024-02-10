@@ -1346,7 +1346,7 @@ const Addeditstudentlayout = () => {
       </div>
 
       {showStudentCard && (
-        <div className="fixed overflow-scroll w-auto h-100 top-56 ml-60 h-60vh pb-80 border-1 border-black rounded-2xl">
+        <div className="fixed overflow-scroll w-auto h-100 top-56 ml-60 h-60vh pb-80 border-2 rounded-2xl">
           {renderStudentForm()}
         </div>
       )}
