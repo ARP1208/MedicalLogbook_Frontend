@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import "../Style/style.css";
-import Button from "react-bootstrap/Button";
-import "../../Components/Style/samp.css";
+
+import Addeditstudentlayout from "../../Layout/Admin/Addeditstudentlayout";
 
 const AddFaculty = () => {
   return <div>Faculty</div>;
@@ -14,6 +13,7 @@ const AddStudent = () => {
 const Adminsidebar = () => {
   const [showFacultyOptions, setShowFacultyOptions] = useState(false);
   const [showStudentOptions, setShowStudentOptions] = useState(false);
+  const [showAddEditStudent, setShowAddEditStudent] = useState(false);
 
   const toggleFacultyOptions = () => {
     setShowFacultyOptions(!showFacultyOptions);
@@ -24,6 +24,13 @@ const Adminsidebar = () => {
     setShowStudentOptions(!showStudentOptions);
     setShowFacultyOptions(false);
   };
+  const handlesuboption = (component) => {
+    setShowAddEditStudent(false);
+
+    if (component === "AddEditStudent") {
+      setShowAddEditStudent(true);
+    }
+  }
 
   return (
     <div className="container">
@@ -36,10 +43,11 @@ const Adminsidebar = () => {
             <div>
               <button
                 className="sidebaritem"
-                onClick={() => console.log("Add / Edit Student clicked")}
+                onClick={() => handlesuboption("AddEditStudent")}
               >
                 Add / Edit Student
               </button>
+
               <button
                 className="sidebaritem"
                 onClick={() => console.log("Search Student clicked")}
@@ -54,21 +62,22 @@ const Adminsidebar = () => {
           </button>
           {showStudentOptions && (
             <div >
-              <button 
-              className="sidebaritem"
-              onClick={() => console.log("Add / Edit Faculty clicked")}>
+              <button
+                className="sidebaritem"
+                onClick={() => console.log("Add / Edit Faculty clicked")}>
                 Add / Edit Faculty
               </button>
               <button
-              className="sidebaritem"
-              onClick={() => console.log("Search Faculty clicked")}>
+                className="sidebaritem"
+                onClick={() => console.log("Search Faculty clicked")}>
                 Search Faculty
               </button>
             </div>
           )}
 
-          {showFacultyOptions && <AddFaculty />}
-          {showStudentOptions && <AddStudent />}
+          {showAddEditStudent && <Addeditstudentlayout />}
+          {!showFacultyOptions && <AddFaculty />}
+          {!showStudentOptions && <AddStudent />}
         </nav>
       </div>
     </div>

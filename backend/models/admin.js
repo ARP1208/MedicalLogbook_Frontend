@@ -1,28 +1,4 @@
-// // adminModel.js
-// import mongoose from 'mongoose';
-// import bcrypt from 'bcrypt';
 
-// const { Schema, model } = mongoose;
-
-// const adminSchema = new Schema({
-//   email: { type: String, unique: true, required: true },
-//   password: { type: String, required: true },
-// });
-
-// // Hash the password before saving it to the database
-// adminSchema.pre('save', async function (next) {
-//   try {
-//     const hashedPassword = await bcrypt.hash(this.password, 10);
-//     this.password = hashedPassword;
-//     next();
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// const Admin = model('Admin', adminSchema);
-
-// export default Admin;
 
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
@@ -36,6 +12,69 @@ adminSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-const Admin = mongoose.model('Admin', adminSchema);
+///////Announcement Page for admin ///////
 
-export default Admin;
+const adminAnnoucementSchema = new mongoose.Schema({
+  announcementTitle: { type: String, required:true},
+  scheduleDate: { type: Date},
+  uploadFile: { type: String},
+  scheduleTime: { type: String}
+})
+
+
+//////////GradeSheet page for admin /////////
+const adminGradeSheetSchema = new mongoose.Schema({
+  AcademicYear: {
+    year: String,
+    program: [
+      {
+        programname: String,
+        semesters: [
+          {
+            semesterNumber: String,
+            sections: [
+              {
+                sectionName: String,
+                students: [
+                  {
+                    regNo: String,
+                    name: String,
+                    subjects: [
+                      {
+                        subjectName: String,
+                        marks: Number,
+                      },
+                      {
+                        subjectName: String,
+                        marks: Number,
+                      },
+                      {
+                        subjectName: String,
+                        marks: Number,
+                      },
+                      {
+                        subjectName: String,
+                        marks: Number,
+                      },
+                      {
+                        subjectName: String,
+                        marks: Number,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+});
+
+const Admin = mongoose.model('Admin', adminSchema);
+const AdminAnnoucement = mongoose.model('AdminAnnoucement', adminAnnoucementSchema);
+const Admingradesheet = mongoose.model('Admingradesheet', adminGradeSheetSchema);
+
+
+export { Admin, AdminAnnoucement, Admingradesheet} ;

@@ -1,37 +1,24 @@
+// adminRoutes.js
 import express from 'express';
-import Admin from '../models/admin.js';
-import { connectDB, closeDB } from '../config/db.js';
+import { login, announcement, UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet } from '../controllers/admincontroller.js';
 
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  console.log('Received credentials:', { email, password });
+router.route("/login").post(login);
+router.route("/announcement").post(announcement);
+router.route("/UpdateAnnouncement").patch(UpdateAnnouncement);
+router.route("/DeleteAnnouncement").delete(DeleteAnnouncement);
+router.route("/admingradesheet").post(saveAdminGradesheet);
 
-  try {
-    // Connect to the medical database
-    await connectDB();
 
-    // Find the admin with the provided email
-    const admin = await Admin.findOne({ email });
-    console.log(admin);
 
-    if (admin && admin.comparePassword(password)) {
-      // Passwords match, send a success message
-      console.log('Admin successfully logged in');
-      res.json({ message: 'Successfully logged in!' });
-    } else {
-      // Invalid credentials
-      console.log('Invalid credentials:', { email, password });
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
-  } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  } finally {
-    // Close the database connection
-    await closeDB();
-  }
-});
+
+// router.post('/login', async (req, res) => {
+//   try {
+//     await login(req, res);
+//   } finally {
+//     // No need to close the database connection here
+//   }
+// });
 
 export default router;

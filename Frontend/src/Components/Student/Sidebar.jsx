@@ -18,7 +18,7 @@ const Sidebar = () => {
             <img className="internalicon" src={internalicon}></img>  Internal Marks</a>
         </li>
         <li className="sidebaritem">
-            <a className="sidelink" href="#"><img className="gradesheeticon" src={gradesheeticon}></img>  Grade sheet</a>
+            <a className="sidelink" href="/Addeditstudentlayout"><img className="gradesheeticon" src={gradesheeticon}></img>  Grade sheet</a>
         </li>
         <li className="sidebaritem">
             <a className="sidelink" href="#"><img className="attendanceicon" src={attendanceicon}></img>  Attendance</a>

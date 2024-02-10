@@ -1,20 +1,32 @@
-import { useState } from "react";
-import { Form, Button } from "react-bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
+import Image from '../../Components/Assets/photo/login.mp4';
 
 const Loginform = () => {
   const [formData, setFormData] = useState({
-    email: "", // Change from 'email' to 'username'
+    email: "",
     password: "",
   });
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const videoRef = useRef(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: null });
+
+    // Play the video when the email input is clicked
+    if ((e.target.name === 'email' || e.target.name === 'password') && videoRef.current) {
+      videoRef.current.play();
+    }
+  };
+
+  const handleBlur = () => {
+    // Pause the video when the email input loses focus
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -37,7 +49,6 @@ const Loginform = () => {
     }
 
     try {
-      // Make a POST request to the backend API endpoint for login
       const response = await fetch('http://localhost:8000/admin/login', {
         method: 'POST',
         headers: {
@@ -46,13 +57,10 @@ const Loginform = () => {
         body: JSON.stringify(formData),
       });
 
-      // Check if the request was successful (status code 2xx)
       if (response.ok) {
         console.log('Login successful');
-        navigate('/addedit')
-        // You can perform additional actions here, such as redirecting the user
+        navigate('/Adminhomepage');
       } else {
-        // Handle errors from the backend
         const responseData = await response.json();
         setErrors(responseData.errors || {});
       }
@@ -60,114 +68,81 @@ const Loginform = () => {
       console.error('Error during login:', error);
     }
 
-    // Add logic to handle login (e.g., send data to server)
     console.log("Login data submitted:", formData);
   };
-  // Determine whether to show the Forgot Password button
+
   const isForgotPasswordVisible = !['admin@123.com', 'john@example.com'].includes(formData.email.toLowerCase());
 
-
   return (
-    <div className="bgadmin-container">
-      <div className='login-container my-5'>
-        <div className="login-img"></div>
-        <div className="login-form">
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formEmail">
-              <Form.Label
-                style={{ color: "white", marginLeft: "-100px", }}
-                className="my-4"
-              ><h1 className=' mx-8 my-4' >Login </h1>
+    <section className="bg-blue-500 min-h-screen flex items-center justify-center p-5">
+      <div className="bg-blue-900 flex rounded-2xl 
+      shadow-lg max-w-3xl p-4">
+        {/* form */}
+        <div className="sm:w-1/2 px-14">
+          <h2 className="font-bold text-2xl text-blue-100 my-4">Login</h2>
+          <form action=""  onSubmit={handleSubmit}  >
+            <label className="flex text-xl text-blue-100 -mb-6">
+            Email
+            </label>
+            <input
+              className="w-full my-4 text-blue-950 sm:w-64 px-3 py-2 border rounded sm:mb-0"
+              type="text"
+              placeholder="Enter your email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            
+            {errors.email && <div className="text-red-500">{errors.email}</div>}
 
-              </Form.Label>
-              <Form.Label
-                style={{ color: "white", marginLeft: "-220px", top: "100px", position: "absolute" }}
+            <label className="flex text-xl text-blue-100">
+            Password
+            </label>
+            <input
+              className="w-full text-blue-950 sm:w-64 px-3 py-2 border rounded"
+              type="password"
+              placeholder="Enter your password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {errors.password && <div className="text-red-500">{errors.password}</div>}
 
-              ><h5>Email</h5>
 
-              </Form.Label>
-              <Form.Control
-                style={{
-                  width: "300px",
-                  marginLeft: "120px",
-                }}
-                type="text"
-                placeholder="Enter your email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                isInvalid={!!errors.email}
-              />
-              <Form.Control.Feedback type="invalid"
-                style={{ marginLeft: "-140px" }}>
-                {errors.email}
-              </Form.Control.Feedback>
-            </Form.Group>
 
-            <Form.Group controlId="formPassword">
-              <Form.Label
-                style={{ color: "white", marginLeft: "-350px", marginTop: "70px" }}
-                className="my-4"
-              >
-                <h5>Password</h5>
-              </Form.Label>
-              <Form.Control
-                style={{
-                  width: "300px",
-                  marginLeft: "120px",
-                }}
-                type="password"
-                placeholder="Enter your password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                isInvalid={!!errors.password}
-              />
-              <Form.Control.Feedback type="invalid"
-                style={{ marginLeft: "-140px" }}>
-                {errors.password}
-              </Form.Control.Feedback>
-            </Form.Group>
-
+            
             {isForgotPasswordVisible && (
-              <Form.Label
-                type="submit"
-                style={{
-                  marginLeft: "-100px",
-                  marginTop: "20px",
-                  paddingLeft: "40px",
-                  paddingRight: "40px",
-                  position: "absolute",
-                  width: "250px",
-                  opacity: "initial",
-                  color: "white"
-                }}
-                className="btn"
+              <button
+                type="button"
+                className="my-4 w-auto text-sm bg-white ml-1 text-black rounded"
               >
                 Forgot Password
-              </Form.Label>
+              </button>
             )}
 
-            <Button
+            <button
               variant="info"
               type="submit"
-              style={{
-                marginLeft: "-200px",
-                position: "absolute",
-                marginTop: "100px",
-                paddingLeft: "40px",
-                paddingRight: "40px",
-                width: "160px",
-              }}
+              className="bg-blue-500 text-sm w-auto h-15 text-center rounded-md"
             >
-              Lets go &rarr;
-            </Button>
-          </Form>
+              Login
+            </button>
+
+
+
+          </form>
+        </div>
+        {/* image */}
+        <div className="w-1/2 sm:block hidden">
+          <video ref={videoRef} className="rounded-2xl" autoPlay volume={1}>
+            <source src={Image} type="video/mp4" />
+          </video>
         </div>
       </div>
-    </div>
+    </section>
   );
-
 };
 
 export default Loginform;

@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../Components/Style/style.css';
+//import '../../Components/Style/style.css';
 import Navbar from '../../Components/Student/Navbar';
 import Sidebar from '../../Components/Student/Sidebar';
 import Card from "react-bootstrap/Card";
