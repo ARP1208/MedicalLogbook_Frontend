@@ -1,10 +1,35 @@
-import { FacultyDetails, FacultyLogin } from '../models/faculty.js';
+import { FacultyDetails, FacultyLogin, TaskAssign } from '../models/faculty.js';
 import { connectDB, closeDB } from '../config/db.js';
 import nodemailer from 'nodemailer';
 
 import express from "express";
 import asyncHandler from "express-async-handler";
 const router = express.Router();
+
+
+const Facultylogin = asyncHandler(async (req, res) => {
+  const { emailId, password } = req.body;
+  console.log('Received credentials:', { emailId, password });
+
+  try {
+    // Find the admin with the provided email
+    const facultylog = await FacultyLogin.findOne({ emailId });
+    console.log(facultylog);
+
+    if (facultylog && facultylog.comparePassword(password)) {
+      // Passwords match, send a success message
+      console.log('Faculty successfully logged in');
+      res.json({ message: 'Successfully logged in!' });
+    } else {
+      // Invalid credentials
+      console.log('Invalid credentials:', { emailId, password });
+      res.status(401).json({ error: 'Invalid credentials' });
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 const faculty = asyncHandler(async (req, res) => {
@@ -156,6 +181,19 @@ const UpdateFacultyDetails = asyncHandler(async (req, res) => {
   }
 });
 
+const saveTaskAssign = asyncHandler(async (req, res) => {
+  try {
+    const newTask = new TaskAssign(req.body);
+    const savedTask = await newTask.save();
+    console.log("saved data is: ", savedTask)
+
+    res.status(201).json({ message: 'savedTaskAssigned' });
+  } catch (error) {
+    console.error('Error saving savedTaskAssigned document:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+});
 
 
 
@@ -163,4 +201,5 @@ const UpdateFacultyDetails = asyncHandler(async (req, res) => {
 
 
 
-export { faculty, facultymail, searchfaculty, UpdateFacultyDetails };
+
+export { Facultylogin, faculty, facultymail, searchfaculty, UpdateFacultyDetails, saveTaskAssign };
