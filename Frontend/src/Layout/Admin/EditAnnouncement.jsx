@@ -23,7 +23,8 @@ const EditAnnouncement = () => {
 
   const handleOptions = (component) => {
     if (component === "Announcementhomepage") {
-      setShoweditAnnouncement(true);
+      // setShoweditAnnouncement(true);
+      window.close();
     }
   };
 
