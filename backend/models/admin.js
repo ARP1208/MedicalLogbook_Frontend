@@ -72,9 +72,59 @@ const adminGradeSheetSchema = new mongoose.Schema({
   },
 });
 
+const AssignSubject = new mongoose.Schema({
+  AcademicYear: {
+    year: String,
+    program: [
+      {
+        programname: String,
+        semesters: [
+          {
+            semesterNumber: String,
+            sections: [
+              {
+                sectionName: String,
+                students: [
+                  {
+                    regNo: String,
+                    name: String,
+                    subjects: [
+                      {
+                        subjectName: String,
+                        facultyname: String,
+                      },
+                      {
+                        subjectName: String,
+                        facultyname: String,
+                      },
+                      {
+                        subjectName: String,
+                        facultyname: String,
+                      },
+                      {
+                        subjectName: String,
+                        facultyname: String,
+                      },
+                      {
+                        subjectName: String,
+                        facultyname: String,
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+});
+
 const Admin = mongoose.model('Admin', adminSchema);
 const AdminAnnoucement = mongoose.model('AdminAnnoucement', adminAnnoucementSchema);
 const Admingradesheet = mongoose.model('Admingradesheet', adminGradeSheetSchema);
+const Assignedsubject = mongoose.model('Assignsubject', AssignSubject)
 
 
-export { Admin, AdminAnnoucement, Admingradesheet} ;
+export { Admin, AdminAnnoucement, Admingradesheet, Assignedsubject} ;
