@@ -43,8 +43,23 @@ const TaskAssignschema = new mongoose.Schema({
   }]
 });
 
+const previewTask = new mongoose.Schema({
+  Feedback:
+  {
+    type: String,
+  },
+  completed:
+  {
+    type: Boolean,
+
+    default: false
+  },
+  Task: [TaskAssignschema]
+
+});
 const FacultyDetails = mongoose.model('FacultyDetails', facultyDetailsSchema);
 const FacultyLogin = mongoose.model('FacultyLogin', facultyLoginSchema);
 const TaskAssign = mongoose.model("TaskAssign", TaskAssignschema);
+const PreviewTask = mongoose.model("PreviewTask", previewTask)
 
-export { FacultyDetails, FacultyLogin, TaskAssign };
+export { FacultyDetails, FacultyLogin, TaskAssign, PreviewTask };

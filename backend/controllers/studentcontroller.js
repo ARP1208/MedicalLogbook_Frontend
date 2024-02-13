@@ -108,9 +108,7 @@ const searchStudent = asyncHandler(async (req, res) => {
     });
   }
 
-  console.log("Received credentials:", {
-    searchTerm
-  });
+
 
   try {
     await connectDB();
