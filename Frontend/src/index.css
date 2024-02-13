@@ -383,31 +383,13 @@ top: 120px;
 .h-40vh{
   height: 40vh;
 }
-  /* .navbar{
-    @apply bg-gray-300 overflow-hidden mt-35 fixed;
-  }
-  .navbar ul{
-    @apply list-none m-0 p-0 flex;
-  }
-  .navbar li{
-    @apply list-none m-0 p-0 flex mr-30;
-  }
-  .navbar a{
-    @apply text-black no-underline text-22 px-10 grid;
-  }
-  .navbar a:hover{
-    @apply bg-gray-500 text-black no-underline text-22 px-10 grid;
-  }
-  .logo{
-    @apply pl-25 mt-14 absolute;
-  }
-  .logotext{
-    @apply absolute ml-120 mt-30 text-white text-30 font-bold;
-  }
-  .notifyicon2{
-    @apply ml-1500 mt-35;
-  }
-  /*  */ 
+.w-40vw{
+  width: 40vw;
+}
+.h-50vh{
+  height: 50vh;
+}
+  
 }
 
 .glassmorphism {

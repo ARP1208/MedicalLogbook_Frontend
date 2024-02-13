@@ -1,3 +1,27 @@
+/*Sidebar Collapse Styling*/
+.collapsed-sidebar {
+  width: 80px;
+  /* Example: Adjust width when collapsed */
+}
+
+.collapsed-sidebar button .text-base {
+  display: none;
+}
+
+.adjust-content-for-collapsed {
+  margin-left: 60px;
+  /* Adjust for the collapsed sidebar width */
+}
+
+/* Same Line Text with Icon Styling */
+.w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base {
+  display: flex;
+  /* Enable flexbox */
+  align-items: center;
+  /* Vertically center content */
+}
+
+
 .container {
   margin: 0;
   padding: 0;
