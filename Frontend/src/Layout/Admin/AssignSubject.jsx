@@ -28,7 +28,8 @@ const AssignSubject = () => {
       </div>
       <div className="fixed p-4 flex left-5 ml-50 top-45 flex-wrap w-fit border-sky-500 border-3 rounded-md bg-gray-200">
         <form onSubmit={handleSubmit}>
-          <div className="flex mb-1 gap-10">
+          <div className="flex justify-center gap-3">
+          <div className="mb-1 gap-10">
             {/* Form inputs for academic year, program, semester, section */}
             <label
               htmlFor="startDate"
@@ -54,7 +55,7 @@ const AssignSubject = () => {
               />
             </label>
           </div>
-          <div className="flex mb-1 gap-10">
+          <div className="mb-1 gap-10">
             <label
               htmlFor="semester"
               className="block text-gray-700 font-bold mb-2 text-start"
@@ -81,7 +82,7 @@ const AssignSubject = () => {
             </label>
           </div>
 
-          <div className="flex justify-center gap-x-10 mb-4">
+          <div className="gap-x-10 mb-4">
             {/* Form inputs for roll number and name */}
             <label
               htmlFor="rollno"
@@ -106,6 +107,7 @@ const AssignSubject = () => {
                 className="shadow appearance-none border rounded w-full py-1 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </label>
+          </div>
           </div>
           <div className=" flex justify-center gap-10">
             <button
@@ -150,6 +152,17 @@ const AssignSubject = () => {
                     <input
                       type="text"
                       id={`faculty${index + 1}`}
+                      className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                  </label>
+                  <label
+                    htmlFor={`faculty${index + 1}`}
+                    className="block text-start text-gray-700 font-bold"
+                  >
+                    Subject code {index + 1}
+                    <input
+                      type="text"
+                      id={`subjectcode${index + 1}`}
                       className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
                   </label>

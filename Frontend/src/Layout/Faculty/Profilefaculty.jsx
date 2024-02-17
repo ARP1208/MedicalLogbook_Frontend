@@ -416,7 +416,7 @@ const Profilefaculty = () => {
         </button>
       </div>
       <div className="flex justify-center item-center">
-        <div className="fixed sm:w-3/4 overflow-auto w-300 top-49 lg:ml-10 md:ml-25 sm:ml-50 h-100 pb-120 border-1 border-black rounded-2xl">
+        <div className="fixed sm:w-3/4 overflow-auto w-300 top-49 lg:ml-10 md:ml-25 sm:ml-50 h-100 pb-120 border-1 border-black rounded-2xl z-10">
           <form
             className="md:w-275 h-99 ml-10 md:text-4 text-left sm:w-3/4 md:gap-4 sm:gap-3"
             onSubmit={handlefacultydetails}

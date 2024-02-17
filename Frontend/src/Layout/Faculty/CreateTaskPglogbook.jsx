@@ -53,11 +53,11 @@ const CreateTaskPglogbook = ({ onSearch }) => {
               </div>
             <div className="mb-4">
               <label htmlFor="rollno" className="block text-start text-gray-700 font-bold mb-2">
-                Roll No
+                Roll Number
                 <input
                   type="text"
                   id="rollno"
-                  placeholder='Enter the student`s Roll No'
+                  placeholder='Enter the student`s Roll Number'
                   value={rollno}
                   onChange={(e) => setRollno(e.target.value)}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
