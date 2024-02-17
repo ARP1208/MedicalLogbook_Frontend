@@ -7,29 +7,6 @@ import asyncHandler from "express-async-handler";
 const router = express.Router();
 
 
-// const Facultylogin = asyncHandler(async (req, res) => {
-//   const { emailId, password } = req.body;
-//   console.log('Received credentials:', { emailId, password });
-
-//   try {
-//     // Find the admin with the provided email
-//     const facultylog = await FacultyLogin.findOne({ emailId });
-//     console.log(facultylog);
-
-//     if (facultylog && facultylog.comparePassword(password)) {
-//       // Passwords match, send a success message
-//       console.log('Faculty successfully logged in');
-//       res.json({ message: 'Successfully logged in!' });
-//     } else {
-//       // Invalid credentials
-//       console.log('Invalid credentials:', { emailId, password });
-//       res.status(401).json({ error: 'Invalid credentials' });
-//     }
-//   } catch (error) {
-//     console.error('Error during login:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
 
 /////////faculty login and fetching the data to display in faculty profile./////////////
 const Facultylogin = asyncHandler(async (req, res) => {
@@ -197,13 +174,14 @@ const searchfaculty = asyncHandler(async (req, res) => {
   }
 
 });
+
 const UpdateFacultyDetails = asyncHandler(async (req, res) => {
   console.log("Received data for update:", req.body);
   const { facultyid } = req.body;
   try {
     await connectDB();
     const Facultydetail = facultyid;
-    console.log("student ID", Facultydetail);
+    console.log("faculty ID", Facultydetail);
     const newUpdatefaculty = { ...req.body };
 
 

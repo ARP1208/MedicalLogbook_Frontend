@@ -92,22 +92,7 @@ const AssignSubject = new mongoose.Schema({
                       {
                         subjectName: String,
                         facultyname: String,
-                      },
-                      {
-                        subjectName: String,
-                        facultyname: String,
-                      },
-                      {
-                        subjectName: String,
-                        facultyname: String,
-                      },
-                      {
-                        subjectName: String,
-                        facultyname: String,
-                      },
-                      {
-                        subjectName: String,
-                        facultyname: String,
+                        subjectcode: String
                       },
                     ],
                   },
