@@ -25,6 +25,21 @@ const FacultyNavbar = () => {
           </NavLink>
         </nav>
 
+      {/*Academics nav bar*/}
+        <nav className="text-lg font-semibold">
+          <NavLink
+            to="/Academicshomepage"
+            className={({ isActive }) =>
+              isActive
+                ? "text-white bg-blue-500 p-3 no-underline"
+                : "text-black no-underline"
+            }
+          >
+            {" "}
+            Academics{" "}
+          </NavLink>
+        </nav>
+
         {/* PG-Log Navbar */}
         <nav className="text-lg font-semibold ">
           <NavLink
@@ -79,7 +94,7 @@ const FacultyNavbar = () => {
           </button>
             
           <Supportpage open={open} onClose={() => setOpen(false)}>
-        <div className="lg:w-40vw md:w-30vw sm:20vw lg:h-50vh md:60vh sm:70vh border-3 border-blue-500 ">
+        <div className="lg:w-40vw md:w-30vw sm:20vw lg:h-50vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg">
           
             <div className="text-2xl font-black text-blue-950 justify-self-center mt-4">Help & Support</div>
             <div className="grid lg:grid-cols-2 mt-5 sm:grid-cols-1 md:grid-cols-2">

@@ -1,9 +1,8 @@
 button {
     padding: 10px;
-    margin: 5px;
+    /* margin: 5px; */
     cursor: pointer;
     width: 300px;
-    margin-left: 20px;
     color: white;
     background-color: #130ea1;
     border: none;

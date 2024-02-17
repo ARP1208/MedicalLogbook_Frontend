@@ -4,7 +4,7 @@ import React, { useState,useEffect } from "react";
 // Local Imports
 import Navbar from "../../Components/Admin/Navbar";
 import Announcement from "./Announcement";
-import Createannouncement from "./CreateAnnouncement";
+import Createannouncement from "./Createannouncement";
 import EditAnnouncement from "./EditAnnouncement";
 import LogoNav from "../../Components/Admin/LogoNav";
 
