@@ -1,17 +1,32 @@
 // Library Imports
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
 // Local Imports
 import Navbar from "../../Components/Admin/Navbar";
 import Announcement from "./Announcement";
-import Createannouncement from "./CreateAnnouncement";
+import Createannouncement from "./Createannouncement";
 import EditAnnouncement from "./EditAnnouncement";
 import LogoNav from "../../Components/Admin/LogoNav";
 
 const Announcementhomepage = () => {
+
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const storedPreference = sessionStorage.getItem('sidebarCollapsed');
+    return storedPreference !== null ? JSON.parse(storedPreference) : false;
+  });
+
   const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [showcreateAnnouncement, setShowcreateAnnouncement] = useState(false);
   const [showeditAnnouncement, setShoweditAnnouncement] = useState(false);
+
+  useEffect(() => {
+    sessionStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
+  }, [isSidebarCollapsed]);
+
+  // Collapse toggle function
+  const toggleSidebarCollapse = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
 
   const handleOptions = (component) => {
     if (component === "Announcement") {
@@ -36,11 +51,21 @@ const Announcementhomepage = () => {
    
       
         <div className="absolute h-full">
-      
+       {/* Sidebar with conditional collapsed class */}
         
-          <nav className="sideb h-full flex flex-col bg-blue-950">
+          <nav className={`sideb h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
+
+          <button onClick={toggleSidebarCollapse} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+            {isSidebarCollapsed ? (
+              <i class="fa-solid fa-angles-right p-2" style={{ color: "#ffffff" }} /> // Expand icon
+            ) : (
+              <i class="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
+            )}
+            <p className="relative top-2 text-base">Collapse</p>
+          </button>
 
             <button onClick={() => handleOptions("Home")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+             
               <i class="fa-solid fa-house pr-2" style={{ color: "#ffffff" }} />
               <p className="relative top-2 text-base">Home</p>
             </button>

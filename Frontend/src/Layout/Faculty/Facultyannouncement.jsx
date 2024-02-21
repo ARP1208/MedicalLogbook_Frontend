@@ -1,6 +1,20 @@
-import React from "react";
+import React,{useState} from "react";
 
 const Facultyannouncement = () => {
+
+  const [uploadedImage, setUploadedImage] = useState(null);
+
+  const handleview = () => {
+    const pdfWindow = window.open("");
+    pdfWindow.document.write(
+      "<html><head><title>PDF Preview</title></head><body>"
+    );
+    pdfWindow.document.write(
+      `<embed width="100%" height="100%" src="${uploadedImage}" type="application/pdf">`
+    );
+    pdfWindow.document.write("</body></html>");
+  };
+
   return (
     <section className="left-50 top-33 absolute">
       <div className="absolute flex left-5 top-5 w-auto">
@@ -35,7 +49,7 @@ const Facultyannouncement = () => {
                     </td>
                     <td className="w-20 border border-black px-4 py-1 text-center">
                       <button
-                        className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1">
+                        className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1"  onClick={handleview}>
                         View
                       </button>
                       </td>

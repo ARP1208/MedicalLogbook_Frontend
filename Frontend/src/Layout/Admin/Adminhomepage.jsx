@@ -5,9 +5,15 @@ import Addeditfaculty from "./Addeditfaculty";
 import Searchfaculty from "./Searchfaculty";
 import Navbar from "../../Components/Admin/Navbar";
 import LogoNav from "../../Components/Admin/LogoNav";
-import AssignSubject from "./Assignsubject";
+import AssignSubject from "./AssignSubject";
 
 const Adminhomepage = () => {
+
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const storedPreference = sessionStorage.getItem('sidebarCollapsed');
+    return storedPreference !== null ? JSON.parse(storedPreference) : false;
+  });
+
   const [showFacultyOptions, setShowFacultyOptions] = useState(false);
   const [showStudentOptions, setShowStudentOptions] = useState(false);
   const [showAddEditStudent, setShowAddEditStudent] = useState(false);
@@ -17,6 +23,13 @@ const Adminhomepage = () => {
   const [showeditfaculty,setshoweditfaculty]=useState(false);
   const [showassignsubject,setshowassignsubject]=useState(false);
   const [showeditstudent,setshoweditstudent]=useState(false);
+
+  // Collapse toggle function
+  const toggleSidebarCollapse = () => {
+    const newState = !isSidebarCollapsed;
+    setIsSidebarCollapsed(newState);
+    sessionStorage.setItem('sidebarCollapsed', JSON.stringify(newState));
+  };
 
   const toggleFacultyOptions = () => {
     setShowFacultyOptions(!showFacultyOptions);
@@ -114,18 +127,27 @@ const Adminhomepage = () => {
   }
 
   return (
-    <section>
+    <>
       <LogoNav />
       <Navbar />
-
       {showAddEditStudent && <Addeditstudentlayout />}
       {showsearchstudent && <Searchstudent />}
       {showAddEditFaculty && <Addeditfaculty />}
       {showsearchfaculty && <Searchfaculty />}
       {showassignsubject && <AssignSubject/>}
-
+    
       <div className="absolute h-full">
-        <nav className="sideb h-83vh sm:h-full flex flex-col bg-blue-950">
+        <nav className={`sideb fixed h-83vh sm:h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
+
+        <button onClick={toggleSidebarCollapse} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+            {isSidebarCollapsed ? (
+              <i class="fa-solid fa-angles-right p-2" style={{ color: "#ffffff" }} /> // Expand icon
+            ) : (
+              <i class="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
+            )}
+            <p className="relative top-2 text-base">Collapse</p>
+          </button>
+
 
           {/* Home Buttton */}
           <button onClick={() => handlehomeOption("Home")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
@@ -141,24 +163,25 @@ const Adminhomepage = () => {
           {showFacultyOptions && (
             <div className="flex flex-col left-10">
               <button
-                className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base"
+                className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex justify-center items-center"
                 onClick={() => handlesuboptionstudent("AddEditStudent")}
               >
-                Add Student
+                <i class="fa-solid fa-plus p-2"></i>
+                <p className="relative top-2 text-base">Add Student</p>
               </button>
 
               <button
-                className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base"
+                className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex justify-center items-center"
                 onClick={() => handlesuboptionstudent("AssignSubject")}
-              >
-                  Assign Subject
+              ><i class="fa-brands fa-atlassian p-2"></i>
+                  <p className="relative top-2 text-base">Assign Subject</p>
               </button>
 
               <button
-                className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base"
+                className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex justify-center items-center"
                 onClick={() => handlesuboptionstudent("Searchstudent")}
-              >
-                Search Student
+              ><i class="fa-solid fa-magnifying-glass p-2"></i>
+                <p className="relative top-2 text-base">Search&nbsp;Student</p>
               </button>
               
             </div>
@@ -172,22 +195,27 @@ const Adminhomepage = () => {
           {showStudentOptions && (
             <div>
               <button
-                className="w-100  h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base"
+                className="w-100  h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex align-items-center"
                 onClick={() => handlesuboptionfaculty("AddEditFaculty")}
-              >
-                Add Faculty
+              > <i class="fa-solid fa-plus p-2"></i>
+                <p className="relative top-2 text-base">Add Faculty</p>
               </button>
               <button
-                className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base"
+                className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex align-items-center"
                 onClick={() => handlesuboptionfaculty("Searchfaculty")}
-              >
-                Search Faculty
+              ><i class="fa-solid fa-magnifying-glass p-2"></i>
+                <p className="relative top-2 text-base">Search Faculty</p>
               </button>
             </div>
           )}
         </nav>
+
+         {/* Main content with adjustment for collapsed sidebar */}
+         <div className={`absolute h-full ${isSidebarCollapsed ? 'adjust-content-for-collapsed' : ''}`}>
+        </div>
       </div>
-    </section >
+     
+    </ >
   );
 };
 

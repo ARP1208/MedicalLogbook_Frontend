@@ -31,7 +31,35 @@ facultyLoginSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
+const TaskAssignschema = new mongoose.Schema({
+  Task_Name: { type: String },
+  Task_ID: { type: String },
+  Task_Description: { type: String },
+  Students: [{
+    Roll_No: { type: String },
+    Name: { type: String },
+    start_Date: { type: Date },
+    End_Date: { type: Date }
+  }]
+});
+
+const previewTask = new mongoose.Schema({
+  Feedback:
+  {
+    type: String,
+  },
+  completed:
+  {
+    type: Boolean,
+
+    default: false
+  },
+  Task: [TaskAssignschema]
+
+});
 const FacultyDetails = mongoose.model('FacultyDetails', facultyDetailsSchema);
 const FacultyLogin = mongoose.model('FacultyLogin', facultyLoginSchema);
+const TaskAssign = mongoose.model("TaskAssign", TaskAssignschema);
+const PreviewTask = mongoose.model("PreviewTask", previewTask)
 
-export { FacultyDetails, FacultyLogin };
+export { FacultyDetails, FacultyLogin, TaskAssign, PreviewTask };

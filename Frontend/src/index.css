@@ -4,6 +4,21 @@
 @tailwind components;
 @tailwind utilities;
 
+*::-webkit-scrollbar {
+  width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--primary);
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 14px;
+  border: 3px solid var(--primary);
+}
+
 :root {
   --blue-rgb: 237 245 255;
   --green-rgb: 125 161 35;
@@ -234,7 +249,7 @@ body:has(.card[data-color="green"]:hover) {
     width: 60vw;
   }
   .h-60vh {
-    height: 60vh;
+    height: 70vh;
   }
   .mt-150 {
     margin-top: 600px;
@@ -380,32 +395,28 @@ top: 120px;
 .top-32{
   top: 128px;
 }
+.h-40vh{
+  height: 40vh;
+}
+.w-40vw{
+  width: 40vw;
+}
+.h-50vh{
+  height: 50vh;
+}
+.ml-30{
+  margin-left:120px;
+}
+.mb-20{
+  margin-bottom: 80px;
+}
+.h-70vh{
+  height: 70vh;
+}
 
-  /* .navbar{
-    @apply bg-gray-300 overflow-hidden mt-35 fixed;
-  }
-  .navbar ul{
-    @apply list-none m-0 p-0 flex;
-  }
-  .navbar li{
-    @apply list-none m-0 p-0 flex mr-30;
-  }
-  .navbar a{
-    @apply text-black no-underline text-22 px-10 grid;
-  }
-  .navbar a:hover{
-    @apply bg-gray-500 text-black no-underline text-22 px-10 grid;
-  }
-  .logo{
-    @apply pl-25 mt-14 absolute;
-  }
-  .logotext{
-    @apply absolute ml-120 mt-30 text-white text-30 font-bold;
-  }
-  .notifyicon2{
-    @apply ml-1500 mt-35;
-  }
-  /*  */ 
+
+
+
 }
 
 .glassmorphism {
