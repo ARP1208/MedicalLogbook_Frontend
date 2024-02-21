@@ -3,6 +3,8 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./Components/Style/samp.css"
+import "./Components/Style/style.css"
 
 <link
   rel="stylesheet"
@@ -15,12 +17,12 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
-import Internals from "./Layout/Student/Internals.jsx";
+
 import Addeditstudentlayout from "./Layout/Admin/Addeditstudentlayout.jsx";
 import Login from "./Layout/Login/Adminloginform.jsx";
 import Adminsidebar from "./Components/Admin/Adminsidebar.jsx";
 import Adminhomepage from "./Layout/Admin/Adminhomepage.jsx";
-import Sidebar from "./Components/Student/Sidebar.jsx";
+
 import SearchStudent from "./Layout/Admin/Searchstudent.jsx";
 import Addeditfaculty from "./Layout/Admin/Addeditfaculty.jsx";
 import Searchfaculty from "./Layout/Admin/Searchfaculty.jsx";
@@ -30,7 +32,10 @@ import Announcementsidebar from "./Components/Admin/Announcementsidebar.jsx";
 import Sidebarannouncement from "./Components/Admin/Sidebarannouncement.jsx";
 import Announcementhomepage from "./Layout/Admin/Announcementhomepage.jsx";
 import EditAnnouncement from "./Layout/Admin/EditAnnouncement.jsx";
+< main
 import Createannouncement from "./Layout/Admin/Createannouncement.jsx";
+
+> main
 import Gradesheethomepage from "./Layout/Admin/Gradesheethomepage.jsx";
 import Entermarksgradesheet from "./Layout/Admin/Entermarksgradesheet.jsx";
 import EditGradeSheetMarks from "./Layout/Admin/EditGradeSheetMarks.jsx";
@@ -42,15 +47,19 @@ import Pgloghomepage from "./Layout/Faculty/Pgloghomepage.jsx";
 import Editstudent from "./Layout/Admin/Editstudent.jsx";
 import Profilehomepage from "./Layout/Faculty/Profilehomepage.jsx";
 import Profilefaculty from "./Layout/Faculty/Profilefaculty.jsx";
-import AssignSubject from "./Layout/Admin/Assignsubject.jsx";
+
 import Editfaculty from "./Layout/Admin/Editfaculty.jsx";
 import Dashboardpglog from "./Layout/Faculty/Dashboardpglog.jsx";
+import Academicshomepage from "./Layout/Faculty/Academicshomepage.jsx";
+import GenrateInternalmarks from "./Layout/Faculty/GenrateInternalmarks.jsx";
+import Internalmarks from "./Layout/Faculty/Internalmarks.jsx";
+import Createannouncement from "./Layout/Admin/Createannouncement.jsx";
+import AssignSubject from "./Layout/Admin/AssignSubject.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<Login />}></Route>
-      <Route index={true} path="/internals" element={<Internals />}></Route>
       <Route
         index={true}
         path="/addeditstudentlayout"
@@ -66,7 +75,6 @@ const router = createBrowserRouter(
         path="/Adminhomepage"
         element={<Adminhomepage />}
       ></Route>
-      <Route index={true} path="/Sidebar" element={<Sidebar />}></Route>
       <Route
         index={true}
         path="/Searchstudent"
@@ -166,7 +174,7 @@ const router = createBrowserRouter(
         element={<Profilefaculty />}
       ></Route>
       <Route
-        index={true}
+        index={false}
         path="/AssignSubject"
         element={<AssignSubject />}
       ></Route>
@@ -179,6 +187,21 @@ const router = createBrowserRouter(
         index={true}
         path="/Dashboardpglog"
         element={<Dashboardpglog />}
+      ></Route>
+      <Route
+        index={true}
+        path="/Academicshomepage"
+        element={<Academicshomepage />}
+      ></Route>
+       <Route
+        index={true}
+        path="/GenrateInternalmarks "
+        element={<GenrateInternalmarks  />}
+      ></Route>
+       <Route
+        index={true}
+        path="/Internalmarks"
+        element={<Internalmarks />}
       ></Route>
     </Route>
   )

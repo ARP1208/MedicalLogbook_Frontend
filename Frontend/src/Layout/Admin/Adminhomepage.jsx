@@ -5,7 +5,7 @@ import Addeditfaculty from "./Addeditfaculty";
 import Searchfaculty from "./Searchfaculty";
 import Navbar from "../../Components/Admin/Navbar";
 import LogoNav from "../../Components/Admin/LogoNav";
-import AssignSubject from "./Assignsubject";
+import AssignSubject from "./AssignSubject";
 
 const Adminhomepage = () => {
 
@@ -127,18 +127,17 @@ const Adminhomepage = () => {
   }
 
   return (
-    <section>
+    <>
       <LogoNav />
       <Navbar />
-
       {showAddEditStudent && <Addeditstudentlayout />}
       {showsearchstudent && <Searchstudent />}
       {showAddEditFaculty && <Addeditfaculty />}
       {showsearchfaculty && <Searchfaculty />}
       {showassignsubject && <AssignSubject/>}
-
+    
       <div className="absolute h-full">
-        <nav className={`sideb h-83vh sm:h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
+        <nav className={`sideb fixed h-83vh sm:h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
 
         <button onClick={toggleSidebarCollapse} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             {isSidebarCollapsed ? (
@@ -210,12 +209,13 @@ const Adminhomepage = () => {
             </div>
           )}
         </nav>
+
          {/* Main content with adjustment for collapsed sidebar */}
          <div className={`absolute h-full ${isSidebarCollapsed ? 'adjust-content-for-collapsed' : ''}`}>
-          {/* Your main content */}
         </div>
       </div>
-    </section >
+     
+    </ >
   );
 };
 

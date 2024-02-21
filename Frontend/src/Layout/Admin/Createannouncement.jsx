@@ -110,8 +110,13 @@ const Createannouncement = () => {
 
       <div className="border-2 md:h-3/4 w-65vw rounded-md border-sky-500 relative flex flex-col justify-center items-center m-5 sm:mt-10 sm:h-auto md:mt-20 z-10">
         <div className="p-5 gap-2 grid-flow-row grid w-full md:w-3/4 lg:w-1/2 mx-auto">
+< main
           <form action="" className="relative" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-start">
+
+          <form action="" className="relative">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-1 lg:grid-cols-2 text-start w-auto mt-4">
+        < main
               <label htmlFor="announcementTitle" className="text-lg">
                 Announcement Title :{" "}
                 <input
@@ -126,7 +131,7 @@ const Createannouncement = () => {
                 />
               </label>
 
-              <label htmlFor="scheduleDate" className="text-lg ml-30">
+              <label htmlFor="scheduleDate" className="text-lg">
                 Schedule date :{" "}
                 <input
                   type="date"
@@ -141,7 +146,7 @@ const Createannouncement = () => {
               </label>
             </div>
 
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-2 text-start w-auto mt-4">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-1 lg:grid-cols-2 text-start w-auto mt-4">
               <label htmlFor="uploadedFileName" className="text-lg">
                 Uploaded File:{" "}
                 <input

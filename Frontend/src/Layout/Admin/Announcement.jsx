@@ -32,7 +32,7 @@ const Announcement = () => {
           <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10">
             <div className="p-10">
               <div className="overflow-hidden block">
-                <div className="flex w-80vw h-60vh mb-4 border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto  border-sky-500 rounded-xl">
+                <div className="flex w-80vw h-50vh mb-4 border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto  border-sky-500 rounded-xl">
                   <table className="w-full h-10 text-center rounded-md border-collapse">
                     <thead>
                       <tr>
@@ -71,7 +71,9 @@ const Announcement = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="border border-black px-4 py-2 w-10">2</td>
+                        <td className="border border-black px-4 py-2 w-10">
+                          2
+                        </td>
                         <td className="border border-black px-4 py-2">
                           holidays for winter
                         </td>

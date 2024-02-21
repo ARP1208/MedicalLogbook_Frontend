@@ -647,18 +647,15 @@ const Addeditstudentlayout = () => {
 
   const renderStudentForm = () => {
     return (
-      <section className="md:p-4 sm:p-6">
-        <div className="col-span-2 md:text-6 pb-1 pt-5 sm:text-2xl">Student Details</div>
-        <form
-          className="lg:w-275 md:w-3/4 sm:w-3/4 ml-10 md:h-auto md:text-4 sm:text-xl text-left"
-          onSubmit={handlestudentdetails}
-        >
+      <section className="flex justify-center">
+        <form className="relative w-80 md:w-3/4 sm:w-3/4 md:h-auto lg:text-md md:text-md text-left" onSubmit={handlestudentdetails}>
+        <div className="md:text-6 relative text-center pb-1 pt-5 sm:text-2xl">Student Details</div>
           <div className="grid md:grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 md:gap-4 sm:gap-2 mt-8">
-            <div>
-              <label>Name as per 12th gradesheet:</label>
+            <div className="flex flex-col">
+               <label>Name as per 12th gradesheet:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="studentname"
                 value={studentData.studentname}
                 onChange={handleChange}
@@ -667,11 +664,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.studentname}</div>
               )}
             </div>
-            <div>
-              <label>Mother tongue:</label>
+            <div className="flex flex-col"> <label>Mother tongue:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="motherTongue"
                 value={studentData.motherTongue}
                 onChange={handleChange}
@@ -680,11 +676,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.motherTongue}</div>
               )}
             </div>
-            <div>
-              <label>Enrollment number:</label>
+            <div className="flex flex-col"> <label>Enrollment number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="enrollmentNumber"
                 value={studentData.enrollmentNumber}
                 onChange={handleChange}
@@ -693,11 +688,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.enrollmentNumber}</div>
               )}
             </div>
-            <div>
-              <label>Social category:</label>
+            <div className="flex flex-col"> <label>Social category:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="socialcategory"
                 value={studentData.socialcategory}
                 onChange={handleChange}
@@ -706,11 +700,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.socialcategory}</div>
               )}
             </div>
-            <div>
-              <label>Application number:</label>
+            <div className="flex flex-col"> <label>Application number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="applicationNumber"
                 value={studentData.applicationNumber}
                 onChange={handleChange}
@@ -720,11 +713,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Maritial status:</label>
+            <div className="flex flex-col"> <label>Maritial status:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="maritialStatus"
                 value={studentData.maritialStatus}
                 onChange={handleChange}
@@ -734,11 +726,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Registration number:</label>
+            <div className="flex flex-col"> <label>Registration number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="regno"
                 value={studentData.regno}
                 onChange={handleChange}
@@ -748,11 +739,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Academic year:</label>
+            <div className="flex flex-col"> <label>Academic year:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="academicYear"
                 value={studentData.academicYear}
                 onChange={handleChange}
@@ -762,11 +752,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Branch:</label>
+            <div className="flex flex-col"> <label>Branch:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="branch"
                 value={studentData.branch}
                 onChange={handleChange}
@@ -776,11 +765,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Domicile status:</label>
+            <div className="flex flex-col"> <label>Domicile status:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="domicileStatus"
                 value={studentData.domicileStatus}
                 onChange={handleChange}
@@ -789,11 +777,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.domicileStatus}</div>
               )}
             </div>
-            <div>
-              <label>Course:</label>
+            <div className="flex flex-col"> <label>Course:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="course"
                 value={studentData.course}
                 onChange={handleChange}
@@ -803,11 +790,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Adhar card:</label>
+            <div className="flex flex-col"> <label>Adhar card:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="adharCard"
                 value={studentData.adharCard}
                 onChange={handleChange}
@@ -816,11 +802,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.adharCard}</div>
               )}
             </div>
-            <div>
-              <label>Date of joining:</label>
+            <div className="flex flex-col"> <label>Date of joining:</label>
               <input
                 type="Date"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="dateOfJoining"
                 value={studentData.dateOfJoining}
                 onChange={handleChange}
@@ -829,11 +814,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.dateOfJoining}</div>
               )}
             </div>
-            <div>
-              <label>Name as on Adhar card:</label>
+            <div className="flex flex-col"> <label>Name as on Adhar card:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="nameOnAdharCard"
                 value={studentData.nameOnAdharCard}
                 onChange={handleChange}
@@ -842,11 +826,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.nameOnAdharCard}</div>
               )}
             </div>
-            <div>
-              <label>Date of birth:</label>
+            <div className="flex flex-col"> <label>Date of birth:</label>
               <input
                 type="Date"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="dateOfBirth"
                 value={studentData.dateOfBirth}
                 onChange={handleChange}
@@ -855,11 +838,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.dateOfBirth}</div>
               )}
             </div>
-            <div>
-              <label>Official correspondance email:</label>
+            <div className="flex flex-col"> <label>Official correspondance email:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="officialCorrespondenceEmail"
                 value={studentData.officialCorrespondenceEmail}
                 onChange={handleChange}
@@ -870,10 +852,9 @@ const Addeditstudentlayout = () => {
                 </div>
               )}
             </div>
-            <div>
-              <label>Gender:</label>
+            <div className="flex flex-col"> <label>Gender:</label>
               <select
-                className="w-125 border border-gray-700"
+                className="  border border-black"
                 name="gender"
                 value={studentData.gender}
                 onChange={handleChange}
@@ -883,11 +864,10 @@ const Addeditstudentlayout = () => {
                 <option>Other</option>
               </select>
             </div>
-            <div>
-              <label>Official correspondance number:</label>
+            <div className="flex flex-col"> <label>Official correspondance number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="officialCorrespondenceNumber"
                 value={studentData.officialCorrespondenceNumber}
                 onChange={handlephoneChange}
@@ -898,11 +878,10 @@ const Addeditstudentlayout = () => {
                 </div>
               )}
             </div>
-            <div>
-              <label>Present mobile number: </label>
+            <div className="flex flex-col"> <label>Present mobile number: </label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="presentMobileNumber"
                 value={studentData.presentMobileNumber}
                 onChange={handlephoneChange}
@@ -911,11 +890,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.presentMobileNumber}</div>
               )}
             </div>
-            <div>
-              <label>Emergency contact number:</label>
+            <div className="flex flex-col"> <label>Emergency contact number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="emergencyContactNumber"
                 value={studentData.emergencyContactNumber}
                 onChange={handlephoneChange}
@@ -926,11 +904,10 @@ const Addeditstudentlayout = () => {
                 </div>
               )}
             </div>
-            <div>
-              <label>Previous mobile number:</label>
+            <div className="flex flex-col"> <label>Previous mobile number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="previousMobileNumber"
                 value={studentData.previousMobileNumber}
                 onChange={handlephoneChange}
@@ -941,11 +918,10 @@ const Addeditstudentlayout = () => {
                 </div>
               )}
             </div>
-            <div>
-              <label>Social media account:</label>
+            <div className="flex flex-col"> <label>Social media account:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="socialMediaAccount"
                 value={studentData.socialMediaAccount}
                 onChange={handleChange}
@@ -954,11 +930,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.socialMediaAccount}</div>
               )}
             </div>
-            <div>
-              <label>Email id:</label>
+            <div className="flex flex-col"> <label>Email id:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="emailId"
                 value={studentData.emailId}
                 onChange={handleChange}
@@ -967,11 +942,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.emailId}</div>
               )}
             </div>
-            <div>
-              <label>Number of credits earned:</label>
+            <div className="flex flex-col"> <label>Number of credits earned:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="numberOfCreditsEarned"
                 value={studentData.numberOfCreditsEarned}
                 onChange={handleChange}
@@ -982,11 +956,10 @@ const Addeditstudentlayout = () => {
                 </div>
               )}
             </div>
-            <div>
-              <label>Blood group:</label>
+            <div className="flex flex-col"> <label>Blood group:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="bloodGroup"
                 value={studentData.bloodGroup}
                 onChange={handleChange}
@@ -995,11 +968,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.bloodGroup}</div>
               )}
             </div>
-            <div>
-              <label>Category of admission:</label>
+            <div className="flex flex-col"> <label>Category of admission:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="categoryOfAdmission"
                 value={studentData.categoryOfAdmission}
                 onChange={handleChange}
@@ -1008,11 +980,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.categoryOfAdmission}</div>
               )}
             </div>
-            <div>
-              <label>Nationality:</label>
+            <div className="flex flex-col"> <label>Nationality:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="nationality"
                 value={studentData.nationality}
                 onChange={handleChange}
@@ -1021,11 +992,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{errors.nationality}</div>
               )}
             </div>
-            <div>
-              <label>Religion:</label>
+            <div className="flex flex-col"> <label>Religion:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="religion"
                 value={studentData.religion}
                 onChange={handleChange}
@@ -1052,20 +1022,15 @@ const Addeditstudentlayout = () => {
 
   const renderParentForm = () => {
     return (
-      <section className="md:p-4 sm:p-6">
-        <div className="col-span-2 md:text-6 pb-1 pt-5 sm:text-2xl">
-          Parent Details
-        </div>
-        <form
-          className="lg:w-275 md:3/4 h-99 ml-10 md:text-4 text-left sm:w-3/4"
-          onSubmit={handleparentdetails}
-        >
+
+      <section class="flex justify-center">
+        <form class="relative w-80 md:w-3/4 sm:w-3/4 md:h-auto lg:text-md md:text-md text-left"  onSubmit={handleparentdetails}>
+    <div class="md:text-6 relative text-center pb-1 pt-5 sm:text-2xl">Parent Details</div>
           <div className="grid md:grid-cols-1 lg:grid-cols-2 sm:grid-cols-1 md:gap-4 sm:gap-2 mt-8">
-            <div>
-              <label>Enrollment number:</label>
+            <div className="flex flex-col"> <label>Enrollment number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="enrollmentNumber"
                 value={parentData.enrollmentNumber}
                 onChange={handleparentChange}
@@ -1074,11 +1039,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.enrollmentNumber}</div>
               )}
             </div>
-            <div>
-              <label>Father`s Name:</label>
+            <div className="flex flex-col"> <label>Father`s Name:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="fatherName"
                 value={parentData.fatherName}
                 onChange={handleparentChange}
@@ -1087,11 +1051,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.fatherName}</div>
               )}
             </div>
-            <div>
-              <label>Father`s contact number:</label>
+            <div className="flex flex-col"> <label>Father`s contact number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="fatherContactNumber"
                 value={parentData.fatherContactNumber}
                 onChange={handleparentphoneChange}
@@ -1100,11 +1063,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.fatherContactNumber}</div>
               )}
             </div>
-            <div>
-              <label>Father`s Occupation:</label>
+            <div className="flex flex-col"> <label>Father`s Occupation:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="fatherOccupation"
                 value={parentData.fatherOccupation}
                 onChange={handleparentChange}
@@ -1113,11 +1075,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.fatherOccupation}</div>
               )}
             </div>
-            <div>
-              <label>Father`s email id:</label>
+            <div className="flex flex-col"> <label>Father`s email id:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="fatherEmailId"
                 value={parentData.fatherEmailId}
                 onChange={handleparentChange}
@@ -1127,11 +1088,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Mother`s Name:</label>
+            <div className="flex flex-col"> <label>Mother`s Name:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="motherName"
                 value={parentData.motherName}
                 onChange={handleparentChange}
@@ -1140,11 +1100,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.motherName}</div>
               )}
             </div>
-            <div>
-              <label>Mother`s contact number:</label>
+            <div className="flex flex-col"> <label>Mother`s contact number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="motherContactNumber"
                 value={parentData.motherContactNumber}
                 onChange={handleparentphoneChange}
@@ -1153,11 +1112,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.motherContactNumber}</div>
               )}
             </div>
-            <div>
-              <label>Mother`s Occupation:</label>
+            <div className="flex flex-col"> <label>Mother`s Occupation:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="motherOccupation"
                 value={parentData.motherOccupation}
                 onChange={handleparentChange}
@@ -1166,11 +1124,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.motherOccupation}</div>
               )}
             </div>
-            <div>
-              <label>Mother`s email id:</label>
+            <div className="flex flex-col"> <label>Mother`s email id:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="motherEmailId"
                 value={parentData.motherEmailId}
                 onChange={handleparentChange}
@@ -1179,11 +1136,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.motherEmailId}</div>
               )}
             </div>
-            <div>
-              <label>Guardian Name:</label>
+            <div className="flex flex-col"> <label>Guardian Name:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="guardianName"
                 value={parentData.guardianName}
                 onChange={handleparentChange}
@@ -1192,11 +1148,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.guardianName}</div>
               )}
             </div>
-            <div>
-              <label>Guardian contact number:</label>
+            <div className="flex flex-col"> <label>Guardian contact number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="guardianContactNumber"
                 value={parentData.guardianContactNumber}
                 onChange={handleparentphoneChange}
@@ -1207,11 +1162,10 @@ const Addeditstudentlayout = () => {
                 </div>
               )}
             </div>
-            <div>
-              <label>Guardian Occupation:</label>
+            <div className="flex flex-col"> <label>Guardian Occupation:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="guardianOccupation"
                 value={parentData.guardianOccupation}
                 onChange={handleparentChange}
@@ -1220,11 +1174,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.guardianOccupation}</div>
               )}
             </div>
-            <div>
-              <label>Guardian email id:</label>
+            <div className="flex flex-col"> <label>Guardian email id:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="guardianEmailId"
                 value={parentData.guardianEmailId}
                 onChange={handleparentChange}
@@ -1233,11 +1186,10 @@ const Addeditstudentlayout = () => {
                 <div className="text-red-500">{parenterrors.guardianEmailId}</div>
               )}
             </div>
-            <div>
-              <label>Bank account number:</label>
+            <div className="flex flex-col"> <label>Bank account number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="bankAccountNumber"
                 value={parentData.bankAccountNumber}
                 onChange={handleparentChange}
@@ -1247,11 +1199,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Account holder Name:</label>
+            <div className="flex flex-col"> <label>Account holder Name:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="accountHolderName"
                 value={parentData.accountHolderName}
                 onChange={handleparentChange}
@@ -1261,11 +1212,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>IFSC code:</label>
+            <div className="flex flex-col"> <label>IFSC code:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="ifscCode"
                 value={parentData.ifscCode}
                 onChange={handleparentChange}
@@ -1275,11 +1225,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>Branch:</label>
+            <div className="flex flex-col"> <label>Branch:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="branch"
                 value={parentData.branch}
                 onChange={handleparentChange}
@@ -1289,11 +1238,10 @@ const Addeditstudentlayout = () => {
               )}
             </div>
 
-            <div>
-              <label>PAN card number:</label>
+            <div className="flex flex-col"> <label>PAN card number:</label>
               <input
                 type="text"
-                className="border border-gray-700 w-125"
+                className="border border-black  "
                 name="panCardNumber"
                 value={parentData.panCardNumber}
                 onChange={handleparentChange}
@@ -1319,11 +1267,11 @@ const Addeditstudentlayout = () => {
   };
 
   return (
-    <div className="container">
+    <div className="absolute container">
       {/* Your other components go here */}
-      <div className="fixed left-15 top-36 flex ml-40 sm:block sm:w-auto sm:h-auto">
+      <div className="absolute mt-10 left-60 lg:gap-10 sm:gap-1 flex justify-start sm:w-auto sm:h-auto">
         <button
-          className={`w-48 h-10 ml-5 pl-1 pt-1 text-lg focus:outline-none ${
+          className={`w-48 h-10  pl-1 pt-1 text-lg md:text-md focus:outline-none ${
             addEditStudentClicked
               ? "bg-white text-blue-500 focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300"
               : "bg-blue-500 text-white rounded-lg"
@@ -1334,7 +1282,7 @@ const Addeditstudentlayout = () => {
         </button>
 
         <button
-          className={`w-48 h-10 ml-10 pl-1 pt-1 text-lg focus:outline-none ${
+          className={`w-48 h-10  pl-1 pt-1 text-lg md:text-md focus:outline-none ${
             parentDetailsClicked
               ? "bg-white text-blue-500 focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300"
               : "bg-blue-500 text-white   rounded-lg "
@@ -1346,13 +1294,13 @@ const Addeditstudentlayout = () => {
       </div>
 
       {showStudentCard && (
-        <div className="fixed overflow-scroll w-auto h-100 top-56 ml-60 h-60vh pb-80 border-2 rounded-2xl">
+        <div className="overflow-auto absolute top-20 w-60vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
           {renderStudentForm()}
         </div>
       )}
 
       {showParentCard && (
-        <div className="fixed overflow-scroll w-auto top-56 ml-60 h-100 pb-80 border-1 border-black rounded-2xl">
+        <div className="overflow-auto absolute top-20 w-60vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
           {renderParentForm()}
         </div>
       )}
