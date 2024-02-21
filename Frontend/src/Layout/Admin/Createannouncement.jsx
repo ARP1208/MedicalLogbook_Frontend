@@ -59,7 +59,7 @@ const Createannouncement = () => {
               <label htmlFor="scheduleDate" className="text-lg ml-30">
                 Schedule date :{" "}
                 <input
-                  type="text"
+                  type="date"
                   id="scheduleDate"
                   pattern="[0-9]{2}"
                   className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
