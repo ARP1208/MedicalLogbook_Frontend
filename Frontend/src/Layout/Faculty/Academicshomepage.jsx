@@ -25,7 +25,10 @@ const Academicshomepage = () => {
   };
 
   const handleOptions = (component) => {
-    if (component === "Internalmarks") {
+    if(component === "Home"){
+      setshowInternalmarks(false);
+    }
+    else if (component === "Internalmarks") {
       setshowInternalmarks(true);
     }
   };
@@ -47,6 +50,11 @@ const Academicshomepage = () => {
             )}
             <p className="relative top-2 text-base">Collapse</p>
           </button>
+          
+          <button onClick={() => handleOptions("Home")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+            <i className="fa-solid fa-house pr-2" style={{ color: "#ffffff" }} />
+            <p className="relative top-2 text-base">Home</p>
+          </button>
 
           <button
             onClick={() => handleOptions("Internalmarks")}
@@ -62,7 +70,7 @@ const Academicshomepage = () => {
           >
               
             <i className="fa-solid fa-file-pen" style={{ color: "#ffffff" }}/>
-            <p className="relative top-2 text-base">&nbsp;Midterm&nbsp;Marks</p>
+            <p className="relative top-2 text-base">&nbsp;Edit&nbsp;Marks</p>
           </button>
         </nav>
       </div>

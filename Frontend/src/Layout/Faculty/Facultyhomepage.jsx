@@ -24,7 +24,10 @@ const Facultyhomepage = () => {
   };
 
   const handleOptions = (component) => {
-    if (component === "Announcement") {
+    if(component === "Home"){
+      setshowAnnouncement(false);
+    }
+    else if (component === "Announcement") {
       setshowAnnouncement(true);
     }
   };
@@ -45,6 +48,11 @@ const Facultyhomepage = () => {
               <i class="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
             )}
             <p className="relative top-2 text-base">Collapse</p>
+          </button>
+
+          <button onClick={() => handleOptions("Home")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+            <i className="fa-solid fa-house pr-2" style={{ color: "#ffffff" }} />
+            <p className="relative top-2 text-base">Home</p>
           </button>
 
           <button

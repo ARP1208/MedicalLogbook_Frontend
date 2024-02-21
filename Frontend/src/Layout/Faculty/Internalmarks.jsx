@@ -63,12 +63,24 @@ const GenerateSubjectcode = () => {
   ];
 };
 
+const GenerateSubjectname =() => {
+  return [
+    { value: 'Select subject', label:'select Selection' },
+    { value: 'sub1', label: 'subject1' },
+    { value: 'sub2', label: 'subject2' },
+    { value: 'sub3', label: 'subject3' },
+    { value: 'sub4', label: 'subject4' },
+    { value: 'sub5', label: 'subject5' },
+  ]
+}
+
 const Internalmarks = () => {
   const [academicYear, setAcademicYear] = useState({ value: 'select Academic year', label: 'select Academic year' });
   const [selectedProgram, setSelectedProgram] = useState({ value: 'select Program', label: 'select Program' });
   const [selectedSemester, setSelectedSemester] = useState({ value: 'select Semester', label: 'select Semester' });
   const [selectedSection, setSelectedSection] = useState({ value: 'select Section', label: 'select Section' });
   const [selectedSubjectCode, setSelectedSubjectCode] = useState({ value: 'select Subjectcode', label: 'select Subjectcode' });
+  const [selectedSubjectname, setSelectedSubjectname] = useState({ value: 'select Subjectname', label: 'select Subjectname' });
   const [showGenerateInternal, setShowGenerateInternal] = useState(false);
 
   const handleGenerate = () => {
@@ -114,8 +126,13 @@ const Internalmarks = () => {
                 onChange={setSelectedSubjectCode}
                 options={GenerateSubjectcode()}
               />
+              <Select
+                value={selectedSubjectname}
+                onChange={setSelectedSubjectname}
+                options={GenerateSubjectname()}
+              />
               {/* Input for Examination */}
-              <input type='text' className='flex border border-gray h-10 lg:w-60 sm:w-50 md:w-40 rounded-md' placeholder='&nbsp;&nbsp;Examination  example:MISAC-1'></input>
+              <input type='text' className='ml-35 flex border border-gray h-10 lg:w-60 sm:w-50 md:w-40 rounded-md' placeholder='&nbsp;&nbsp;Examination  example:MISAC-1'></input>
             </div>
 
             <div className="relative flex justify-center items-center">
