@@ -58,6 +58,9 @@ const handleedittaskfaculty = (component) =>{
                     <th className="border bg-blue-950 text-white px-4 py-2" onClick={()=>handleedittaskfaculty("Edit")}>
                       Edit
                     </th>
+                    <th className="border bg-blue-950 text-white px-4 py-2">
+                      Delete
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -76,6 +79,12 @@ const handleedittaskfaculty = (component) =>{
                       <button
                         className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1" onClick={()=>handleedittaskfaculty("Edit")}>
                         Edit
+                      </button>
+                      </td>
+                      <td className="w-20 border border-black px-4 py-1 text-center">
+                      <button
+                        className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1">
+                        Delete
                       </button>
                       </td>
                   </tr>

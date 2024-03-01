@@ -17,7 +17,7 @@ adminSchema.methods.comparePassword = function (password) {
 const adminAnnoucementSchema = new mongoose.Schema({
   announcementTitle: { type: String, required:true},
   scheduleDate: { type: Date},
-  uploadFile: { type: String},
+  uploadedFileName: { type: String },
   scheduleTime: { type: String}
 })
 

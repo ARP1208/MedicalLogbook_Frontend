@@ -66,7 +66,7 @@ const EditAnnouncement = () => {
                 <label htmlFor="scheduleDate" className="text-lg">
                   Schedule date:
                   <input
-                    type="text"
+                    type="date"
                     id="scheduleDate"
                     pattern="[0-9]{2}"
                     className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
@@ -102,14 +102,10 @@ const EditAnnouncement = () => {
                 <label htmlFor="fileInput" className="text-lg">
                   Upload PDF File:
                 </label>
-                <img
-                  width="45"
-                  height="45"
-                  src={uploadedImage || upload}
-                  alt="Uploaded File"
-                  onClick={() => document.getElementById("fileInput").click()}
-                  style={{ cursor: "pointer" }}
-                />
+                <i class="fa-solid fa-upload fa-lg pl-2"
+                onClick={() => document.getElementById("fileInput").click()}
+                style={{ cursor: "pointer" }}
+              />
                 <input
                   type="file"
                   id="fileInput"

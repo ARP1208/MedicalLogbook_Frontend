@@ -1,17 +1,18 @@
 import React, { useState,useEffect} from "react";
 import LogoNav from "../../Components/Admin/LogoNav";
 import FacultyNavbar from "../../Components/Faculty/FacultyNavbar";
-import Facultyannouncement from "./Facultyannouncement";
+import Createassessment from "./Createassessment";
 
-const Facultyhomepage = () => {
+
+const Assessmenthomepage = () => {
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     const storedPreference = sessionStorage.getItem('sidebarCollapsed');
     return storedPreference !== null ? JSON.parse(storedPreference) : false;
   });
 
+  const [showassessment,setshowassessment]=useState(false);
 
-  const [showAnnouncement, setshowAnnouncement] = useState(false);
 
   useEffect(() => {
     // Save collapsed state changes to sessionStorage
@@ -25,27 +26,30 @@ const Facultyhomepage = () => {
 
   const handleOptions = (component) => {
     if(component === "Home"){
-      setshowAnnouncement(false);
+        window.location.href='/Assessmenthomepage';
     }
-    else if (component === "Announcement") {
-      setshowAnnouncement(true);
+    else if(component === "CreateAssessment"){
+        setshowassessment(true);
     }
-  };
+};
+  
+ 
 
   return (
+
     <section>
       <LogoNav />
       <FacultyNavbar />
-      {showAnnouncement && <Facultyannouncement />}
+
       <div className="fixed h-full">
         <nav className={`sideb h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
 
            
         <button onClick={toggleSidebarCollapse} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             {isSidebarCollapsed ? (
-              <i class="fa-solid fa-angles-right p-2" style={{ color: "#ffffff" }} /> // Expand icon
+              <i className="fa-solid fa-angles-right p-2" style={{ color: "#ffffff" }} /> // Expand icon
             ) : (
-              <i class="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
+              <i className="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
             )}
             <p className="relative top-2 text-base">Collapse</p>
           </button>
@@ -56,19 +60,24 @@ const Facultyhomepage = () => {
           </button>
 
           <button
-            onClick={() => handleOptions("Announcement")}
+            onClick={() => handleOptions("CreateAssessment")}
             className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 "
           >
-            <i
-              className="fa-solid fa-bullhorn p-2"
-              style={{ color: "#ffffff" }}
-            />
-            <p className="relative top-2 text-base">Announcement</p>
+            <i className="fa-solid fa-pen-to-square" style={{ color: "#ffffff" }}/>
+            <p className="relative top-2 text-base">Create&nbsp;Assessment</p>
           </button>
-        </nav>
-      </div>
-    </section>
-  );
-};
 
-export default Facultyhomepage;
+          <button
+            onClick={() => handleOptions("")}
+            className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 "
+          >
+            <i className="fa-solid fa-chalkboard p-2" style={{ color: "#ffffff" }} />
+            <p className="relative top-2 text-base">Dashboard</p>
+          </button>
+          </nav>
+          </div>
+          {showassessment && <Createassessment/>}
+      </section>
+  )  
+ };
+export default Assessmenthomepage;

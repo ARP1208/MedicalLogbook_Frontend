@@ -23,7 +23,10 @@ const Profilehomepage = () => {
     };
   
     const handleOptions = (component) => {
-      if (component === "Profile") {
+      if(component === "Home"){
+        setshowprofile(false);
+      }
+      else if (component === "Profile") {
         setshowprofile(true);
       }
     };
@@ -43,6 +46,13 @@ const Profilehomepage = () => {
             )}
             <p className="relative top-2 text-base">Collapse</p>
           </button>
+
+          <button onClick={() => handleOptions("Home")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+            <i className="fa-solid fa-house pr-2" style={{ color: "#ffffff" }} />
+            <p className="relative top-2 text-base">Home</p>
+          </button>
+          
+
           <button onClick={() => handleOptions("Profile")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-regular fa-address-card" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;Profile</p>

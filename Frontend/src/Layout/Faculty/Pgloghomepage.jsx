@@ -24,7 +24,11 @@ const Pgloghomepage = () => {
     };
 
     const handleOptions = (component) => {
-      if (component === "Createtask") {
+      if(component === "Home"){
+        setshowcreatetask(false);
+        setshowDashboardpglog(false);
+      }
+      else if (component === "Createtask") {
         setshowcreatetask(true);
         setshowDashboardpglog(false);
       }else if(component === "Dashboardpglog"){
@@ -49,6 +53,11 @@ const Pgloghomepage = () => {
             <p className="relative top-2 text-base">Collapse</p>
           </button>
           
+          <button onClick={() => handleOptions("Home")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+            <i className="fa-solid fa-house pr-2" style={{ color: "#ffffff" }} />
+            <p className="relative top-2 text-base">Home</p>
+          </button>
+
           <button onClick={() => handleOptions("Dashboardpglog")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-solid fa-chalkboard p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;PG&nbsp;Dashboard</p>

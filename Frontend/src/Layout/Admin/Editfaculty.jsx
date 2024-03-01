@@ -421,17 +421,18 @@ const Editfaculty = () => {
         </button>
       </div>
       <div className="flex justify-center item-center">
-        <div className="fixed sm:w-3/4 overflow-auto w-300 top-49 lg:ml-10 md:ml-25 sm:ml-50 h-100 pb-120 border-1 border-black rounded-2xl">
+        <div className="fixed sm:w-3/4 overflow-auto md:fixed w-60vw top-49 ml-20 h-60vh border-2 border-blue-500 rounded-2xl">
           <form
-            className="md:w-275 h-99 ml-10 md:text-4 text-left sm:w-3/4 md:gap-4 sm:gap-3"
+            className="absolute w-80 md:w-3/4 md:h-auto lg:ml-30 md:ml-10 md:text-4 text-left sm:w-3/4 md:gap-4 sm:gap-3"
             onSubmit={handleupdatedetails}
           >
-            <div className="grid md:grid-cols-2 md:gap-4 sm:grid-cols-1 sm:gap-2 mt-8">
-              <div>
+            <div className="md:text-6 relative text-center pt-5 sm:text-2xl">Faculty Details</div>
+            <div className="grid md:grid-cols-1 lg:grid-cols-2 md:gap-4 sm:grid-cols-1 sm:gap-2 mt-8">
+              <div className="flex flex-col">
                 <label>Faculty Name:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="facultyname"
                   value={formData.facultyname}
                   onChange={handleChange}
@@ -441,11 +442,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.facultyname}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Application number:</label>
                 <input
                   type="number"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="applicationNumber"
                   value={formData.applicationNumber}
                   onChange={handleChange}
@@ -455,11 +456,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.applicationNumber}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Faculty id:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="facultyid"
                   value={formData.facultyid}
                   onChange={handleChange}
@@ -469,11 +470,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.facultyid}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Department:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="department"
                   value={formData.department}
                   onChange={handleChange}
@@ -484,11 +485,11 @@ const Editfaculty = () => {
                 )}
               </div>
 
-              <div>
+              <div className="flex flex-col">
                 <label>Mother tongue:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="motherTongue"
                   value={formData.motherTongue}
                   onChange={handleChange}
@@ -497,11 +498,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.motherTongue}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Date of joining:</label>
                 <input
                   type="Date"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="dateOfJoining"
                   value={formData.dateOfJoining}
                   onChange={handleChange}
@@ -511,11 +512,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.dateOfJoining}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Date of birth:</label>
                 <input
                   type="Date"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="dateOfBirth"
                   value={formData.dateOfBirth}
                   onChange={handleChange}
@@ -524,10 +525,10 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.dateOfBirth}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Gender</label>
                 <select
-                  className="py-4 px-10"
+                  className="py-1 px-10"
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}>
@@ -535,11 +536,11 @@ const Editfaculty = () => {
                   <option>Female</option>
                 </select>
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Present mobile number:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="presentMobileNumber"
                   value={formData.presentMobileNumber}
                   onChange={(e) => handleChange(e)}
@@ -548,11 +549,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.presentMobileNumber}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Previous mobile number:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="previousMobileNumber"
                   value={formData.previousMobileNumber}
                   onChange={handlephoneChange}
@@ -561,11 +562,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.previousMobileNumber}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Email id:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="emailId"
                   value={formData.emailId}
                   onChange={handleChange}
@@ -574,11 +575,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.emailId}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Blood group:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="bloodGroup"
                   value={formData.bloodGroup}
                   onChange={handleChange}
@@ -587,11 +588,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.bloodGroup}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Nationality:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="nationality"
                   value={formData.nationality}
                   onChange={handleChange}
@@ -600,11 +601,11 @@ const Editfaculty = () => {
                   <div className="text-red-500">{errors.nationality}</div>
                 )}
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label>Religion:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="religion"
                   value={formData.religion}
                   onChange={handleChange}
@@ -616,11 +617,11 @@ const Editfaculty = () => {
 
 
 
-              <div>
+              <div className="flex flex-col">
                 <label>Social category:</label>
                 <input
                   type="text"
-                  className="border border-gray-700 w-125"
+                  className="border border-gray-700"
                   name="socialCategory"
                   value={formData.socialCategory}
                   onChange={handleChange}
