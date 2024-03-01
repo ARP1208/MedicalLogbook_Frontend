@@ -7,10 +7,10 @@ const Createannouncement = () => {
   const [adminData, setAdminData] = useState({
     announcementTitle: "",
     scheduleDate: "",
-    uploadedFileName: "",
+    uploadFile: "",
     scheduleTime: "",
-  })
-  
+  });
+
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedFileName, setUploadedFileName] = useState("");
   
@@ -26,12 +26,18 @@ const Createannouncement = () => {
       reader.readAsDataURL(file);
     }
   };
- 
+  
+
+  const [errors, setErrors] = useState({});
+
+  
+
   const handleChange = (e) => {
     setAdminData({
       ...adminData,
       [e.target.name]: e.target.value,
     });
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   const handlePreview = () => {
@@ -48,49 +54,50 @@ const Createannouncement = () => {
       alert("Please upload a PDF file first.");
     }
   };
-  
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
 
-    try {
-      alert("Data saved");
-      const announcementResponse = await axios.post(
-        "http://localhost:8000/admin/announcement",
-        {
-          ...adminData,
-          uploadedFileName: uploadedFileName, // Add uploadedFileName to the payload
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-  
-      // Reset the adminData state after the request is processed
-      setAdminData({
-        announcementTitle: "",
-        scheduleDate: "",
-        uploadedFileName: "",
-        scheduleTime: "",
-      });
 
-      setUploadedFileName("");
-  
-      if (announcementResponse.status >= 200 && announcementResponse.status < 300) {
-        console.log(announcementResponse.data);
-        // Successful response handling
-      } else {
-        // Handle errors from the backend
-        const responseData = announcementResponse.data;
-        console.error("Backend Error:", responseData.error || "Unknown error");
-        // Assuming setErrors is a state updater function
-        setErrors(responseData.errors || {});
+  try {
+    alert("Data saved");
+    const announcementResponse = await axios.post(
+      "http://localhost:8000/admin/announcement",
+      adminData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error) {
-      console.error("Error:", error);
+    );
+
+     // Reset the adminData state after the request is processed
+     setAdminData({
+      announcementTitle: "",
+      scheduleDate: "",
+      uploadFile: "",
+      scheduleTime: "",
+    });
+  
+    if (announcementResponse.status >= 200 && announcementResponse.status < 300) {
+      console.log(announcementResponse.data);
+      // Successful response handling
+    } else {
+      // Handle errors from the backend
+      const responseData = announcementResponse.data;
+      console.error("Backend Error:", responseData.error || "Unknown error");
+      // Assuming setErrors is a state updater function
+      setErrors(responseData.errors || {});
     }
+  
+   
+  
+  } catch (error) {
+    console.error("Error:", error);
+  }
   };
+  
+
+
   
 
   return (
@@ -103,19 +110,24 @@ const Createannouncement = () => {
 
       <div className="border-2 md:h-3/4 w-65vw rounded-md border-sky-500 relative flex flex-col justify-center items-center m-5 sm:mt-10 sm:h-auto md:mt-20 z-10">
         <div className="p-5 gap-2 grid-flow-row grid w-full md:w-3/4 lg:w-1/2 mx-auto">
+< main
           <form action="" className="relative" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-start">
+
+          <form action="" className="relative">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-1 lg:grid-cols-2 text-start w-auto mt-4">
+        < main
               <label htmlFor="announcementTitle" className="text-lg">
                 Announcement Title :{" "}
                 <input
                   type="text"
                   id="announcementTitle"
                   className="px-4 border-1 border-black w-full h-10 rounded-md mt-1"
+                  placeholder="Enter the Announcement"
                   name="announcementTitle"
                   value={adminData.announcementTitle}
                   onChange={handleChange}
-                  required // Required validation added
-                  maxLength="50" // Maximum length of 50 characters
+                  required
                 />
               </label>
 
