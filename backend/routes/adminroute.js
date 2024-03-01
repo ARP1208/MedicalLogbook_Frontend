@@ -1,11 +1,12 @@
 // adminRoutes.js
 import express from 'express';
-import { login, announcement, UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet } from '../controllers/admincontroller.js';
+import { login, announcement,fetchAnnouncementByTitle ,UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet } from '../controllers/admincontroller.js';
 
 const router = express.Router();
 
 router.route("/login").post(login);
 router.route("/announcement").post(announcement);
+router.route("/fetchAnnouncement").post(fetchAnnouncementByTitle);
 router.route("/UpdateAnnouncement").patch(UpdateAnnouncement);
 router.route("/DeleteAnnouncement").delete(DeleteAnnouncement);
 router.route("/admingradesheet").post(saveAdminGradesheet);

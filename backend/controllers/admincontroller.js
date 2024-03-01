@@ -45,6 +45,27 @@ const announcement = asyncHandler(async (req, res) => {
   }
 });
 
+const fetchAnnouncementByTitle = asyncHandler(async (req, res) => {
+  const { announcementTitle } = req.params; // Assuming title is passed as a route parameter
+
+  try {
+    await connectDB();
+    const announcement = await AdminAnnoucement.findOne({ title: announcementTitle });
+
+    if (!announcement) {
+      return res.status(404).json({ message: "Announcement not found" });
+    }
+
+    console.log("Fetched Announcement:", announcement);
+    res.status(200).json(announcement);
+  } catch (error) {
+    console.error("Error fetching Announcement:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    await closeDB();
+  }
+});
+
 const UpdateAnnouncement = asyncHandler(async (req, res) => {
   console.log("Received data for update:", req.body);
   const {announcementTitle } = req.body;
@@ -329,4 +350,4 @@ const getAdminGradesheet = asyncHandler(async (req, res) => {
 
 
 
-export { login, announcement, UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet }; 
+export { login, announcement,fetchAnnouncementByTitle , UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet }; 
