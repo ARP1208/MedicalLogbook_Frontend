@@ -1,6 +1,6 @@
 // adminRoutes.js
 import express from 'express';
-import { login, announcement, UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject } from '../controllers/admincontroller.js';
+import { login, announcement, UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet } from '../controllers/admincontroller.js';
 
 const router = express.Router();
 
@@ -11,6 +11,8 @@ router.route("/DeleteAnnouncement").delete(DeleteAnnouncement);
 router.route("/admingradesheet").post(saveAdminGradesheet);
 router.route("/updategradesheet").post(updateAdminGradesheet);
 router.route("/assignsubject").post(saveAssignSubject);
+router.route("/getdetail").post(getAdminGradesheet);
+
 
 
 
