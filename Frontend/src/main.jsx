@@ -52,6 +52,8 @@ import GenrateInternalmarks from "./Layout/Faculty/GenrateInternalmarks.jsx";
 import Internalmarks from "./Layout/Faculty/Internalmarks.jsx";
 import Createannouncement from "./Layout/Admin/Createannouncement.jsx";
 import AssignSubject from "./Layout/Admin/AssignSubject.jsx";
+import GenerateInternalMarks from "./Layout/Faculty/GenrateInternalmarks.jsx";
+import Assessmenthomepage from "./Layout/Faculty/Assessmenthomepage.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -61,6 +63,11 @@ const router = createBrowserRouter(
         index={true}
         path="/addeditstudentlayout"
         element={<Addeditstudentlayout />}
+      ></Route>
+       <Route
+        index={true}
+        path="/GenerateInternalMarks"
+        element={<GenerateInternalMarks />}
       ></Route>
       <Route
         index={true}
@@ -199,6 +206,11 @@ const router = createBrowserRouter(
         index={true}
         path="/Internalmarks"
         element={<Internalmarks />}
+      ></Route>
+       <Route
+        index={true}
+        path="/Assessmenthomepage"
+        element={<Assessmenthomepage />}
       ></Route>
     </Route>
   )

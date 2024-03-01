@@ -1,20 +1,18 @@
 import React, { useState,useEffect} from "react";
 import LogoNav from "../../Components/Admin/LogoNav";
 import FacultyNavbar from "../../Components/Faculty/FacultyNavbar";
-import Facultyannouncement from "./Facultyannouncement";
-import Internalmarks from "./Internalmarks";
-import Editmarks from "./Editmarks";
+import Createassessment from "./Createassessment";
 
-const Academicshomepage = () => {
+
+const Assessmenthomepage = () => {
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     const storedPreference = sessionStorage.getItem('sidebarCollapsed');
     return storedPreference !== null ? JSON.parse(storedPreference) : false;
   });
 
+  const [showassessment,setshowassessment]=useState(false);
 
-  const [showInternalmarks, setshowInternalmarks] = useState(false);
-  const [showeditmarks,setshoweditmarks]=useState(false);
 
   useEffect(() => {
     // Save collapsed state changes to sessionStorage
@@ -28,25 +26,21 @@ const Academicshomepage = () => {
 
   const handleOptions = (component) => {
     if(component === "Home"){
-      setshowInternalmarks(false);
-      setshoweditmarks(false);
+        window.location.href='/Assessmenthomepage';
     }
-    else if (component === "Internalmarks") {
-      setshowInternalmarks(true);
-      setshoweditmarks(false);
+    else if(component === "CreateAssessment"){
+        setshowassessment(true);
     }
-    else if(component === "Editmarks"){
-      setshoweditmarks(true);
-      setshowInternalmarks(false);
-    }
-  };
+};
+  
+ 
 
   return (
+
     <section>
       <LogoNav />
       <FacultyNavbar />
-      {showInternalmarks && <Internalmarks />}
-      {showeditmarks && <Editmarks/>}
+
       <div className="fixed h-full">
         <nav className={`sideb h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
 
@@ -59,32 +53,31 @@ const Academicshomepage = () => {
             )}
             <p className="relative top-2 text-base">Collapse</p>
           </button>
-          
+
           <button onClick={() => handleOptions("Home")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             <i className="fa-solid fa-house pr-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">Home</p>
           </button>
 
           <button
-            onClick={() => handleOptions("Internalmarks")}
+            onClick={() => handleOptions("CreateAssessment")}
             className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 "
           >
             <i className="fa-solid fa-pen-to-square" style={{ color: "#ffffff" }}/>
-            <p className="relative top-2 text-base">&nbsp;&nbsp;Marks</p>
+            <p className="relative top-2 text-base">Create&nbsp;Assessment</p>
           </button>
 
           <button
-            onClick={() => handleOptions("Editmarks")}
+            onClick={() => handleOptions("")}
             className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 "
           >
-              
-            <i className="fa-solid fa-file-pen" style={{ color: "#ffffff" }}/>
-            <p className="relative top-2 text-base">&nbsp;Edit&nbsp;Marks</p>
+            <i className="fa-solid fa-chalkboard p-2" style={{ color: "#ffffff" }} />
+            <p className="relative top-2 text-base">Dashboard</p>
           </button>
-        </nav>
-      </div>
-    </section>
-  );
-};
-
-export default Academicshomepage;
+          </nav>
+          </div>
+          {showassessment && <Createassessment/>}
+      </section>
+  )  
+ };
+export default Assessmenthomepage;

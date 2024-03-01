@@ -25,6 +25,9 @@ const FacultyNavbar = () => {
           </NavLink>
         </nav>
 
+
+      
+
       {/*Academics nav bar*/}
         <nav className="text-lg font-semibold">
           <NavLink
@@ -37,6 +40,21 @@ const FacultyNavbar = () => {
           >
             {" "}
             Academics{" "}
+          </NavLink>
+        </nav>
+
+         {/* Assessment Navbar */}
+       <nav className="text-lg font-semibold">
+          <NavLink
+            to="/Assessmenthomepage"
+            className={({ isActive }) =>
+              isActive
+                ? "text-white bg-blue-500 p-3 no-underline"
+                : "text-black no-underline"
+            }
+          >
+            {" "}
+            Assessment{" "}
           </NavLink>
         </nav>
 

@@ -5,7 +5,8 @@
 @tailwind utilities;
 
 *::-webkit-scrollbar {
-  width: 5px;
+  width: 2px;
+  height: 2px;
 }
 
 *::-webkit-scrollbar-track {
@@ -413,9 +414,24 @@ top: 120px;
 .h-70vh{
   height: 70vh;
 }
-
-
-
+.h-16{
+  height: 64px;
+}
+.shadow-card{
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+}
+.w-75vw{
+  width: 75vw;
+}
+.mt-13{
+  margin-top: 52px;
+}
+.h-13{
+height: 52px;
+} 
+.ml-95{
+  margin-left: 380px;
+}
 
 }
 
