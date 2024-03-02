@@ -4,9 +4,11 @@ import Image from '../../Components/Assets/photo/login.mp4';
 
 const Loginform = () => {
   const [formData, setFormData] = useState({
-    email: "",
+    emailId: "",
     password: "",
   });
+
+ 
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
@@ -29,37 +31,135 @@ const Loginform = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+
+  //   e.preventDefault();
+
+  //   // Basic validation
+  //   const newErrors = {};
+  //   if (!formData.emailId.trim()) {
+  //     newErrors.emailId = 'Email is required';
+  //   } else if (!/\S+@\S+\.\S+/.test(formData.emailId)) {
+  //     newErrors.emailId = 'Invalid email format';
+  //   }
+  //   if (!formData.password.trim()) {
+  //     newErrors.password = "Password is required";
+  //   }
+
+  //   if (Object.keys(newErrors).length > 0) {
+  //     setErrors(newErrors);
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await fetch('http://localhost:8000/admin/login', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     if (response.ok) {
+  //       console.log('Login successful');
+  //       navigate('/Adminhomepage');
+  //     } else {
+  //       const responseData = await response.json();
+  //       setErrors(responseData.errors || {});
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during login:', error);
+  //   }
+
+  //   console.log("Login data submitted:", formData);
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   // Basic validation
+  //   const newErrors = {};
+  //   if (!formData.emailId.trim()) {
+  //     newErrors.emailId = 'Email is required';
+  //   } else if (!/\S+@\S+\.\S+/.test(formData.emailId)) {
+  //     newErrors.emailId = 'Invalid email format';
+  //   }
+  //   if (!formData.password.trim()) {
+  //     newErrors.password = "Password is required";
+  //   }
+
+  //   if (Object.keys(newErrors).length > 0) {
+  //     setErrors(newErrors);
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await fetch('http://localhost:8000/faculty/faculty-login', { // Assuming '/faculty/login' is your backend endpoint for faculty login
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     if (response.ok) {
+  //       console.log('Login successful');
+  //       navigate('/Facultyhomepage'); // Redirect to faculty homepage upon successful login
+  //     } else {
+  //       const responseData = await response.json();
+  //       setErrors(responseData.errors || {});
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during login:', error);
+  //   }
+
+  //   console.log("Login data submitted:", formData);
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const adminEmails = ['admin123@gmail.com', 'john@example.com'];
+  
     // Basic validation
     const newErrors = {};
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
+    if (!formData.emailId.trim()) {
+      newErrors.emailId = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.emailId)) {
+      newErrors.emailId = 'Invalid email format';
     }
     if (!formData.password.trim()) {
       newErrors.password = "Password is required";
     }
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
+  
     try {
-      const response = await fetch('http://localhost:8000/admin/login', {
+      let endpoint;
+      if (adminEmails.includes(formData.emailId.trim())) {
+        endpoint = 'http://localhost:8000/admin/login';
+      } else {
+        endpoint = 'http://localhost:8000/faculty/faculty-login';
+      }
+  
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         console.log('Login successful');
-        navigate('/Adminhomepage');
+        if (endpoint === 'http://localhost:8000/admin/login') {
+          navigate('/Adminhomepage');
+        } else {
+          navigate('/Facultyhomepage');
+        }
       } else {
         const responseData = await response.json();
         setErrors(responseData.errors || {});
@@ -67,11 +167,12 @@ const Loginform = () => {
     } catch (error) {
       console.error('Error during login:', error);
     }
-
+  
     console.log("Login data submitted:", formData);
   };
+  
 
-  const isForgotPasswordVisible = !['admin@123.com', 'john@example.com'].includes(formData.email.toLowerCase());
+  const isForgotPasswordVisible = !['admin123@gmail.com', 'john@example.com'].includes(formData.emailId.toLowerCase());
 
   return (
     <section className="bg-blue-500 min-h-screen flex items-center justify-center p-5">
@@ -88,13 +189,13 @@ const Loginform = () => {
               className="w-full my-4 text-blue-950 sm:w-64 px-3 py-2 border rounded sm:mb-0"
               type="text"
               placeholder="Enter your email"
-              name="email"
-              value={formData.email}
+              name="emailId"
+              value={formData.emailId}
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            
-            {errors.email && <div className="text-red-500">{errors.email}</div>}
+            {errors.emailId && <div className="text-red-500">{errors.emailId
+            }</div>}
 
             <label className="flex text-xl text-blue-100">
             Password
@@ -110,9 +211,6 @@ const Loginform = () => {
             />
             {errors.password && <div className="text-red-500">{errors.password}</div>}
 
-
-
-            
             {isForgotPasswordVisible && (
               <button
                 type="button"
@@ -123,7 +221,6 @@ const Loginform = () => {
             )}
 
             <button
-              variant="info"
               type="submit"
               className="bg-blue-500 text-sm w-auto h-15 text-center rounded-md"
             >

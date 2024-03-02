@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const adminSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
+  emailId: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
@@ -92,22 +92,7 @@ const AssignSubject = new mongoose.Schema({
                       {
                         subjectName: String,
                         facultyname: String,
-                      },
-                      {
-                        subjectName: String,
-                        facultyname: String,
-                      },
-                      {
-                        subjectName: String,
-                        facultyname: String,
-                      },
-                      {
-                        subjectName: String,
-                        facultyname: String,
-                      },
-                      {
-                        subjectName: String,
-                        facultyname: String,
+                        subjectcode: String
                       },
                     ],
                   },

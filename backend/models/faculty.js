@@ -57,9 +57,91 @@ const previewTask = new mongoose.Schema({
   Task: [TaskAssignschema]
 
 });
+
+//////////Internal and Midterm marks page for admin /////////
+const assignmarks = new mongoose.Schema({
+  AcademicYear: {
+    year: String,
+    program: [
+      {
+        programname: String,
+        semesters: [
+          {
+            semesterNumber: String,
+            sections: [
+              {
+                sectionName: String,
+                subjects: [
+                 {
+                  subjectcode: String,
+                  subjectName: String,
+                  students: [
+                    {
+                      regNo: String,
+                      name: String,
+                      Test: [
+                        {
+                          testname : String,
+                          marks : String
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+});
+
+////////// adding assessemnt by faculty /////////
+const addassessment = new mongoose.Schema({
+  AcademicYear: {
+    year: String,
+    program: [
+      {
+        programname: String,
+        semesters: [
+          {
+            semesterNumber: String,
+            sections: [
+              {
+                sectionName: String,
+                assessmentName : String,
+                assessment : [
+                  {
+                    assessmentName : String,
+                    assessmentquestion : [
+                      {
+                        question : String,
+                        optionA : String,
+                        optionB: String,
+                        optionC : String,
+                        optionD : String,
+                        answer : String
+                      }
+                    ]
+                  }
+                ]
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+});
+
+
 const FacultyDetails = mongoose.model('FacultyDetails', facultyDetailsSchema);
 const FacultyLogin = mongoose.model('FacultyLogin', facultyLoginSchema);
 const TaskAssign = mongoose.model("TaskAssign", TaskAssignschema);
-const PreviewTask = mongoose.model("PreviewTask", previewTask)
+const PreviewTask = mongoose.model("PreviewTask", previewTask);
+const AssignMarks = mongoose.model("AssignMarks", assignmarks);
+const AddAssessment = mongoose.model("AddAssessment", addassessment)
 
-export { FacultyDetails, FacultyLogin, TaskAssign, PreviewTask };
+export { FacultyDetails, FacultyLogin, TaskAssign, PreviewTask, AssignMarks,AddAssessment };
