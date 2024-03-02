@@ -2,7 +2,7 @@ import React, { useState,useEffect} from "react";
 import LogoNav from "../../Components/Admin/LogoNav";
 import FacultyNavbar from "../../Components/Faculty/FacultyNavbar";
 import Createassessment from "./Createassessment";
-
+import Assessmentdashboard from "./Assessmentdashboard";
 
 const Assessmenthomepage = () => {
 
@@ -12,7 +12,7 @@ const Assessmenthomepage = () => {
   });
 
   const [showassessment,setshowassessment]=useState(false);
-
+  const [showassessmentdashboard,setshowassessmentdashboard]=useState(false);
 
   useEffect(() => {
     // Save collapsed state changes to sessionStorage
@@ -30,6 +30,11 @@ const Assessmenthomepage = () => {
     }
     else if(component === "CreateAssessment"){
         setshowassessment(true);
+        setshowassessmentdashboard(false);
+    }
+    else if(component === "Assessmentdashboard"){
+      setshowassessmentdashboard(true);
+      setshowassessment(false);
     }
 };
   
@@ -68,7 +73,7 @@ const Assessmenthomepage = () => {
           </button>
 
           <button
-            onClick={() => handleOptions("")}
+            onClick={() => handleOptions("Assessmentdashboard")}
             className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 "
           >
             <i className="fa-solid fa-chalkboard p-2" style={{ color: "#ffffff" }} />
@@ -77,6 +82,8 @@ const Assessmenthomepage = () => {
           </nav>
           </div>
           {showassessment && <Createassessment/>}
+          {showassessmentdashboard && <Assessmentdashboard/>}
+          
       </section>
   )  
  };
