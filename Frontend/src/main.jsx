@@ -54,6 +54,8 @@ import Createannouncement from "./Layout/Admin/Createannouncement.jsx";
 import AssignSubject from "./Layout/Admin/AssignSubject.jsx";
 import GenerateInternalMarks from "./Layout/Faculty/GenrateInternalmarks.jsx";
 import Assessmenthomepage from "./Layout/Faculty/Assessmenthomepage.jsx";
+import Assessmentdashboard from "./Layout/Faculty/Assessmentdashboard.jsx";
+import EditAssessment from "./Layout/Faculty/EditAssessment.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -212,7 +214,19 @@ const router = createBrowserRouter(
         path="/Assessmenthomepage"
         element={<Assessmenthomepage />}
       ></Route>
+      <Route
+        index={true}
+        path="/Assessmentdashboard"
+        element={<Assessmentdashboard />}
+      ></Route>
+       <Route
+        index={true}
+        path="/EditAssessment"
+        element={<EditAssessment />}
+      ></Route>
+      
     </Route>
+    
   )
 );
 ReactDOM.createRoot(document.getElementById("root")).render(

@@ -113,7 +113,7 @@ const Createassessment = () => {
             open ? "blur-background" : ""
           }`}
         >
-          <div className="flex justify-center items-center gap-5 mb-4">
+          <div className="flex justify-center items-center gap-5 mb-4 sm:grid sm:grid-cols-1 md:grid-cols-2">
             <input
               placeholder="Enter Assessment Name"
               value={assessmentName}
@@ -239,14 +239,23 @@ const Createassessment = () => {
                   <br />
                   {questions.map((q, index) => (
                     <div key={index}>
-                      <p className="font-bold">{`Question ${index + 1}: ${
+                      <p className="font-bold">{`Q ${index + 1}: ${
                         q.question
                       }`}</p>
-                      <ul className="list-disc list-inside">
-                        {q.options.map((opt, i) => (
-                          <li key={i}>{opt}</li>
-                        ))}
-                      </ul>
+                      {q.options.map((opt, i) => (
+                        <div key={i} className="flex items-center">
+                          <input
+                            type="radio"
+                            id={`option-${index}-${i}`}
+                            name={`question-${index}`}
+                            value={opt}
+                            disabled
+                            checked={q.answer === opt}
+                            className="mr-2"
+                          />
+                          <label htmlFor={`option-${index}-${i}`}>{opt}</label>
+                        </div>
+                      ))}
                       <p className="font-bold">Answer: {q.answer}</p>
                     </div>
                   ))}
