@@ -1,6 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const LogoNav = () => {
+
+    
+    const handlelogoutoption = () => {
+            window.location.href='/';
+    
+    }
+
     return (
         <section className='bg-blue-900 h-15'>
             <div className="w-100 flex bg-blue-950 relative justify-between">
@@ -11,9 +18,10 @@ const LogoNav = () => {
 
                 <div className="flex items-center p-2">
                     <i className="fa-solid fa-bell fa-xl p-2" style={{ color: "#ffffff" }}></i>
-                    <button className='bg-blue-500 text-sm font-medium rounded-md w-auto'>Logout</button>
+                    <button className='bg-blue-500 text-sm font-medium rounded-md w-auto' onClick={handlelogoutoption}>Logout</button>
                 </div>
             </div>
+
         </section>
 
     )
