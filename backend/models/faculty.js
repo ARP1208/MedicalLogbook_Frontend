@@ -111,9 +111,9 @@ const addassessment = new mongoose.Schema({
             sections: [
               {
                 sectionName: String,
-                assessmentName : String,
                 assessment : [
                   {
+                    assessmentId : String,
                     assessmentName : String,
                     assessmentquestion : [
                       {

@@ -345,6 +345,89 @@ const getAdminGradesheet = asyncHandler(async (req, res) => {
   }
 });
 
+const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  try {
+    const { AcademicYear, program, semesterNumber, sectionnames } = req.body;
+
+    // Build a dynamic query based on provided parameters
+    let query = {};
+    if (AcademicYear) {
+      query['AcademicYear.year'] = AcademicYear.year;
+    }
+    if (program) {
+      query['AcademicYear.program.programname'] = program.programname;
+    }
+
+    // Check if data is available before accessing properties
+    const data = await Admingradesheet.findOne(query);
+    if (!data) {
+      return res.status(404).json({ error: 'Data not found' });
+    }
+    if (!program) {
+      const programNames = data.AcademicYear.program.map(p => p.programname);
+      return res.json({ programNames });
+    }
+
+
+
+    // Find the requested program
+    const requestedProgram = data.AcademicYear.program.find(p => p.programname === program.programname);
+    if (!requestedProgram) {
+      return res.status(404).json({ error: `Program '${program.programname}' data not found `});
+    }
+
+    // If semesterNumber is not provided, return the list of semester numbers for the program
+    if (!semesterNumber) {
+      const semesterNumbers = requestedProgram.semesters.map(s => s.semesterNumber);
+      return res.json({ semesterNumbers });
+    }
+
+    // Find the requested semester
+    const requestedSemester = requestedProgram.semesters.find(s => s.semesterNumber === semesterNumber);
+    if (!requestedSemester) {
+      return res.status(404).json({ error: `Semester '${semesterNumber}' data not found `});
+    }
+
+    // If sectionnames is provided, filter out sections that match the provided section name
+    let filteredSections = requestedSemester.sections;
+    if (sectionnames) {
+      filteredSections = requestedSemester.sections.filter(sec => sectionnames.includes(sec.sectionName));
+    }
+
+    // Extract section names of the requested semester
+    const sectionNames = filteredSections.map(sec => sec.sectionName);
+    console.log("Section Names:", sectionNames);
+    if (!sectionNames) {
+      return res.json({ error: `No sections found for the provided section names '${sectionnames}'` });
+    }
+    if (!sectionnames) {
+      return res.json({ sectionNames }); // Only return section names if sectionnames is not provided
+    }
+
+
+
+    // Retrieve student data for all sections in the requested section names
+    const students = [];
+    filteredSections.forEach(section => {
+      students.push(...section.students.map(student => ({
+        regNo: student.regNo,
+        name: student.name,
+        // subjects: student.subjects
+      })));
+    });
+
+    // Send the requested section names and student data in the response
+    return res.json({
+
+      students
+    });
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 
@@ -352,4 +435,7 @@ const getAdminGradesheet = asyncHandler(async (req, res) => {
 
 
 
-export { login, announcement,fetchAnnouncementByTitle , UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet }; 
+
+
+
+export { login, announcement,fetchAnnouncementByTitle , UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 

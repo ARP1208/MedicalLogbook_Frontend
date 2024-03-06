@@ -583,119 +583,6 @@ const updateAssignMarks = asyncHandler(async (req, res) => {
 });
 
 
-// const saveAddAssessment = asyncHandler(async (req, res) => {
-//   console.log("Received assessment data:", req.body);
-
-//   try {
-//     await connectDB();
-
-//     const { AcademicYear } = req.body;
-
-//     // Check if a document with the given AcademicYear already exists
-//     const existingDocument = await AddAssessment.findOne({ 'AcademicYear.year': AcademicYear.year });
-
-//     if (existingDocument) {
-//       // Update existing document
-//       const existingProgram = existingDocument.AcademicYear.program.find(program => program.programname === AcademicYear.program[0].programname);
-//       if (existingProgram) {
-//         const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === AcademicYear.program[0].semesters[0].semesterNumber);
-//         if (semesterIndex !== -1) {
-//           const sectionIndex = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === AcademicYear.program[0].semesters[0].sections[0].sectionName);
-//           if (sectionIndex !== -1) {
-//             // Section exists, add or update assessments
-//             existingProgram.semesters[semesterIndex].sections[sectionIndex].assessment = AcademicYear.program[0].semesters[0].sections[0].assessment;
-//           } else {
-//             // Section doesn't exist, add new section with assessments
-//             existingProgram.semesters[semesterIndex].sections.push(AcademicYear.program[0].semesters[0].sections[0]);
-//           }
-//         } else {
-//           // Semester doesn't exist, add new semester with sections and assessments
-//           existingProgram.semesters.push(AcademicYear.program[0].semesters[0]);
-//         }
-//       } else {
-//         // Program doesn't exist, add new program with semesters, sections, and assessments
-//         existingDocument.AcademicYear.program.push(AcademicYear.program[0]);
-//       }
-
-//       const result = await existingDocument.save();
-//       console.log(result);
-
-//       res.status(200).json({ success: true, message: 'Assessments updated successfully' });
-//     } else {
-//       // If no document exists, create a new one
-//       const newAssessmentDocument = new AddAssessment({
-//         AcademicYear,
-//       });
-
-//       const savedAssessmentDocument = await newAssessmentDocument.save();
-//       console.log("Saved assessment data is:", savedAssessmentDocument);
-
-//       res.status(201).json({ message: 'Assessments saved successfully' });
-//     }
-//   } catch (error) {
-//     console.error('Error saving assessments document:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-// const saveAddAssessment = asyncHandler(async (req, res) => {
-//   console.log("Received assessment data:", req.body);
-
-//   try {
-//     await connectDB();
-
-//     const { AcademicYear } = req.body;
-
-//     // Check if a document with the given AcademicYear already exists
-//     let existingDocument = await AddAssessment.findOne({ 'AcademicYear.year': AcademicYear.year });
-
-//     if (existingDocument) {
-//       // If document exists, append new data to existing data
-//       const existingProgramIndex = existingDocument.AcademicYear.program.findIndex(program => program.programname === AcademicYear.program[0].programname);
-      
-//       if (existingProgramIndex !== -1) {
-//         // Program exists, find the correct semester and section
-//         const existingSemesterIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters.findIndex(semester => semester.semesterNumber === AcademicYear.program[0].semesters[0].semesterNumber);
-//         if (existingSemesterIndex !== -1) {
-//           const existingSectionIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections.findIndex(section => section.sectionName === AcademicYear.program[0].semesters[0].sections[0].sectionName);
-//           if (existingSectionIndex !== -1) {
-//             // Section exists, append new assessment
-//             existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.push(AcademicYear.program[0].semesters[0].sections[0].assessment[0]);
-//           } else {
-//             // Section doesn't exist, add new section with assessments
-//             existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections.push(AcademicYear.program[0].semesters[0].sections[0]);
-//           }
-//         } else {
-//           // Semester doesn't exist, add new semester with sections and assessments
-//           existingDocument.AcademicYear.program[existingProgramIndex].semesters.push(AcademicYear.program[0].semesters[0]);
-//         }
-//       } else {
-//         // Program doesn't exist, add new program with semesters, sections, and assessments
-//         existingDocument.AcademicYear.program.push(AcademicYear.program[0]);
-//       }
-
-//       const result = await existingDocument.save();
-//       console.log(result);
-
-//       res.status(200).json({ success: true, message: 'Assessments updated successfully' });
-//     } else {
-//       // If no document exists, create a new one
-//       const newAssessmentDocument = new AddAssessment({
-//         AcademicYear,
-//       });
-
-//       const savedAssessmentDocument = await newAssessmentDocument.save();
-//       console.log("Saved assessment data is:", savedAssessmentDocument);
-
-//       res.status(201).json({ message: 'Assessments saved successfully' });
-//     }
-//   } catch (error) {
-//     console.error('Error saving assessments document:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-
 const saveAddAssessment = asyncHandler(async (req, res) => {
   console.log("Received assessment data:", req.body);
 
@@ -709,39 +596,58 @@ const saveAddAssessment = asyncHandler(async (req, res) => {
 
     if (existingDocument) {
       // If document exists, append new data to existing data
-      const existingProgramIndex = existingDocument.AcademicYear.program.findIndex(program => program.programname === AcademicYear.program[0].programname);
-      
+      const { program } = AcademicYear;
+      const existingProgramIndex = existingDocument.AcademicYear.program.findIndex(existingProgram => existingProgram.programname === program[0].programname);
+
       if (existingProgramIndex !== -1) {
-        // Program exists, find the correct semester and section
-        const existingSemesterIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters.findIndex(semester => semester.semesterNumber === AcademicYear.program[0].semesters[0].semesterNumber);
+        const { semesters } = program[0];
+        const { sections } = semesters[0];
+
+        const existingSemesterIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters.findIndex(existingSemester => existingSemester.semesterNumber === semesters[0].semesterNumber);
+
         if (existingSemesterIndex !== -1) {
-          const existingSectionIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections.findIndex(section => section.sectionName === AcademicYear.program[0].semesters[0].sections[0].sectionName);
+          const existingSectionIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections.findIndex(existingSection => existingSection.sectionName === sections[0].sectionName);
+
           if (existingSectionIndex !== -1) {
-            // Section exists, check if assessmentName exists
-            const existingAssessmentIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.findIndex(assessment => assessment.assessmentName === AcademicYear.program[0].semesters[0].sections[0].assessment[0].assessmentName);
+            const existingAssessmentIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.findIndex(existingAssessment => existingAssessment.assessmentId === sections[0].assessment[0].assessmentId);
+            
             if (existingAssessmentIndex !== -1) {
-              // Assessment exists, append new assessment questions
-              const newQuestions = AcademicYear.program[0].semesters[0].sections[0].assessment[0].assessmentquestion;
-              existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment[existingAssessmentIndex].assessmentquestion.push(...newQuestions);
-            } else {
-              // Assessment doesn't exist, add new assessment
-              existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.push(AcademicYear.program[0].semesters[0].sections[0].assessment[0]);
-            }
+              // Assessment exists
+              if (existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment[existingAssessmentIndex].assessmentName !== sections[0].assessment[0].assessmentName) {
+                  // If assessment ID exists but assessment name is new, display error
+                  return res.status(400).json({ error: 'Assessment ID already exists with a different name.' });
+              } else {
+                  // Assessment ID and name both exist, append new assessment questions
+                  const newQuestions = sections[0].assessment[0].assessmentquestion;
+                  existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment[existingAssessmentIndex].assessmentquestion.push(...newQuestions);
+              }
+          } else {
+              // ID is new, check if Name exists
+              const nameExists = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.some(existingAssessment => existingAssessment.assessmentName === sections[0].assessment[0].assessmentName);
+              if (nameExists) {
+                  // Name exists, display error
+                  return res.status(400).json({ error: 'Assessment Name already exists.' });
+              } else {
+                  // Both ID and Name are new, save in the new array
+                  existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.push(sections[0].assessment[0]);
+              }
+          }
+          
           } else {
             // Section doesn't exist, add new section with assessments
             const newSection = {
-              sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
-              assessment: AcademicYear.program[0].semesters[0].sections[0].assessment
+              sectionName: sections[0].sectionName,
+              assessment: sections[0].assessment
             };
             existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections.push(newSection);
           }
         } else {
           // Semester doesn't exist, add new semester with sections and assessments
           const newSemester = {
-            semesterNumber: AcademicYear.program[0].semesters[0].semesterNumber,
+            semesterNumber: semesters[0].semesterNumber,
             sections: [{
-              sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
-              assessment: AcademicYear.program[0].semesters[0].sections[0].assessment
+              sectionName: sections[0].sectionName,
+              assessment: sections[0].assessment
             }]
           };
           existingDocument.AcademicYear.program[existingProgramIndex].semesters.push(newSemester);
@@ -749,12 +655,12 @@ const saveAddAssessment = asyncHandler(async (req, res) => {
       } else {
         // Program doesn't exist, add new program with semesters, sections, and assessments
         const newProgram = {
-          programname: AcademicYear.program[0].programname,
+          programname: program[0].programname,
           semesters: [{
-            semesterNumber: AcademicYear.program[0].semesters[0].semesterNumber,
+            semesterNumber: semesters[0].semesterNumber,
             sections: [{
-              sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
-              assessment: AcademicYear.program[0].semesters[0].sections[0].assessment
+              sectionName: sections[0].sectionName,
+              assessment: sections[0].assessment
             }]
           }]
         };
@@ -783,6 +689,105 @@ const saveAddAssessment = asyncHandler(async (req, res) => {
 });
 
 
+const getFacultyindividualAssessment = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  try {
+    const { AcademicYear, program, semesterNumber, sectionnames } = req.body;
+
+    // Build a dynamic query based on provided parameters
+    let query = {};
+    if (AcademicYear) {
+      query['AcademicYear.year'] = AcademicYear.year;
+    }
+    if (program) {
+      query['AcademicYear.program.programname'] = program.programname;
+    }
+
+    // Check if data is available before accessing properties
+    const data = await AddAssessment.findOne(query);
+    if (!data) {
+      return res.status(404).json({ error: 'Data not found' });
+    }
+    if (!program) {
+      const programNames = data.AcademicYear.program.map(p => p.programname);
+      return res.json({ programNames });
+    }
+
+
+
+    // Find the requested program
+    const requestedProgram = data.AcademicYear.program.find(p => p.programname === program.programname);
+    if (!requestedProgram) {
+      return res.status(404).json({ error: `Program '${program.programname}' data not found `});
+    }
+
+    // If semesterNumber is not provided, return the list of semester numbers for the program
+    if (!semesterNumber) {
+      const semesterNumbers = requestedProgram.semesters.map(s => s.semesterNumber);
+      return res.json({ semesterNumbers });
+    }
+
+    // Find the requested semester
+    const requestedSemester = requestedProgram.semesters.find(s => s.semesterNumber === semesterNumber);
+    if (!requestedSemester) {
+      return res.status(404).json({ error: `Semester '${semesterNumber}' data not found `});
+    }
+
+    // If sectionnames is provided, filter out sections that match the provided section name
+    let filteredSections = requestedSemester.sections;
+    if (sectionnames) {
+      filteredSections = requestedSemester.sections.filter(sec => sectionnames.includes(sec.sectionName));
+    }
+
+    // Extract section names of the requested semester
+    const sectionNames = filteredSections.map(sec => sec.sectionName);
+    console.log("Section Names:", sectionNames);
+    if (!sectionNames) {
+      return res.json({ error: `No sections found for the provided section names '${sectionnames}'` });
+    }
+    if (!sectionnames) {
+      return res.json({ sectionNames }); // Only return section names if sectionnames is not provided
+    }
+
+
+
+    // Retrieve student data for all sections in the requested section names
+    const assessment = [];
+    filteredSections.forEach(section => {
+      assessment.push(...section.assessment.map(assessment => ({
+        assessmentId: assessment.assessmentId,
+        assessmentName: assessment.assessmentName,
+        // subjects: student.subjects
+      })));
+    });
+
+    // Send the requested section names and student data in the response
+    return res.json({
+
+      assessment
+    });
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -806,5 +811,6 @@ export {
   fetchDetails,
   saveAssignMarks,
   updateAssignMarks,
-  saveAddAssessment
+  saveAddAssessment,
+  getFacultyindividualAssessment
 };
