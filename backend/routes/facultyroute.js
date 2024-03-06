@@ -1,5 +1,5 @@
 import express from 'express';
-import { Facultylogin, faculty, facultymail, searchfaculty, UpdateFacultyDetails, saveTaskAssign, searchTask, updateTaskAssign, savePreviewTask, fetchDetails, saveAssignMarks, updateAssignMarks, saveAddAssessment, getFacultyindividualAssessment} from '../controllers/facultycontroller.js';
+import { Facultylogin, faculty, facultymail, searchfaculty, UpdateFacultyDetails, saveTaskAssign, searchTask, updateTaskAssign, savePreviewTask, fetchDetails, saveAssignMarks, updateAssignMarks, saveAddAssessment, getFacultyindividualAssessment, DeleteTaskAssign, DeleteAssessment} from '../controllers/facultycontroller.js';
 
 
 
@@ -19,6 +19,8 @@ router.route("/saveassignmarks").post(saveAssignMarks);
 router.route("/updateAssignMarks").patch(updateAssignMarks);
 router.route("/saveAddAssessment").post(saveAddAssessment);
 router.route("/getFacultyindividualAssessment").post(getFacultyindividualAssessment);
+router.route("/DeleteTaskAssign").delete(DeleteTaskAssign);
+router.route("/DeleteAssessment").delete(DeleteAssessment);
 
 
 

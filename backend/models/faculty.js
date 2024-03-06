@@ -117,6 +117,7 @@ const addassessment = new mongoose.Schema({
                     assessmentName : String,
                     assessmentquestion : [
                       {
+                        questionno : Number,
                         question : String,
                         optionA : String,
                         optionB: String,
