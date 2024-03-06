@@ -25,59 +25,55 @@ const EditGradeSheetMarks = () => {
       <div className='flex relative left-7 top-7 w-auto mb-10'>
         <button className='bg-sky-500 rounded-md w-auto text-lg'>Edit Marks</button>
       </div>
-      <div className='border-2 p-10 h-auto w-auto overflow-hidden rounded-md border-sky-500 flex flex-col justify-center items-center m-10'>
+      <div className='border-2 px-10 pb-3 h-auto w-auto overflow-hidden rounded-md border-sky-500 flex flex-col justify-center items-center m-10'>
         <div className='flex gap-7 relative top-0 w-auto mt-4'>
 
           <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 text-start w-auto mt-4">
 
-            <label htmlFor="announcementTitle" className="lg:text-lg md:text-base sm:text-sm font-medium">
+            <label htmlFor="name" className="lg:text-lg md:text-base sm:text-sm font-medium">
               Name:{" "}
               <input
                 type="text"
-                id="announcementTitle"
+                id="name"
                 className="px-4 border-2 w-full h-10 rounded-md"
-                placeholder="Enter the Announcement"
                 required
-                value={"vikas"}
+                value={""}
                 readOnly
               />
             </label>
 
-            <label htmlFor="scheduleDate" className="lg:text-lg md:text-base sm:text-sm font-medium">
+            <label htmlFor="regno" className="lg:text-lg md:text-base sm:text-sm font-medium">
               Registration Number:{" "}
               <input
                 type="text"
-                id="scheduleDate"
+                id="regno"
                 pattern="[0-9]{2}"
                 className="border-2 px-4 w-full h-10 rounded-md"
-                placeholder="Enter the Schedule date "
                 required
-                value={"123456"}
+                value={""}
                 readOnly
               />
             </label>
 
-            <label htmlFor="uploadedFileName" className="lg:text-lg md:text-base sm:text-sm font-medium">
+            <label htmlFor="academicyear" className="lg:text-lg md:text-base sm:text-sm font-medium">
               Academic Year:{" "}
               <input
                 type="text"
-                id="uploadedFileName"
+                id="academicyear"
                 className="border-2 px-4 w-full h-10 rounded-md"
                 readOnly // Make the input read-only to prevent manual changes
-                value={"2021-2022"}
-
+                value={""}
               />
             </label>
 
-            <label htmlFor="scheduleTime" className="lg:text-lg md:text-base sm:text-sm font-medium">
+            <label htmlFor="course" className="lg:text-lg md:text-base sm:text-sm font-medium">
               Course:{" "}
               <input
                 type="text"
-                id="scheduleTime"
+                id="course"
                 className="border-2 px-4 w-full h-10 rounded-md"
-                placeholder="Enter the Schedule Time"
                 required
-                value={"MBBS"}
+                value={""}
                 readOnly
               />
             </label>
@@ -88,9 +84,8 @@ const EditGradeSheetMarks = () => {
                 type="text"
                 id="section"
                 className="border-2 px-4  w-full h-10 rounded-md"
-                placeholder="Enter the Section"
                 required
-                value={"A"}
+                value={""}
                 readOnly
               />
             </label>
@@ -99,7 +94,7 @@ const EditGradeSheetMarks = () => {
 
         <div className='overflow-hidden block'>
           <form action="#">
-            <div className="flex w-60vw h-auto border-1 mt-2 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
+            <div className="flex w-60vw h-auto border-1 mt-5 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
               <table className="w-full h-10 text-center rounded-md border-collapse">
                 <thead>
                   <tr>

@@ -162,7 +162,7 @@ const Internalmarks = () => {
           <section className="absolute top-18 left-38 m-10">
             <div className="flex relative left-7 top-7 w-auto mb-10">
               <button className="bg-sky-500 rounded-md w-auto text-lg">
-                Internal Marks
+               Marks
               </button>
             </div>
             <div className=" overflow-auto border-2 p-5 lg:h-60vh md:h-60vh sm:h-70vh w-60vw rounded-md border-sky-500 flex flex-col justify-center items-center ml-7">
