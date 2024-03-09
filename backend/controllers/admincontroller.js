@@ -199,6 +199,8 @@ const updateAdminGradesheet = asyncHandler(async (req, res) => {
   }
 });
 
+
+
 const saveAssignSubject = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
 
@@ -208,7 +210,7 @@ const saveAssignSubject = asyncHandler(async (req, res) => {
     const { AcademicYear } = req.body;
 
     // Check if a document with the given AcademicYear already exists
-    const existingDocument = await Assignedsubject.findOne({ 'AcademicYear.year': AcademicYear.year });
+    let existingDocument = await Assignedsubject.findOne({ 'AcademicYear.year': AcademicYear.year });
 
     if (existingDocument) {
       const existingProgram = existingDocument.AcademicYear.program.find(program => program.programname === AcademicYear.program[0].programname);
@@ -217,24 +219,23 @@ const saveAssignSubject = asyncHandler(async (req, res) => {
         if (semesterIndex !== -1) {
           const sectionIndex = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === AcademicYear.program[0].semesters[0].sections[0].sectionName);
           if (sectionIndex !== -1) {
-            // Section exists, add only new students to that section
-            const section = existingProgram.semesters[semesterIndex].sections[sectionIndex];
-            const newStudents = AcademicYear.program[0].semesters[0].sections[0].students.filter(newStudent => {
-              return !section.students.some(existingStudent => existingStudent.regNo === newStudent.regNo);
-            });
-            section.students.push(...newStudents);
+            // Section exists, update section data
+            const existingSection = existingProgram.semesters[semesterIndex].sections[sectionIndex];
+            existingSection.students.push(...AcademicYear.program[0].semesters[0].sections[0].students)
           } else {
-            // Section doesn't exist, add a new section with students
+            // Section doesn't exist, add a new section
             existingProgram.semesters[semesterIndex].sections.push(AcademicYear.program[0].semesters[0].sections[0]);
           }
         } else {
-          // Semester doesn't exist, add a new semester with sections and students
+          // Semester doesn't exist, add a new semester
           existingProgram.semesters.push(AcademicYear.program[0].semesters[0]);
         }
       } else {
-        // Program doesn't exist, add new program with semesters, sections, and students
+        // Program doesn't exist, add new program
         existingDocument.AcademicYear.program.push(AcademicYear.program[0]);
       }
+
+     
 
       const options = {
         new: true,
@@ -260,6 +261,168 @@ const saveAssignSubject = asyncHandler(async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+//correct code
+// const saveCSVAssignSubject = asyncHandler(async (req, res) => {
+//   console.log("Received data:", req.body);
+
+//   try {
+//     await connectDB();
+
+//     const academicYears = Array.isArray(req.body.academicYears) ? req.body.academicYears : [req.body.academicYears]; // Ensure academicYears is an array
+
+//     for (const academicYear of academicYears) {
+//       let existingDocument = await Assignedsubject.findOne({
+//         'AcademicYear.year': academicYear.year
+//       });
+
+//       if (existingDocument) {
+//         const existingProgram = existingDocument.AcademicYear.program.find(program => program.programname === academicYear.program[0].programname);
+//         if (existingProgram) {
+//           const existingSemester = existingProgram.semesters.find(semester => semester.semesterNumber === academicYear.program[0].semesters[0].semesterNumber);
+//           if (existingSemester) {
+//             const existingSection = existingSemester.sections.find(section => section.sectionName === academicYear.program[0].semesters[0].sections[0].sectionName);
+//             if (existingSection) {
+//               // Section exists, add only new students to that section
+//               for (const student of academicYear.program[0].semesters[0].sections[0].students) {
+//                 const existingStudent = existingSection.students.find(existingStudent => existingStudent.regNo === student.regNo);
+//                 if (!existingStudent) {
+//                   existingSection.students.push(student);
+//                 } else {
+//                   // Update existing student's subjects
+//                   const existingSubjects = new Set(existingStudent.subjects.map(subject => subject.subjectName));
+//                   for (const subject of student.subjects) {
+//                     if (!existingSubjects.has(subject.subjectName)){
+//                       existingStudent.subjects.push(subject);
+//                     }
+//                   }
+//                 }
+//               }
+//             } else {
+//               // Section doesn't exist, add a new section with students
+//               existingSemester.sections.push(academicYear.program[0].semesters[0].sections[0]);
+//             }
+//           } else {
+//             // Semester doesn't exist, add a new semester with sections and students
+//             existingProgram.semesters.push(academicYear.program[0].semesters[0]);
+//           }
+//         } else {
+//           // Program doesn't exist, add new program with semesters, sections, and students
+//           existingDocument.AcademicYear.program.push(academicYear.program[0]);
+//         }
+
+//         const options = {
+//           new: true,
+//         };
+
+//         existingDocument = await existingDocument.save();
+//         console.log(existingDocument);
+
+//         res.status(200).json({ success: true, message: 'Assignsubject updated successfully' });
+//       } else {
+//         // If no document exists, create a new one
+//         const newAssignsubject = new Assignedsubject({
+//           AcademicYear: academicYear,
+//         });
+
+//         const savedAssign = await newAssignsubject.save();
+//         console.log("Saved data is:", savedAssign);
+//       }
+//     }
+
+//     res.status(201).json({ message: 'Assignsubject saved successfully' });
+
+//   } catch (error) {
+//     console.error('Error saving Assignsubject document:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+const saveCSVAssignSubject = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+
+  try {
+    await connectDB();
+
+    const academicYears = Array.isArray(req.body.AcademicYear) ? req.body.AcademicYear : [req.body.AcademicYear]; // Ensure AcademicYear is an array
+
+    for (const academicYear of academicYears) {
+      let existingDocument = await Assignedsubject.findOne({
+        'AcademicYear.year': academicYear.year
+      });
+
+      if (existingDocument) {
+        // If document exists, update it
+
+        const programIndex = existingDocument.AcademicYear.program.findIndex(program => program.programname === academicYear.program[0].programname);
+        if (programIndex !== -1) {
+          // Program exists, update it
+
+          const semesterIndex = existingDocument.AcademicYear.program[programIndex].semesters.findIndex(semester => semester.semesterNumber === academicYear.program[0].semesters[0].semesterNumber);
+          if (semesterIndex !== -1) {
+            // Semester exists, update it
+
+            const sectionIndex = existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections.findIndex(section => section.sectionName === academicYear.program[0].semesters[0].sections[0].sectionName);
+            if (sectionIndex !== -1) {
+              // Section exists, add only new students to that section
+              for (const student of academicYear.program[0].semesters[0].sections[0].students) {
+                const existingStudentIndex = existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].students.findIndex(existingStudent => existingStudent.regNo === student.regNo);
+                if (existingStudentIndex === -1) {
+                  // Student not found, add it
+                  existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].students.push(student);
+                } else {
+                  // Student found, update subjects
+                  const existingSubjects = new Set(existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects.map(subject => subject.subjectName));
+                  for (const subject of student.subjects) {
+                    if (!existingSubjects.has(subject.subjectName)) {
+                      existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects.push(subject);
+                    }
+                  }
+                }
+              }
+            } else {
+              // Section doesn't exist, add a new section with students
+              existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections.push(academicYear.program[0].semesters[0].sections[0]);
+            }
+          } else {
+            // Semester doesn't exist, add a new semester with sections and students
+            existingDocument.AcademicYear.program[programIndex].semesters.push(academicYear.program[0].semesters[0]);
+          }
+        } else {
+          // Program doesn't exist, add new program with semesters, sections, and students
+          existingDocument.AcademicYear.program.push(academicYear.program[0]);
+        }
+
+        // Save the updated document
+        existingDocument = await existingDocument.save();
+        console.log(existingDocument);
+      } else {
+        // If no document exists, create a new one
+        const newAssignsubject = new Assignedsubject({
+          AcademicYear: academicYear,
+        });
+
+        // Save the new document
+        const savedAssign = await newAssignsubject.save();
+        console.log("Saved data is:", savedAssign);
+      }
+    }
+
+    // Send success response
+    res.status(200).json({ success: true, message: 'Assignsubject saved/updated successfully' });
+
+  } catch (error) {
+    console.error('Error saving Assignsubject document:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+
+
 
 const getAdminGradesheet = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
@@ -438,4 +601,4 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
 
 
 
-export { login, announcement,fetchAnnouncementByTitle , UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 
+export { login, announcement,fetchAnnouncementByTitle , UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 
