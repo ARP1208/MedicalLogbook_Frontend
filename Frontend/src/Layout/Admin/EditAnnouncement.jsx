@@ -12,12 +12,20 @@ const EditAnnouncement = () => {
     const file = event.target.files[0];
 
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUploadedImage(reader.result);
-        setUploadedFileName(file.name);
-      };
-      reader.readAsDataURL(file);
+      const fileType = file.type;
+      if (fileType === "application/pdf") {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setUploadedImage(reader.result);
+          setUploadedFileName(file.name);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        // Display error message for invalid file type
+        alert("Please upload only PDF files.");
+        // Clear input field
+        event.target.value = "";
+      }
     }
   };
 
@@ -102,10 +110,11 @@ const EditAnnouncement = () => {
                 <label htmlFor="fileInput" className="text-lg">
                   Upload PDF File:
                 </label>
-                <i class="fa-solid fa-upload fa-lg pl-2"
-                onClick={() => document.getElementById("fileInput").click()}
-                style={{ cursor: "pointer" }}
-              />
+                <i
+                  className="fa-solid fa-upload fa-lg pl-2"
+                  onClick={() => document.getElementById("fileInput").click()}
+                  style={{ cursor: "pointer" }}
+                />
                 <input
                   type="file"
                   id="fileInput"

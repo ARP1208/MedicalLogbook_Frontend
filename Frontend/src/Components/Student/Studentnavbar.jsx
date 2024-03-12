@@ -2,7 +2,7 @@ import React,{useEffect, useRef, useState} from "react";
 import { NavLink } from "react-router-dom";
 import Supportpage from "../../Layout/Faculty/Supportpage";
 
-const FacultyNavbar = () => {
+const Studentnavbar = () => {
 
   const [open, setOpen] = useState(false);
   
@@ -10,28 +10,11 @@ const FacultyNavbar = () => {
   return (
     <div className="bg-gray-300 overflow-hidden navbar-expand bg-grey w-100 h-11">
       <ul className="navbar-nav list-none gap-10 justify-center flex ml-auto text-8">
-        {/* Announcement Navbar */}
-        <nav className="text-lg font-semibold">
-          <NavLink
-            to="/Facultyhomepage"
-            className={({ isActive }) =>
-              isActive
-                ? "text-white bg-blue-500 p-3 no-underline"
-                : "text-black no-underline"
-            }
-          >
-            {" "}
-            Announcement{" "}
-          </NavLink>
-        </nav>
-
-
-      
 
       {/*Academics nav bar*/}
         <nav className="text-lg font-semibold">
           <NavLink
-            to="/Academicshomepage"
+            to="/Studenthomepage"
             className={({ isActive }) =>
               isActive
                 ? "text-white bg-blue-500 p-3 no-underline"
@@ -43,25 +26,11 @@ const FacultyNavbar = () => {
           </NavLink>
         </nav>
 
-         {/* Assessment Navbar */}
-       <nav className="text-lg font-semibold">
-          <NavLink
-            to="/Assessmenthomepage"
-            className={({ isActive }) =>
-              isActive
-                ? "text-white bg-blue-500 p-3 no-underline"
-                : "text-black no-underline"
-            }
-          >
-            {" "}
-            Assessment{" "}
-          </NavLink>
-        </nav>
-
+      
         {/* PG-Log Navbar */}
         <nav className="text-lg font-semibold ">
           <NavLink
-            to="/Pgloghomepage"
+            to="/Pglogstudenthome"
             className={({ isActive }) =>
               isActive
                 ? "text-white bg-blue-500  p-3 no-underline"
@@ -70,6 +39,21 @@ const FacultyNavbar = () => {
           >
             {" "}
             PG-Log{" "}
+          </NavLink>
+        </nav>
+
+         {/* Admission Navbar */}
+        <nav className="text-lg font-semibold ">
+          <NavLink
+            to="/Profilehomepage"
+            className={({ isActive }) =>
+              isActive
+                ? "text-white bg-blue-500  p-3 no-underline"
+                : "text-black no-underline"
+            }
+          >
+            {" "}
+            Admission{" "}
           </NavLink>
         </nav>
 
@@ -88,10 +72,11 @@ const FacultyNavbar = () => {
           </NavLink>
         </nav>
 
+
         {/* Profile Navbar */}
         <nav className="text-lg font-semibold ">
           <NavLink
-            to="/Profilehomepage"
+            to="/Profilestudenthomepage"
             className={({ isActive }) =>
               isActive
                 ? "text-white bg-blue-500  p-3 no-underline"
@@ -102,6 +87,23 @@ const FacultyNavbar = () => {
             Profile{" "}
           </NavLink>
         </nav>
+
+         {/* More Navbar */}
+         <nav className="text-lg font-semibold ">
+          <NavLink
+            to="/Dashboardhomepage"
+            className={({ isActive }) =>
+              isActive
+                ? "text-white bg-blue-500  p-3 no-underline"
+                : "text-black no-underline"
+            }
+          >
+            {" "}
+            More{" "}
+          </NavLink>
+        </nav>
+
+
         <div className="absolute flex right-2 items-end p-0.5"  style={{zIndex: open ? 9999: 'auto'}}>
           <button className="bg-blue-950 text-sm font-medium rounded-3xl w-auto h-auto" onClick= {()=>setOpen(true)}>
             <i
@@ -138,4 +140,4 @@ const FacultyNavbar = () => {
   );
 };
 
-export default FacultyNavbar;
+export default Studentnavbar;

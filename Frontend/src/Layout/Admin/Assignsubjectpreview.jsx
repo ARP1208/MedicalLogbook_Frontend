@@ -1,6 +1,11 @@
-import React from 'react';
+import React from "react";
 
 export default function Assignsubjectpreview({ open, onClose, csvData }) {
+  // Extracting the subject detail headings dynamically
+  const subjectDetailHeadings = Object.keys(csvData[0])
+    .filter((key) => key.startsWith("Subject Details"))
+    .sort();
+
   return (
     <div
       onClick={onClose}
@@ -29,42 +34,100 @@ export default function Assignsubjectpreview({ open, onClose, csvData }) {
           <table className="w-50vw mx-10">
             <thead>
               <tr>
-                <th className='border bg-blue-950 text-white px-4 py-2'>Academic year</th>
-                <th className='border bg-blue-950 text-white px-4 py-2'>Program</th>
-                <th className='border bg-blue-950 text-white px-4 py-2'>Semester</th>
-                <th className='border bg-blue-950 text-white px-4 py-2'>Section</th>
-                <th className='border bg-blue-950 text-white px-4 py-2'>Roll number</th>
-                <th className='border bg-blue-950 text-white px-4 py-2'>Name</th>
-                <th className='border bg-blue-950 text-white px-4 py-2'>Subject Details</th>
+                {/* Displaying other headings */}
+                <th className="border bg-blue-950 text-white px-4 py-2">
+                  Academic year
+                </th>
+                <th className="border bg-blue-950 text-white px-4 py-2">
+                  Program
+                </th>
+                <th className="border bg-blue-950 text-white px-4 py-2">
+                  Semester
+                </th>
+                <th className="border bg-blue-950 text-white px-4 py-2">
+                  Section
+                </th>
+                <th className="border bg-blue-950 text-white px-4 py-2">
+                  Roll number
+                </th>
+                <th className="border bg-blue-950 text-white px-4 py-2">
+                  Name
+                </th>
+                {/* Displaying subject detail headings dynamically */}
+                {subjectDetailHeadings.map((heading, index) => (
+                  <React.Fragment key={index}>
+                    <th
+                      className="border bg-blue-950 text-white px-4 py-2"
+                    >
+                      {heading} - Subject Name
+                    </th>
+                    <th
+                      className="border bg-blue-950 text-white px-4 py-2"
+                    >
+                      {heading} - Faculty Name
+                    </th>
+                    <th
+                      className="border bg-blue-950 text-white px-4 py-2"
+                    >
+                      {heading} - Subject Code
+                    </th>
+                  </React.Fragment>
+                ))}
               </tr>
             </thead>
             <tbody>
               {csvData.map((data, index) => (
                 <tr key={index}>
-                  <td className='border border-black px-4 py-2'>{data['Academic year']}</td>
-                  <td className='border border-black px-4 py-2'>{data['Program']}</td>
-                  <td className='border border-black px-4 py-2'>{data['Semester']}</td>
-                  <td className='border border-black px-4 py-2'>{data['Section']}</td>
-                  <td className='border border-black px-4 py-2'>{data['Roll number']}</td>
-                  <td className='border border-black px-4 py-2'>{data['Name']}</td>
-                  <td className='border border-black px-4 py-2'>
-                    {/* Splitting and rendering multiple subject details */}
-                    {data['Subject Details'].split(',').map((detail, index) => (
-                      <div key={index}>{detail}</div>
-                    ))}
+                  {/* Displaying other columns */}
+                  <td className="border border-black px-4 py-2">
+                    {data["Academic year"]}
                   </td>
+                  <td className="border border-black px-4 py-2">
+                    {data["Program"]}
+                  </td>
+                  <td className="border border-black px-4 py-2">
+                    {data["Semester"]}
+                  </td>
+                  <td className="border border-black px-4 py-2">
+                    {data["Section"]}
+                  </td>
+                  <td className="border border-black px-4 py-2">
+                    {data["Roll number"]}
+                  </td>
+                  <td className="border border-black px-4 py-2">
+                    {data["Name"]}
+                  </td>
+                  {/* Displaying subject details columns dynamically */}
+                  {subjectDetailHeadings.map((heading, index) => {
+                    const subjectDetails = data[heading].split(" - ");
+                    const [subjectName, facultyName, subjectCode] = subjectDetails;
+                    return (
+                      <React.Fragment key={index}>
+                        <td className="border border-black px-4 py-2">
+                          {subjectName}
+                        </td>
+                        <td className="border border-black px-4 py-2">
+                          {facultyName}
+                        </td>
+                        <td className="border border-black px-4 py-2">
+                          {subjectCode}
+                        </td>
+                      </React.Fragment>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className='py-3 pb-3'> 
-          <button
+          <div className="py-3 pb-3">
+            <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
+              onClick={onClose}
             >
-              Save CSV
+              Continue
             </button>
-            </div>
+          </div>
         </div>
       </div>
     </div>

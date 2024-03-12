@@ -432,7 +432,15 @@ height: 52px;
 .ml-95{
   margin-left: 380px;
 }
-
+.h-35vh{
+  height: 33vh;
+}
+.w-55vw{
+  width: 55vw;
+}
+.h-51vh{
+  height: 54vh;
+}
 }
 
 .glassmorphism {

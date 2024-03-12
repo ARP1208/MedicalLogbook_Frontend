@@ -30,7 +30,7 @@ const handleedittaskfaculty = (component) =>{
     </div>
 
     <div className="border-1 h-70vh rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10 -pb-5">
-      <div className="p-10">
+      <div className="p-10 ">
         <div className="flex mb-4">
           <input
             type="text"
@@ -42,7 +42,7 @@ const handleedittaskfaculty = (component) =>{
           </button>
         </div>
         <div className="overflow-hidden block text-4">
-          <div className="flex w-60vw h-40vh border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto border-sky-500 rounded-xl">
+          <div className="flex w-60vw h-50vh border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto border-sky-500 rounded-xl">
             <table className="w-full h-10 text-center rounded-md border-collapse">
             <thead>
                   <tr>
@@ -53,7 +53,7 @@ const handleedittaskfaculty = (component) =>{
                       Task Name
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2" onClick={()=>handleedittaskfaculty("Preview")}>
-                      Preview
+                      Evaluate
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2" onClick={()=>handleedittaskfaculty("Edit")}>
                       Edit
@@ -72,7 +72,7 @@ const handleedittaskfaculty = (component) =>{
                     <td className="w-20 border border-black px-4 py-1 text-center">
                       <button
                         className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1" onClick={()=>handleedittaskfaculty("Preview")}>
-                        Preview
+                        Evaluate
                       </button>
                       </td>
                       <td className="w-20 border border-black px-4 py-1 text-center">
