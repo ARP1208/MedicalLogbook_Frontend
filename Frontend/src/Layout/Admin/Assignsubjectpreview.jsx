@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
+import Assignsubjectcsvpopup from "./Assignsubjectcsvpopup";
 
-export default function Assignsubjectpreview({ open, onClose, csvData }) {
+export default function Assignsubjectpreview({ open, onClose, csvData ,onSave }) {
+  const [openCsvPopup, setOpenCsvPopup] = useState(false); // State to manage CSV popup visibility
   // Extracting the subject detail headings dynamically
   const subjectDetailHeadings = Object.keys(csvData[0])
     .filter((key) => key.startsWith("Subject Details"))
     .sort();
+
+  const handleContinue = () => {
+    // Close the current window
+    window.close();
+  };
 
   return (
     <div
@@ -55,23 +62,12 @@ export default function Assignsubjectpreview({ open, onClose, csvData }) {
                 </th>
                 {/* Displaying subject detail headings dynamically */}
                 {subjectDetailHeadings.map((heading, index) => (
-                  <React.Fragment key={index}>
-                    <th
-                      className="border bg-blue-950 text-white px-4 py-2"
-                    >
-                      {heading} - Subject Name
-                    </th>
-                    <th
-                      className="border bg-blue-950 text-white px-4 py-2"
-                    >
-                      {heading} - Faculty Name
-                    </th>
-                    <th
-                      className="border bg-blue-950 text-white px-4 py-2"
-                    >
-                      {heading} - Subject Code
-                    </th>
-                  </React.Fragment>
+                  <th
+                    key={index}
+                    className="border bg-blue-950 text-white px-4 py-2"
+                  >
+                    {heading}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -98,30 +94,22 @@ export default function Assignsubjectpreview({ open, onClose, csvData }) {
                     {data["Name"]}
                   </td>
                   {/* Displaying subject details columns dynamically */}
-                  {subjectDetailHeadings.map((heading, index) => {
-                    const subjectDetails = data[heading].split(" - ");
-                    const [subjectName, facultyName, subjectCode] = subjectDetails;
-                    return (
-                      <React.Fragment key={index}>
-                        <td className="border border-black px-4 py-2">
-                          {subjectName}
-                        </td>
-                        <td className="border border-black px-4 py-2">
-                          {facultyName}
-                        </td>
-                        <td className="border border-black px-4 py-2">
-                          {subjectCode}
-                        </td>
-                      </React.Fragment>
-                    );
-                  })}
+                  {subjectDetailHeadings.map((heading, index) => (
+                    <td key={index} className="border border-black px-4 py-2">
+                      {/* Checking if the subject detail exists */}
+                      {data[heading] &&
+                        data[heading].split(",").map((subject, i) => (
+                          <div key={i}>{subject}</div>
+                        ))}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="py-3 pb-3">
             <button
-              type="submit"
+              type="button"
               className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
               onClick={onClose}
             >

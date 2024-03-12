@@ -208,16 +208,57 @@ const UpdateFacultyDetails = asyncHandler(async (req, res) => {
   }
 });
 
+
 const saveTaskAssign = asyncHandler(async (req, res) => {
+  console.log("Received data for saving task assignment:", req.body);
+  const { Task_ID } = req.body;
+  
   try {
+    // Check if Task_ID already exists
+    const existingTask = await TaskAssign.findOne({ Task_ID });
+    if (existingTask) {
+      console.error("Task_ID already exists:", Task_ID);
+      return res.status(400).json({ error: "Task_ID already exists" });
+    }
+
+    // If Task_ID doesn't exist, save the new task assignment
     const newTask = new TaskAssign(req.body);
     const savedTask = await newTask.save();
-    console.log("saved data is: ", savedTask);
+    console.log("Saved task assignment:", savedTask);
 
-    res.status(201).json({ message: "savedTaskAssigned" });
+    res.status(201).json({ message: "Task assigned successfully" });
   } catch (error) {
-    console.error("Error saving savedTaskAssigned document:", error);
+    console.error("Error saving task assignment:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+const DeleteTaskAssign = asyncHandler(async (req, res) => {
+  console.log("Received data for deletion:", req.body);
+  const { Task_ID } = req.body;
+  
+  try {
+    await connectDB();
+    const taskId = Task_ID;
+    console.log("taskId", taskId);
+
+    // Assuming TaskAssign is your Mongoose model
+    const deletedtask = await TaskAssign.deleteOne({ Task_ID: taskId });
+    
+    // Check if the document was deleted successfully
+    if (deletedtask.deletedCount === 1) {
+      console.log("Deleted task:", taskId);
+      res.status(200).json({ message: "task deleted successfully" });
+    } else {
+      console.log("task not found for deletion");
+      res.status(404).json({ error: "task not found for deletion" });
+    }
+  } catch (error) {
+    console.error("Error deleting task document:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    await closeDB();
   }
 });
 
@@ -657,14 +698,16 @@ const saveAddAssessment = asyncHandler(async (req, res) => {
         const newProgram = {
           programname: program[0].programname,
           semesters: [{
-            semesterNumber: semesters[0].semesterNumber,
+            semesterNumber: AcademicYear.program[0].semesters[0].semesterNumber, // Access semesters from AcademicYear object
             sections: [{
-              sectionName: sections[0].sectionName,
-              assessment: sections[0].assessment
+              sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
+              assessment: AcademicYear.program[0].semesters[0].sections[0].assessment
             }]
           }]
         };
+        
         existingDocument.AcademicYear.program.push(newProgram);
+        
       }
 
       const result = await existingDocument.save();
@@ -774,6 +817,64 @@ const getFacultyindividualAssessment = asyncHandler(async (req, res) => {
 });
 
 
+const DeleteAssessment = asyncHandler(async (req, res) => {
+  try {
+    await connectDB();
+
+    const { AcademicYear } = req.body;
+
+    const existingDocument = await AddAssessment.findOne({ 'AcademicYear.year': AcademicYear.year });
+
+    if (!existingDocument) {
+      return res.status(404).json({ error: 'Assessment document not found' });
+    }
+
+    const { program } = AcademicYear;
+    const { semesters } = program[0];
+    const { sections } = semesters[0];
+
+    const existingProgramIndex = existingDocument.AcademicYear.program.findIndex(existingProgram => existingProgram.programname === program[0].programname);
+
+    if (existingProgramIndex === -1) {
+      return res.status(404).json({ error: 'Program not found' });
+    }
+
+    const existingSemesterIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters.findIndex(existingSemester => existingSemester.semesterNumber === semesters[0].semesterNumber);
+
+    if (existingSemesterIndex === -1) {
+      return res.status(404).json({ error: 'Semester not found' });
+    }
+
+    const existingSectionIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections.findIndex(existingSection => existingSection.sectionName === sections[0].sectionName);
+
+    if (existingSectionIndex === -1) {
+      return res.status(404).json({ error: 'Section not found' });
+    }
+
+    const existingAssessmentIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.findIndex(existingAssessment => existingAssessment.assessmentId === sections[0].assessment[0].assessmentId);
+
+    if (existingAssessmentIndex === -1) {
+      return res.status(404).json({ error: 'Assessment not found' });
+    }
+
+    existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.splice(existingAssessmentIndex, 1);
+
+    const result = await existingDocument.save();
+    console.log(result);
+
+    res.status(200).json({ success: true, message: 'Assessment deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting assessment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+
+
 
 
 
@@ -812,5 +913,7 @@ export {
   saveAssignMarks,
   updateAssignMarks,
   saveAddAssessment,
-  getFacultyindividualAssessment
+  getFacultyindividualAssessment,
+  DeleteTaskAssign,
+  DeleteAssessment
 };
