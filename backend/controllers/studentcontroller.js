@@ -6,6 +6,55 @@ import express from "express";
 import asyncHandler from "express-async-handler";
 const router = express.Router();
 
+/////////Student login and fetching the data to display in Student profile./////////////
+const Studentlogin = asyncHandler(async (req, res) => {
+  const { emailId, password } = req.body;
+
+  console.log("Received credentials:", { emailId, password });
+
+  try {
+    // Find the admin with the provided email
+    const studentlog = await StudentLogin.findOne({ emailId, password });
+
+    console.log(studentlog);
+
+    if (!studentlog) {
+      console.log("Invalid credentials:", { emailId, password });
+      res.status(401).json({ error: "Invalid credentials" });
+    } else {
+      // Passwords match, send a success message
+      console.log("Student successfully logged in");
+
+      // Fetch student details data
+      const studentDetails = await StudentDetails.findOne({ emailId });
+
+      if (studentDetails) {
+        // student details found, send the details to the client
+        console.log("Student details fetched:", studentDetails);
+
+        // // Fetch all the academic years from the indican database
+        // const academicYears = await Assignedsubject.find().distinct(
+        //   "AcademicYear.year"
+        // );
+
+        // Send the academic years to the frontend
+        res.json({
+          message: "Successfully logged in!",
+          studentDetails,
+          // academicYears,
+        });
+      } else {
+        // Student details not found
+        console.log("Student details not found for email:", emailId);
+        res.status(404).json({ error: "Student details not found" });
+      }
+    }
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 const student = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
   try {
@@ -178,4 +227,4 @@ const UpdateStudentDetails = asyncHandler(async (req, res) => {
 
 
 
-export { student, parent, studentmail, searchStudent, UpdateStudentDetails };
+export { Studentlogin ,student, parent, studentmail, searchStudent, UpdateStudentDetails };

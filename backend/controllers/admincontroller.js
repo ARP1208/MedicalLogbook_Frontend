@@ -2,6 +2,8 @@
 import { Admin, AdminAnnoucement, Admingradesheet, Assignedsubject } from '../models/admin.js';
 import { connectDB, closeDB } from "../config/db.js";
 import asyncHandler from "express-async-handler";
+import { ObjectId } from 'mongodb';
+
 
 
 const login = asyncHandler(async (req, res) => {
@@ -66,17 +68,41 @@ const fetchAnnouncementByTitle = asyncHandler(async (req, res) => {
   }
 });
 
-const UpdateAnnouncement = asyncHandler(async (req, res) => {
-  console.log("Received data for update:", req.body);
-  const {announcementTitle } = req.body;
-  try {
-    await connectDB();
-    const announcementId = announcementTitle;
-    console.log("announcementID",announcementId);
-    const newUpdateAnnouncement = {...req.body};
+// const UpdateAnnouncement = asyncHandler(async (req, res) => {
+//   console.log("Received data for update:", req.body);
+//   const {announcementTitle } = req.body;
+//   try {
+//     await connectDB();
+//     const announcementId = announcementTitle;
+//     console.log("announcementID",announcementId);
+//     const newUpdateAnnouncement = {...req.body};
   
 
-    const UpdatedAnnouncement = await AdminAnnoucement.updateOne({ announcementTitle: announcementId }, { $set: newUpdateAnnouncement });
+//     const UpdatedAnnouncement = await AdminAnnoucement.updateOne({ announcementTitle: announcementId }, { $set: newUpdateAnnouncement });
+//     console.log("saved data is: ", UpdatedAnnouncement);
+
+//     res.status(201).json({ message: "UpdatedAnnouncement" });
+//   } catch (error) {
+//     console.error("Error updating announcement document:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   } finally {
+//     await closeDB();
+//   }
+// });
+
+
+
+const UpdateAnnouncement = asyncHandler(async (req, res) => {
+  console.log("Received data for update:", req.body);
+  const { a_id } = req.body;
+  try {
+    await connectDB();
+    const announcementId = a_id;
+    console.log("announcementTitle", announcementId);
+    const newUpdateAnnouncement = { ...req.body };
+
+
+    const UpdatedAnnouncement = await AdminAnnoucement.updateOne({ _id: a_id }, { $set: newUpdateAnnouncement });
     console.log("saved data is: ", UpdatedAnnouncement);
 
     res.status(201).json({ message: "UpdatedAnnouncement" });
@@ -87,6 +113,7 @@ const UpdateAnnouncement = asyncHandler(async (req, res) => {
     await closeDB();
   }
 });
+
 
 const DeleteAnnouncement = asyncHandler(async (req, res) => {
   console.log("Received data for deletion:", req.body);

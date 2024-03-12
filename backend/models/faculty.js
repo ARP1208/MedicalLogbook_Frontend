@@ -35,11 +35,12 @@ const TaskAssignschema = new mongoose.Schema({
   Task_Name: { type: String },
   Task_ID: { type: String },
   Task_Description: { type: String },
+  start_Date: { type: Date },
+  End_Date: { type: Date },
+  submit_Before: { type: String},
   Students: [{
     Roll_No: { type: String },
     Name: { type: String },
-    start_Date: { type: Date },
-    End_Date: { type: Date }
   }]
 });
 
