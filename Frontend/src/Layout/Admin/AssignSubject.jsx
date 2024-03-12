@@ -219,8 +219,8 @@ const AssignSubject = () => {
         }
       };
 
-      
-      
+
+
 
       const response = await axios.post(
         "http://localhost:8000/admin/saveCSVAssignSubject",
@@ -369,7 +369,6 @@ const AssignSubject = () => {
 
 
   return (
-    <div style={{ position: "relative", zIndex: openCsvPopup || openPreviewPopup ? 9999 : "auto"}}>
     <section className="fixed">
       <div className="fixed flex left-5 top-32 ml-50 w-auto">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
@@ -549,7 +548,6 @@ const AssignSubject = () => {
               Create
             </button>
             {/* {csvData.length > 0 && (
-            {/* {csvData.length > 0 && (
               <button
                 type="button"
                 className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
@@ -558,7 +556,6 @@ const AssignSubject = () => {
                 Preview
               </button>
             )} */}
-            
           </div>
         </form>
       </div>
@@ -568,25 +565,25 @@ const AssignSubject = () => {
           onClose={() => setOpenCsvPopup(false)}
         >
           <div className="lg:w-50vw md:w-30vw sm:20vw lg:h-45vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg overflow-auto">
-          <div className="lg:w-50vw md:w-30vw sm:20vw lg:h-45vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg overflow-auto">
             <div className="text-2xl font-black text-blue-950 justify-self-center m-20">
               Your csv has been Uploaded !!!
             </div>
             <h5>To view the more details, Please Click on preview</h5>
             <div className="flex gap-3 justify-center items-center py-2">
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
-              onClick={() => setOpenPreviewPopup(true)}
-            >
-              Preview
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
-            >
-              Save
-            </button>
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
+                onClick={() => setOpenPreviewPopup(true)}
+              >
+                Preview
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
+                onClick={handleSaveButtonClick}
+              >
+                Save
+              </button>
             </div>
           </div>
         </Assignsubjectcsvpopup>
@@ -599,11 +596,10 @@ const AssignSubject = () => {
           csvData={csvData} // Pass the csvData prop here
         >
           {/* Content for the preview popup */}
-          
+
         </Assignsubjectpreview>
       )}
     </section>
-    </div>
   );
 };
 
