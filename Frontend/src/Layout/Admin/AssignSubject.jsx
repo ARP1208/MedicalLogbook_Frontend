@@ -369,6 +369,7 @@ const AssignSubject = () => {
 
 
   return (
+    <div style={{position:"relative", zIndex: openCsvPopup || openPreviewPopup ? 9999 : "auto"}}>
     <section className="fixed">
       <div className="fixed flex left-5 top-32 ml-50 w-auto">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
@@ -600,6 +601,7 @@ const AssignSubject = () => {
         </Assignsubjectpreview>
       )}
     </section>
+    </div>
   );
 };
 

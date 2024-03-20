@@ -77,11 +77,11 @@ const Studenthomepage = () => {
           <i className="fa-solid fa-book-open-reader p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">Course&nbsp;Details</p>
           </button>
-
+{/* 
           <button onClick={() => handleOptions("Profile")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-regular fa-clipboard p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;Timetable</p>
-          </button>
+          </button> */}
         </nav>
       </div>
     </section>

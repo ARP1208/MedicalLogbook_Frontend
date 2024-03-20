@@ -62,6 +62,7 @@ import Studenthomepage from "./Layout/Student/Studenthomepage.jsx";
 import Profilestudenthomepage from "./Layout/Student/Profilestudenthomepage.jsx";
 import Pglogstudenthome from "./Layout/Student/Pglogstudenthome.jsx";
 
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
