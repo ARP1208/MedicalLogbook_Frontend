@@ -6,7 +6,6 @@ import LogoNav from "../../Components/Admin/LogoNav";
 import Navbar from "../../Components/Admin/Navbar";
 import Regback from "../../Components/Admin/Regback";
 
-
 const Editfaculty = () => {
   const [formData, setFormData] = useState({
     facultyname: "",
@@ -222,7 +221,7 @@ const Editfaculty = () => {
   //         socialCategory: "",
   //       });
 
-        
+
 
   //       // Check if the request was successful (status code 2xx)
   //       if (facultyresponse.status >= 200 && facultyresponse.status < 300) {
@@ -270,7 +269,6 @@ const Editfaculty = () => {
   //     console.log("faculty data submitted:", formData);
   //   }
   // };
-
 
   const handleupdatedetails = async (e) => {
     e.preventDefault();
@@ -412,9 +410,9 @@ const Editfaculty = () => {
 
   return (
     <section>
-      <LogoNav/>
-      <Navbar/>
-      <Regback/>
+      <LogoNav />
+      <Navbar />
+      <Regback />
       <div className="fixed left-12 top-30 ml-40">
         <button className=" bg-blue-500 w-48 h-10 rounded-lg ml-8 pl-1 pt-1 text-lg mt-7 focus:outline-none ">
           Edit Faculty

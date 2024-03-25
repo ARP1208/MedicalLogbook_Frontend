@@ -1,21 +1,123 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditAnnouncement from "./EditAnnouncement";
+import axios from "axios";
 
 const Announcement = () => {
+  const [announcements, setAnnouncements] = useState([
+    // Your initial announcements data
+  ]);
+  const [isEditing, setIsEditing] = useState(false); // State to track if editing mode is active
   const [showEditAnnouncement, setShowEditAnnouncement] = useState(false);
   const [showAnnouncementButton, setShowAnnouncementButton] = useState(true);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+  const [adminannoucements, setAnnouncement] = useState([]);
+  const [error, setError] = useState(null); // State to hold error information
 
-  const handleOptions = (component) => {
-    if (component === "EditAnnouncement") {
-      setShowEditAnnouncement(true);
-      setShowAnnouncementButton(false); // Set the state to hide the "Announcements" button
+  const fetchAnnouncements = async () => {
+    try {
+      const customHeaders = new Headers();
+      customHeaders.append('Content-Type', 'application/json');
+      customHeaders.append('Accept-Encoding', 'gzip, deflate, br');
+
+      const response = await axios.get('http://localhost:8000/admin/fetchAllAnnouncements',
+        {
+          headers: customHeaders
+        });
+
+      console.log(response.data)
+      console.log(response.headers)
+      setAnnouncement(response.data);
+    } catch (error) {
+      setError(error);
     }
+  };
+
+  useEffect(() => { // Fetch announcements when the component mounts
+    fetchAnnouncements();
+  }, []);
+
+  // useEffect(() => {
+  //   const handleDelete = async (announcementTitle) => {
+  //     try {
+  //       console.log(announcementTitle);
+  //       const response = await fetch(`http://127.0.0.1:8000/admin/DeleteAnnouncement`, {
+  //         method: 'DELETE',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ announcementTitle: announcementTitle }),
+  //       });
+  //       const data = await response.json();
+  //       console.log(data); // Log the response data
+  //     } catch (error) {
+  //       console.error('Error deleting announcement:', error.message);
+  //     }
+  //   };
+
+  //   if (error) {
+  //     console.error('Error fetching announcements:', error.message); // Log error message
+  //   }
+  // }, [error]);
+
+  const handleDelete = (announcementTitle) => {
+    console.log(announcementTitle);
+    let response = fetch(`http://127.0.0.1:8000/admin/DeleteAnnouncement`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ announcementTitle: announcementTitle }),
+    });
+    console.log(response);
+  };
+
+  const deleteAndRefresh = async (announcementTitle) => {
+
+    // Delete the announcement
+    handleDelete(announcementTitle);
+    // Fetch the updated list of announcements
+    setInterval(fetchAnnouncements, 200);
+
+    console.error('Error deleting announcement and refreshing:', error.message);
+  }
+
+  const handleeditannouncement = (selectedAnnouncement) => {
+    setSelectedAnnouncement(selectedAnnouncement);
+    // history("/EditAnnouncement", {
+    //   state: { Announcement: selectedAnnouncement },
+    // });
+    setShowEditAnnouncement(true);
+    setShowAnnouncementButton(false); // Set the state to hide the "Announcements" button
+
+  };
+
+  const handleSaveChanges = (updatedAnnouncement) => {
+    // Find the index of the updated announcement in the array
+    const index = announcements.findIndex((announcement) => announcement.id === updatedAnnouncement.id);
+    // Create a new array with the updated announcement
+    const updatedAnnouncements = [...announcements];
+    updatedAnnouncements[index] = updatedAnnouncement;
+    // Update the state with the new array
+    setAnnouncements(updatedAnnouncements);
+    // Exit editing mode
+    setIsEditing(false);
+    // Clear selected announcement
+    setSelectedAnnouncement(null);
+  };
+
+  // Function to handle edit button click
+  const handleEdit = (announcement) => {
+    setIsEditing(true);
+    setSelectedAnnouncement(announcement);
   };
 
   return (
     <section className="left-50 top-33 absolute">
       {showEditAnnouncement ? (
-        <EditAnnouncement />
+        <EditAnnouncement
+          selectedAnnouncement={selectedAnnouncement}
+          onSave={handleSaveChanges}
+        />
       ) : (
         <>
           <div className="absolute flex left-5 top-5 w-auto ">
@@ -36,8 +138,8 @@ const Announcement = () => {
                   <table className="w-full h-10 text-center rounded-md border-collapse">
                     <thead>
                       <tr>
-                        <th className="border bg-blue-950  text-white px-4 py-2">
-                          SL No
+                        <th className="border bg-blue-950  text-white px-4 py-2 w-12">
+                          Sl. No.
                         </th>
                         <th className="border col-span-3 bg-blue-950 text-white px-4 py-2">
                           Events
@@ -51,46 +153,38 @@ const Announcement = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td className="border border-black px-4 py-2">1</td>
-                        <td className="border border-black px-4 py-2">
-                          no need to come College
-                        </td>
-                        <td className="border border-black px-4 py-2 w-10">
-                          <button
-                            className="w-20 rounded-md bg-blue-500 text-lg"
-                            onClick={() => handleOptions("EditAnnouncement")}
-                          >
-                            Edit
-                          </button>
-                        </td>
-                        <td className="border border-black px-4 py-2 w-10">
-                          <button className="w-20 rounded-md bg-blue-500 text-lg">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="border border-black px-4 py-2 w-10">
-                          2
-                        </td>
-                        <td className="border border-black px-4 py-2">
-                          holidays for winter
-                        </td>
-                        <td className="border border-black px-4 py-2 w-10">
-                          <button
-                            className="w-20 rounded-md bg-blue-500 text-lg"
-                            onClick={() => handleOptions("EditAnnouncement")}
-                          >
-                            Edit
-                          </button>
-                        </td>
-                        <td className="border border-black px-4 py-2 w-10">
-                          <button className="w-20 rounded-md bg-blue-500 text-lg">
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
+                      {adminannoucements.length === 0 ? (
+                        <tr>
+                          <td className="border border-black px-4 py-2" colSpan="6" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                            No announcements to be viewed
+                          </td>
+                        </tr>
+                      ) : (
+                        adminannoucements.map((announcement, index) => (
+                          <tr key={index}>
+                            <td className="border border-black px-4 py-2">{index + 1}</td>
+                            <td className="border border-black px-4 py-2">
+                              {announcement.announcementTitle}
+                            </td>
+                            <td className="border border-black px-4 py-2 w-10">
+                              <button
+                                className="w-20 rounded-md bg-blue-500 text-lg"
+                                onClick={() => handleeditannouncement(announcement)}
+                              >
+                                Edit
+                              </button>
+                            </td>
+                            <td className="border border-black px-4 py-2 w-10">
+                              <button
+                                className="w-20 rounded-md bg-blue-500 text-lg"
+                                onClick={() => deleteAndRefresh(announcement.announcementTitle)}
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>

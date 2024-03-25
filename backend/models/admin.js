@@ -1,5 +1,3 @@
-
-
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
@@ -13,14 +11,13 @@ adminSchema.methods.comparePassword = function (password) {
 };
 
 ///////Announcement Page for admin ///////
-
 const adminAnnoucementSchema = new mongoose.Schema({
-  announcementTitle: { type: String, required:true},
-  scheduleDate: { type: Date},
+  announcementTitle: { type: String, required: true },
+  scheduleDate: { type: String },
+  uploadedFile: { type: Buffer },
   uploadedFileName: { type: String },
-  scheduleTime: { type: String}
+  scheduleTime: { type: String }
 })
-
 
 //////////GradeSheet page for admin /////////
 const adminGradeSheetSchema = new mongoose.Schema({
@@ -111,5 +108,4 @@ const AdminAnnoucement = mongoose.model('AdminAnnoucement', adminAnnoucementSche
 const Admingradesheet = mongoose.model('Admingradesheet', adminGradeSheetSchema);
 const Assignedsubject = mongoose.model('Assignsubject', AssignSubject)
 
-
-export { Admin, AdminAnnoucement, Admingradesheet, Assignedsubject} ;
+export { Admin, AdminAnnoucement, Admingradesheet, Assignedsubject };
