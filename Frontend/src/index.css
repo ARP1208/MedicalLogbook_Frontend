@@ -435,11 +435,32 @@ height: 52px;
 .h-35vh{
   height: 33vh;
 }
-.w-55vw{
-  width: 55vw;
+.w-45vw{
+  width: 45vw;
 }
 .h-51vh{
   height: 54vh;
+}
+.h-45vh{
+  height: 45vh;
+}
+.w-55vw{
+  width: 55vw;
+}
+.mt-18{
+  margin-top: 72px;
+}
+.h-43vh{
+  height: 43vh;
+}
+.h-75vh{
+  height: 75vh;
+}
+.w-30vw{
+  width: 30vw;
+}
+.w-20vw{
+  width: 20vw;
 }
 }
 

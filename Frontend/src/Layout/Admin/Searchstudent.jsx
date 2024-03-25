@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import Editstudent from "./Editstudent";
 
 const Searchstudent = () => {
-  // const [showeditstudentpage, setshoweditstudentpage] = useState(false);
-  // const [showsearchstudentpage, setshowsearchstudentpage] = useState(false);
   const history = useNavigate();
   const [selectedStudentData, setSelectedStudentData] = useState(null);
   const [searchstudentData, setSearchStudentData] = useState({
@@ -32,7 +29,6 @@ const Searchstudent = () => {
       alert("Please enter a search term.");
       return;
     }
-
     try {
       alert("data saved");
       const SearchStudentresponse = await fetch(
@@ -75,9 +71,6 @@ const Searchstudent = () => {
       state: { studentData: selectedStudent },
     });
   };
-
- 
-  
 
   return (
     <section className="left-50 top-33 absolute">
@@ -165,9 +158,7 @@ const Searchstudent = () => {
           </div>
         </div>
       </div>
-      {/* </>
-      ) */}
-      
+
     </section>
   );
 };

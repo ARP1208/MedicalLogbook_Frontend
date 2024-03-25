@@ -21,7 +21,7 @@ const Generateteam = () => {
   ];
 };
 
-const Opentaskstudent = () => {
+const Studenttaskcheckin = () => {
   const [selectedstudent, setselectedstudent] = useState({
     value: "Team Member/s",
     label: "Team Member/s",
@@ -45,6 +45,7 @@ const Opentaskstudent = () => {
       <div className="absolute flex left-10 top-4 w-auto">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
           View Task
+          
         </button>
       </div>
 
@@ -53,11 +54,11 @@ const Opentaskstudent = () => {
           <div className="overflow-hidden block text-4">
             <div className="justify-center items-center grid grid-cols-2 pb-4">
               <h5>
-                Academic Year:<span className="pl-3">2022-2024</span>
+                Start Date:<span className="pl-3">13/03/2024</span>
               </h5>
               <h5>
-                Deadline:
-                <span className="pl-3 text-red-500">12/03/2024 5:00pm</span>
+                End Date:
+                <span className="pl-3">15/03/2024</span>
               </h5>
             </div>
             <div className="w-60vw h-51vh border-2 border-sky-500 rounded-xl">
@@ -122,4 +123,4 @@ const Opentaskstudent = () => {
   );
 };
 
-export default Opentaskstudent;
+export default Studenttaskcheckin;

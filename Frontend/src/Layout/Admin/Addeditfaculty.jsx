@@ -13,7 +13,7 @@ const Addeditfaculty = () => {
     department: "",
     dateOfJoining: "",
     dateOfBirth: "",
-    gender: "",
+    gender: "Male",
     presentMobileNumber: "",
     previousMobileNumber: "",
     emailId: "",

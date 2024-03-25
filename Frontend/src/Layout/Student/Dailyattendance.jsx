@@ -18,7 +18,7 @@ const GenerateSemester = () => {
   return Semester;
 };
 
-const Studentgradesheet = ({ subjectname, subcode, examination }) => {
+const Dailyattendance = ({ subjectname, subcode, examination }) => {
   const [selectedSemester, setSelectedSemester] = React.useState({
     value: "Select Semester",
     label: "Select Semester",
@@ -28,7 +28,7 @@ const Studentgradesheet = ({ subjectname, subcode, examination }) => {
     <section className="left-50 absolute">
       <div className="absolute flex left-10 top-4">
         <button className="bg-sky-500 rounded-md w-fit text-lg">
-          Gradesheet
+          Daily Attendance
         </button>
       </div>
 
@@ -53,7 +53,10 @@ const Studentgradesheet = ({ subjectname, subcode, examination }) => {
                 <thead>
                   <tr>
                     <th className="border bg-blue-950 text-white px-4 py-2">
-                      SL. No.
+                      Date
+                    </th>
+                    <th className="border bg-blue-950 text-white px-4 py-2">
+                      Day
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
                       Subject Code
@@ -62,24 +65,24 @@ const Studentgradesheet = ({ subjectname, subcode, examination }) => {
                       Subject Name
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
-                      Semester
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
-                      Grade
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
-                      Credit
+                      Attendance
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="border border-black px-4 py-2">1</td>
+                    <td className="border border-black px-4 py-2">10/03/2024</td>
+                    <td className="border border-black px-4 py-2">MONDAY</td>
                     <td className="border border-black px-4 py-2">SUB123</td>
                     <td className="border border-black px-4 py-2">PHYSICS</td>
-                    <td className="border border-black px-4 py-2">3</td>
-                    <td className="border border-black px-4 py-2">A</td>
-                    <td className="border border-black px-4 py-2">20</td>
+                    <td className="border border-black px-4 py-2"><span style={{color:"red"}}>ABSENT</span></td>
+                  </tr>
+                  <tr>
+                    <td className="border border-black px-4 py-2">11/03/2024</td>
+                    <td className="border border-black px-4 py-2">TUESDAY</td>
+                    <td className="border border-black px-4 py-2">SUB124</td>
+                    <td className="border border-black px-4 py-2">MATHS</td>
+                    <td className="border border-black px-4 py-2"><span style={{color:"green"}}>PRESENT</span></td>
                   </tr>
                 </tbody>
               </table>
@@ -91,4 +94,4 @@ const Studentgradesheet = ({ subjectname, subcode, examination }) => {
   );
 };
 
-export default Studentgradesheet;
+export default Dailyattendance;

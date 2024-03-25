@@ -242,7 +242,6 @@ const PreviewTask = () => {
                   Task Description
                 </div>
                 <div className="mt-5 text-start pl-10">
-                <h5>Student Name</h5>
                  <p>Description about task</p>
                 </div>
                 

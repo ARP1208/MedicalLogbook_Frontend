@@ -1,6 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import LogoNav from '../../Components/Admin/LogoNav'
 import Studentnavbar from '../../Components/Student/Studentnavbar';
+import Studentgradesheet from './Studentgradesheet';
+import Dailyattendance from './Dailyattendance';
 
 
 const Studenthomepage = () => {
@@ -11,7 +13,8 @@ const Studenthomepage = () => {
   });
 
     const [showprofile, setshowprofile] = useState(false);
-
+    const[showgradesheet,setshowgradesheet]=useState(false);
+    const[showdailyattendance,setshowdailyattendance]=useState(false);
     useEffect(() => {
       // Save collapsed state changes to sessionStorage
       sessionStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
@@ -24,18 +27,25 @@ const Studenthomepage = () => {
   
     const handleOptions = (component) => {
       if(component === "Home"){
-        setshowprofile(false);
+        setshowgradesheet(false);
+        setshowdailyattendance(false);
       }
-    //   else if (component === "Profile") {
-    //     setshowprofile(true);
-    //   }
+      else if (component === "Gradesheet") {
+        setshowgradesheet(true);
+        setshowdailyattendance(false);
+      }
+      else if(component === "Dailyattendance"){
+        setshowdailyattendance(true);
+        setshowgradesheet(false);
+      }
     };
 
   return (
     <section>
       <LogoNav/>
       <Studentnavbar/>
-     
+      {showgradesheet && <Studentgradesheet/>}
+      {showdailyattendance && <Dailyattendance/>}
       <div className="fixed h-full">
         <nav className={`sideb h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
         <button onClick={toggleSidebarCollapse} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
@@ -53,12 +63,12 @@ const Studenthomepage = () => {
           </button>
           
 
-          <button onClick={() => handleOptions("Profile")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+          <button onClick={() => handleOptions("")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-solid fa-file-pen p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">Internal&nbsp;Marks</p>
           </button>
 
-          <button onClick={() => handleOptions("Profile")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+          <button onClick={() => handleOptions("Gradesheet")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-solid fa-receipt p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;Gradesheet</p>
           </button>
@@ -68,20 +78,20 @@ const Studenthomepage = () => {
             <p className="relative top-2 text-base">&nbsp;Attendance</p>
           </button>
 
-          <button onClick={() => handleOptions("Profile")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+          <button onClick={() => handleOptions("Dailyattendance")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-solid fa-clipboard-user p-2" style={{ color: "#ffffff" }} ></i>
             <p className="relative top-2 text-base">Daily&nbsp;Attendance</p>
           </button>
 
-          <button onClick={() => handleOptions("Profile")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+          <button onClick={() => handleOptions("")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-solid fa-book-open-reader p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">Course&nbsp;Details</p>
           </button>
-
+         {/* 
           <button onClick={() => handleOptions("Profile")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-regular fa-clipboard p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;Timetable</p>
-          </button>
+          </button> */}
         </nav>
       </div>
     </section>

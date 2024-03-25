@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import LogoNav from "../../Components/Admin/LogoNav";
 import Studentnavbar from "../../Components/Student/Studentnavbar";
 import Studenttask from "./Studenttask";
+import Assessmentstudent from "./Assessmentstudent";
 
 const Pglogstudenthome = () => {
   const [showstudenttask, setshowstudenttask] = useState(false);
+  const [showassessment, setshowassessment] = useState(false);
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     const storedPreference = sessionStorage.getItem("sidebarCollapsed");
@@ -27,8 +29,14 @@ const Pglogstudenthome = () => {
   const handleOptions = (component) => {
     if (component === "Home") {
       setshowstudenttask(false);
+      setshowassessment(false);
     } else if (component === "Studenttask") {
       setshowstudenttask(true);
+      setshowassessment(false);
+    }
+    else if(component === "Assessment"){
+      setshowstudenttask(false);
+      setshowassessment(true);
     }
   };
 
@@ -37,6 +45,7 @@ const Pglogstudenthome = () => {
       <LogoNav />
       <Studentnavbar />
       {showstudenttask && <Studenttask />}
+      {showassessment && <Assessmentstudent/>}
       <div className="fixed h-full overflow-auto">
         <nav
           className={`sideb h-full flex flex-col bg-blue-950 ${
@@ -84,7 +93,7 @@ const Pglogstudenthome = () => {
           </button>
 
           <button
-            onClick={() => handleOptions("")}
+            onClick={() => handleOptions("Assessment")}
             className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 "
           >
             <i
