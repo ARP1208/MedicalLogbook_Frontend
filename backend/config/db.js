@@ -1,5 +1,19 @@
 // db.js
+// import dotenv from 'dotenv';
+// dotenv.config(); // Load environment variables from .env file
+// import  GridFsStorage from 'multer-gridfs-storage'
 import mongoose from 'mongoose';
+
+// // Initialize GridFS storage engine
+// const storage = new GridFsStorage({
+//   url: process.env.MONGO_URI, // Use MongoDB connection URI from .env file
+//   options: { useNewUrlParser: true, useUnifiedTopology: true },
+//   file: (req, file) => {
+//     return {
+//       filename: file.originalname
+//     };
+//   }
+// });
 
 const connectDB = async () => {
   try {

@@ -41,7 +41,34 @@ studentLoginSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 
+const TaskAssignStudentschema = new mongoose.Schema({
+  start_Date: { type: Date },
+  End_Date: { type: Date },
+  Task_Name: { type: String },
+  Task_ID: { type: String },
+  Task_Description: { type: String },
+  Student_Description: { type: String },
+  uploadFileName: { type: String },
+  Students: [{
+    regno: { type: Number },
+    Name: { type: String }
+   
+  }]
+});
+
+const AssessmentMarkSchema = new mongoose.Schema({
+  assessmentId : { typle: String},
+  assessmentName : { type: String},
+  regno : { type: String},
+  mark : { type: Number}
+})
+
+
+
+
 const StudentDetails = mongoose.model('StudentDetails', studentDetailsSchema);
 const StudentLogin = mongoose.model('StudentLogin', studentLoginSchema);
+const TaskAssignStudent = mongoose.model("TaskAssignStudent", TaskAssignStudentschema);
+const StudentAssessmentMark = mongoose.model("StudentAssessmentMark", AssessmentMarkSchema);
 
-export { StudentDetails, StudentLogin };
+export { StudentDetails, StudentLogin, TaskAssignStudent, StudentAssessmentMark};

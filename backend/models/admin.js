@@ -23,54 +23,55 @@ const adminAnnoucementSchema = new mongoose.Schema({
 
 
 //////////GradeSheet page for admin /////////
-const adminGradeSheetSchema = new mongoose.Schema({
-  AcademicYear: {
-    year: String,
-    program: [
-      {
-        programname: String,
-        semesters: [
-          {
-            semesterNumber: String,
-            sections: [
-              {
-                sectionName: String,
-                students: [
-                  {
-                    regNo: String,
-                    name: String,
-                    subjects: [
-                      {
-                        subjectName: String,
-                        marks: Number,
-                      },
-                      {
-                        subjectName: String,
-                        marks: Number,
-                      },
-                      {
-                        subjectName: String,
-                        marks: Number,
-                      },
-                      {
-                        subjectName: String,
-                        marks: Number,
-                      },
-                      {
-                        subjectName: String,
-                        marks: Number,
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-});
+// const adminGradeSheetSchema = new mongoose.Schema({
+//   AcademicYear: {
+//     year: String,
+//     program: [
+//       {
+//         programname: String,
+//         semesters: [
+//           {
+//             semesterNumber: String,
+//             sections: [
+//               {
+//                 sectionName: String,
+//                 students: [
+//                   {
+//                     regNo: String,
+//                     name: String,
+//                     subjects: [
+//                       {
+//                         subjectName: String,
+//                         marks: Number,
+//                       },
+//                       {
+//                         subjectName: String,
+//                         marks: Number,
+//                       },
+//                       {
+//                         subjectName: String,
+//                         marks: Number,
+//                       },
+//                       {
+//                         subjectName: String,
+//                         marks: Number,
+//                       },
+//                       {
+//                         subjectName: String,
+//                         marks: Number,
+//                       },
+//                     ],
+//                   },
+//                 ],
+//               },
+//             ],
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// });
+
 
 const AssignSubject = new mongoose.Schema({
   AcademicYear: {
@@ -86,13 +87,14 @@ const AssignSubject = new mongoose.Schema({
                 sectionName: String,
                 students: [
                   {
-                    regNo: String,
+                    regno: String,
                     name: String,
                     subjects: [
                       {
                         subjectName: String,
                         facultyname: String,
-                        subjectcode: String
+                        subjectcode: String,
+                        marks: Number
                       },
                     ],
                   },
@@ -108,8 +110,8 @@ const AssignSubject = new mongoose.Schema({
 
 const Admin = mongoose.model('Admin', adminSchema);
 const AdminAnnoucement = mongoose.model('AdminAnnoucement', adminAnnoucementSchema);
-const Admingradesheet = mongoose.model('Admingradesheet', adminGradeSheetSchema);
+// const Admingradesheet = mongoose.model('Admingradesheet', adminGradeSheetSchema);
 const Assignedsubject = mongoose.model('Assignsubject', AssignSubject)
 
 
-export { Admin, AdminAnnoucement, Admingradesheet, Assignedsubject} ;
+export { Admin, AdminAnnoucement, Assignedsubject} ;

@@ -2,10 +2,10 @@ import {
   FacultyDetails,
   FacultyLogin,
   TaskAssign,
-  PreviewTask,
   AssignMarks,
   AddAssessment,
 } from "../models/faculty.js";
+import { StudentDetails } from "../models/student.js";
 import { Assignedsubject } from "../models/admin.js";
 import { connectDB, closeDB } from "../config/db.js";
 import nodemailer from "nodemailer";
@@ -63,6 +63,8 @@ const Facultylogin = asyncHandler(async (req, res) => {
   }
 });
 
+
+////////////////
 const faculty = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
   try {
@@ -209,154 +211,15 @@ const UpdateFacultyDetails = asyncHandler(async (req, res) => {
 });
 
 
-const saveTaskAssign = asyncHandler(async (req, res) => {
-  console.log("Received data for saving task assignment:", req.body);
-  const { Task_ID } = req.body;
-  
-  try {
-    // Check if Task_ID already exists
-    const existingTask = await TaskAssign.findOne({ Task_ID });
-    if (existingTask) {
-      console.error("Task_ID already exists:", Task_ID);
-      return res.status(400).json({ error: "Task_ID already exists" });
-    }
-
-    // If Task_ID doesn't exist, save the new task assignment
-    const newTask = new TaskAssign(req.body);
-    const savedTask = await newTask.save();
-    console.log("Saved task assignment:", savedTask);
-
-    res.status(201).json({ message: "Task assigned successfully" });
-  } catch (error) {
-    console.error("Error saving task assignment:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
 
-const DeleteTaskAssign = asyncHandler(async (req, res) => {
-  console.log("Received data for deletion:", req.body);
-  const { Task_ID } = req.body;
-  
-  try {
-    await connectDB();
-    const taskId = Task_ID;
-    console.log("taskId", taskId);
-
-    // Assuming TaskAssign is your Mongoose model
-    const deletedtask = await TaskAssign.deleteOne({ Task_ID: taskId });
-    
-    // Check if the document was deleted successfully
-    if (deletedtask.deletedCount === 1) {
-      console.log("Deleted task:", taskId);
-      res.status(200).json({ message: "task deleted successfully" });
-    } else {
-      console.log("task not found for deletion");
-      res.status(404).json({ error: "task not found for deletion" });
-    }
-  } catch (error) {
-    console.error("Error deleting task document:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    await closeDB();
-  }
-});
-
-const searchTask = asyncHandler(async (req, res) => {
-  const { searchTerm } = req.body;
-  console.log("Received credentials:", { searchTerm });
-
-  // Check if searchTerm is empty
-  if (!searchTerm) {
-    return res.status(400).json({
-      success: false,
-      message: "Please provide a non-empty search parameter",
-    });
-  }
-
-  try {
-    await connectDB();
-
-    // Split the searchTerm string into an array of individual terms
-    const searchTermsArray = searchTerm.split(",").map((term) => term.trim());
-
-    // Build the $or array dynamically for each search term
-    const orConditions = [];
-
-    searchTermsArray.forEach((term) => {
-      orConditions.push({ "Students.Name": { $regex: term, $options: "i" } });
-      orConditions.push({ Task_Name: { $regex: term, $options: "i" } });
-      orConditions.push({ Task_ID: { $regex: term, $options: "i" } });
-    });
-
-    // Use the dynamically built $or array in the query
-    const query = { $or: orConditions };
-    console.log("Query:", query);
-
-    // Find tasks that match any of the specified conditions
-    const srhTask = await TaskAssign.find(query);
-    console.log("Data to be sent to frontend:", srhTask);
-
-    if (!srhTask || srhTask.length === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Record not found" });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Records found",
-      taskData: srhTask,
-    });
-  } catch (error) {
-    console.error("Error searching records:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  } finally {
-    await closeDB();
-  }
-});
-
-//updatation code for Task Assignments
-
-const updateTaskAssign = asyncHandler(async (req, res) => {
-  console.log("Received data for update:", req.body);
-  const { Task_ID } = req.body;
-  try {
-    await connectDB();
-    const Taskdetail = Task_ID;
-    console.log("updated task ID", Taskdetail);
-    const newUpdateTask = { ...req.body };
-
-    const UpdatedTask = await TaskAssign.updateOne(
-      { Task_ID: Taskdetail },
-      { $set: newUpdateTask }
-    );
-    console.log("saved data is: ", UpdatedTask);
-
-    res.status(201).json({ message: "UpdatedTaskAssign" });
-  } catch (error) {
-    console.error("Error saving UpdatedTaskAssign document:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-//saving a Preview Task  in the database
-const savePreviewTask = asyncHandler(async (req, res) => {
-  console.log("Received data:", req.body);
-  try {
-    await connectDB();
-    const newTask = new PreviewTask(req.body);
-    const savedTask = await newTask.save();
-    console.log("saved Tasked is: ", savedTask);
-
-    res.status(201).json({ message: "savedTask" });
-  } catch (error) {
-    console.error("Error saving savedTask document:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
 
+
+
+
+
+///////////Academic component //////////////////
 const fetchDetails = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
   try {
@@ -423,7 +286,6 @@ const fetchDetails = asyncHandler(async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 const saveAssignMarks = asyncHandler(async (req, res) => {
   console.log("Received marks data:", req.body);
@@ -507,8 +369,6 @@ const saveAssignMarks = asyncHandler(async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
 
 const updateAssignMarks = asyncHandler(async (req, res) => {
   console.log("Received updated marks data:", req.body);
@@ -624,6 +484,8 @@ const updateAssignMarks = asyncHandler(async (req, res) => {
 });
 
 
+
+/////////Assessment Component////////////////////////////////////////
 const saveAddAssessment = asyncHandler(async (req, res) => {
   console.log("Received assessment data:", req.body);
 
@@ -871,6 +733,179 @@ const DeleteAssessment = asyncHandler(async (req, res) => {
 
 
 
+//////////////PG Log Component////////////////////////
+const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
+  console.log("Received data for saving task assignment:", req.body);
+  const { Task_ID, Task_Name, Task_Description, start_Date, End_Date, Task_Completed, Students } = req.body;
+
+  try {
+    // Check if Task_ID already exists
+    const existingTask = await TaskAssign.findOne({ Task_ID });
+    if (existingTask) {
+      console.error("Task_ID already exists:", Task_ID);
+      return res.status(400).json({ error: "Task_ID already exists" });
+    }
+
+    // If Task_ID doesn't exist, save the new task assignment
+    const newTask = new TaskAssign({
+      Task_ID,
+      Task_Name,
+      Task_Description,
+      start_Date,
+      End_Date,
+      Task_Completed,
+      Students
+    });
+    const savedTask = await newTask.save();
+    console.log("Saved task assignment:", savedTask);
+
+    // Fetch student details based on regno from the StudentDetails schema
+    const studentRegnos = Students.map(student => student.regno);
+    const students = await StudentDetails.find({ regno: { $in: studentRegnos } });
+
+    // Create reusable transporter object using the default SMTP transport
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "shettytejas96@gmail.com",
+        pass: "ndhg gltd onks xuan",
+      },
+    });
+
+    // Compose and send email to each student
+    for (const student of students) {
+      const mailOptions = {
+        from: 'shettytejas96@gmail.com',
+        to: student.emailId,
+        subject: 'Task Assignment',
+        html: `<p>You have been assigned the following task:,</p>
+               <p>Task Name: ${Task_Name}</p>
+               <p>Task Description: ${Task_Description}</p>
+               <p>Start Date: ${start_Date}</p>
+               <p>End Date: ${End_Date}</p>
+              
+               <p>Regards,</p>
+               <p>Your Faculty</p>`
+      };
+
+      // Send email
+      await transporter.sendMail(mailOptions);
+      console.log("Task assignment email sent to:", student.emailId);
+    }
+
+    res.status(201).json({ message: "Task assigned successfully and emails sent to students" });
+  } catch (error) {
+    console.error("Error saving task assignment and sending emails:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+const DeleteTaskAssign = asyncHandler(async (req, res) => {
+  console.log("Received data for deletion:", req.body);
+  const { Task_ID } = req.body;
+  
+  try {
+    await connectDB();
+    const taskId = Task_ID;
+    console.log("taskId", taskId);
+
+    // Assuming TaskAssign is your Mongoose model
+    const deletedtask = await TaskAssign.deleteOne({ Task_ID: taskId });
+    
+    // Check if the document was deleted successfully
+    if (deletedtask.deletedCount === 1) {
+      console.log("Deleted task:", taskId);
+      res.status(200).json({ message: "task deleted successfully" });
+    } else {
+      console.log("task not found for deletion");
+      res.status(404).json({ error: "task not found for deletion" });
+    }
+  } catch (error) {
+    console.error("Error deleting task document:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    await closeDB();
+  }
+});
+
+const searchTask = asyncHandler(async (req, res) => {
+  const { searchTerm } = req.body;
+  console.log("Received credentials:", { searchTerm });
+
+  // Check if searchTerm is empty
+  if (!searchTerm) {
+    return res.status(400).json({
+      success: false,
+      message: "Please provide a non-empty search parameter",
+    });
+  }
+
+  try {
+    await connectDB();
+
+    // Split the searchTerm string into an array of individual terms
+    const searchTermsArray = searchTerm.split(",").map((term) => term.trim());
+
+    // Build the $or array dynamically for each search term
+    const orConditions = [];
+
+    searchTermsArray.forEach((term) => {
+      orConditions.push({ "Students.Name": { $regex: term, $options: "i" } });
+      orConditions.push({ Task_Name: { $regex: term, $options: "i" } });
+      orConditions.push({ Task_ID: { $regex: term, $options: "i" } });
+    });
+
+    // Use the dynamically built $or array in the query
+    const query = { $or: orConditions };
+    console.log("Query:", query);
+
+    // Find tasks that match any of the specified conditions
+    const srhTask = await TaskAssign.find(query);
+    console.log("Data to be sent to frontend:", srhTask);
+
+    if (!srhTask || srhTask.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Record not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Records found",
+      taskData: srhTask,
+    });
+  } catch (error) {
+    console.error("Error searching records:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  } finally {
+    await closeDB();
+  }
+});
+
+//updatation code for Task Assignments
+
+const updateTaskAssign = asyncHandler(async (req, res) => {
+  console.log("Received data for update:", req.body);
+  const { Task_ID } = req.body;
+  try {
+    await connectDB();
+    const Taskdetail = Task_ID;
+    console.log("updated task ID", Taskdetail);
+    const newUpdateTask = { ...req.body };
+
+    const UpdatedTask = await TaskAssign.updateOne(
+      { Task_ID: Taskdetail },
+      { $set: newUpdateTask }
+    );
+    console.log("saved data is: ", UpdatedTask);
+
+    res.status(201).json({ message: "UpdatedTaskAssign" });
+  } catch (error) {
+    console.error("Error saving UpdatedTaskAssign document:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 
 
 
@@ -905,10 +940,9 @@ export {
   facultymail,
   searchfaculty,
   UpdateFacultyDetails,
-  saveTaskAssign,
+  saveTaskAssignAndSendEmails,
   searchTask,
   updateTaskAssign,
-  savePreviewTask,
   fetchDetails,
   saveAssignMarks,
   updateAssignMarks,

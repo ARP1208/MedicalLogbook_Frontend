@@ -141,9 +141,9 @@ const Adminhomepage = () => {
 
         <button onClick={toggleSidebarCollapse} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             {isSidebarCollapsed ? (
-              <i class="fa-solid fa-angles-right p-2" style={{ color: "#ffffff" }} /> // Expand icon
+              <i className="fa-solid fa-angles-right p-2" style={{ color: "#ffffff" }} /> // Expand icon
             ) : (
-              <i class="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
+              <i className="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
             )}
             <p className="relative top-2 text-base">Collapse</p>
           </button>
@@ -166,21 +166,21 @@ const Adminhomepage = () => {
                 className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex justify-center items-center"
                 onClick={() => handlesuboptionstudent("AddEditStudent")}
               >
-                <i class="fa-solid fa-plus p-2"></i>
+                <i className="fa-solid fa-plus p-2"></i>
                 <p className="relative top-2 text-base">Add Student</p>
               </button>
 
               <button
                 className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex justify-center items-center"
                 onClick={() => handlesuboptionstudent("AssignSubject")}
-              ><i class="fa-brands fa-atlassian p-2"></i>
+              ><i className="fa-brands fa-atlassian p-2"></i>
                   <p className="relative top-2 text-base">Assign Subject</p>
               </button>
 
               <button
                 className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex justify-center items-center"
                 onClick={() => handlesuboptionstudent("Searchstudent")}
-              ><i class="fa-solid fa-magnifying-glass p-2"></i>
+              ><i className="fa-solid fa-magnifying-glass p-2"></i>
                 <p className="relative top-2 text-base">Search&nbsp;Student</p>
               </button>
               
@@ -197,13 +197,13 @@ const Adminhomepage = () => {
               <button
                 className="w-100  h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex align-items-center"
                 onClick={() => handlesuboptionfaculty("AddEditFaculty")}
-              > <i class="fa-solid fa-plus p-2"></i>
+              > <i className="fa-solid fa-plus p-2"></i>
                 <p className="relative top-2 text-base">Add Faculty</p>
               </button>
               <button
                 className="w-100 h-10 bg-transparent focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300 text-base flex align-items-center"
                 onClick={() => handlesuboptionfaculty("Searchfaculty")}
-              ><i class="fa-solid fa-magnifying-glass p-2"></i>
+              ><i className="fa-solid fa-magnifying-glass p-2"></i>
                 <p className="relative top-2 text-base">Search Faculty</p>
               </button>
             </div>

@@ -1,54 +1,110 @@
-import { StudentDetails, StudentLogin } from "../models/student.js";
+import { StudentDetails, StudentLogin, TaskAssignStudent, StudentAssessmentMark } from "../models/student.js";
+import { Assignedsubject } from '../models/admin.js';
+import { TaskAssign, AddAssessment } from "../models/faculty.js";
 import { connectDB, closeDB } from "../config/db.js";
 import nodemailer from "nodemailer";
 import Parent from "../models/parentdetails.js";
 import express from "express";
 import asyncHandler from "express-async-handler";
-const router = express.Router();
+
 
 /////////Student login and fetching the data to display in Student profile./////////////
+// const Studentlogin = asyncHandler(async (req, res) => {
+//   const { emailId, password } = req.body;
+
+//   console.log("Received credentials:", { emailId, password });
+
+//   try {
+//     // Find the admin with the provided email
+//     const studentlog = await StudentLogin.findOne({ emailId, password });
+
+//     console.log(studentlog);
+
+//     if (!studentlog) {
+//       console.log("Invalid credentials:", { emailId, password });
+//       res.status(401).json({ error: "Invalid credentials" });
+//     } else {
+//       // Passwords match, send a success message
+//       console.log("Student successfully logged in");
+
+//       // Fetch student details data
+//       const studentDetails = await StudentDetails.findOne({ emailId });
+
+//       if (studentDetails) {
+//         // student details found, send the details to the client
+//         console.log("Student details fetched:", studentDetails);
+
+//         // // Fetch all the academic years from the indican database
+//         // const academicYears = await Assignedsubject.find().distinct(
+//         //   "AcademicYear.year"
+//         // );
+
+//         // Send the academic years to the frontend
+//         res.json({
+//           message: "Successfully logged in!",
+//           studentDetails,
+//           // academicYears,
+//         });
+//       } else {
+//         // Student details not found
+//         console.log("Student details not found for email:", emailId);
+//         res.status(404).json({ error: "Student details not found" });
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Error during login:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
+
 const Studentlogin = asyncHandler(async (req, res) => {
   const { emailId, password } = req.body;
 
   console.log("Received credentials:", { emailId, password });
 
   try {
-    // Find the admin with the provided email
-    const studentlog = await StudentLogin.findOne({ emailId, password });
+    // Find the student with the provided email and password
+    const studentLog = await StudentLogin.findOne({ emailId, password });
 
-    console.log(studentlog);
+    console.log(studentLog);
 
-    if (!studentlog) {
+    if (!studentLog) {
       console.log("Invalid credentials:", { emailId, password });
-      res.status(401).json({ error: "Invalid credentials" });
-    } else {
-      // Passwords match, send a success message
-      console.log("Student successfully logged in");
-
-      // Fetch student details data
-      const studentDetails = await StudentDetails.findOne({ emailId });
-
-      if (studentDetails) {
-        // student details found, send the details to the client
-        console.log("Student details fetched:", studentDetails);
-
-        // // Fetch all the academic years from the indican database
-        // const academicYears = await Assignedsubject.find().distinct(
-        //   "AcademicYear.year"
-        // );
-
-        // Send the academic years to the frontend
-        res.json({
-          message: "Successfully logged in!",
-          studentDetails,
-          // academicYears,
-        });
-      } else {
-        // Student details not found
-        console.log("Student details not found for email:", emailId);
-        res.status(404).json({ error: "Student details not found" });
-      }
+      return res.status(401).json({ error: "Invalid credentials" });
     }
+
+    // Fetch student details data
+    const studentDetails = await StudentDetails.findOne({ emailId });
+
+    if (!studentDetails) {
+      console.log("Student details not found for email:", emailId);
+      return res.status(404).json({ error: "Student details not found" });
+    }
+
+    // Extract regno from studentDetails
+    const regno = studentDetails.regno;
+
+    // Fetch data from Assignedsubject using regno
+    const assignedSubjects = await Assignedsubject.findOne({
+      "AcademicYear.program.semesters.sections.students.regno": regno
+    });
+
+    if (!assignedSubjects) {
+      // Data not found in Assignedsubject
+      console.log("Assigned subject details not found for regno:", regno);
+      return res.status(404).json({ error: "Assigned subject details not found" });
+    }
+
+    // Data found, extract necessary information
+    console.log("Assigned subject details fetched:", assignedSubjects);
+
+    res.json({
+      message: "Successfully logged in!",
+      studentDetails,
+      regno,
+      assignedSubjects
+    });
+
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -226,5 +282,156 @@ const UpdateStudentDetails = asyncHandler(async (req, res) => {
 });
 
 
+///////////PG log Component///////////////////////////////////////
+const saveTaskAssignStudent = asyncHandler(async (req, res) => {
+  console.log("Received data for saving task assignment:", req.body);
+  const { Task_ID } = req.body;
 
-export { Studentlogin ,student, parent, studentmail, searchStudent, UpdateStudentDetails };
+  try {
+    // Check if Task_ID already exists
+    const existingTask = await TaskAssignStudent.findOne({ Task_ID });
+    if (existingTask) {
+      console.error("Task_ID already exists:", Task_ID);
+      return res.status(400).json({ error: "Task_ID already exists" });
+    }
+
+    // Save the new task assignment
+    const newTask = new TaskAssignStudent(req.body);
+    const savedTask = await newTask.save();
+    console.log("Saved task assignment:", savedTask);
+
+    // Connect to DB
+    await connectDB();
+    console.log("updated task ID", Task_ID);
+
+    // Define the update operation to set Task_Completed to "completed"
+    const updateOperation = {
+      $set: { Task_Completed: "completed" }
+    };
+
+    // Use TaskAssign.updateOne to update the specified task
+    const UpdatedTask = await TaskAssign.updateOne(
+      { Task_ID },
+      updateOperation
+    );
+
+    console.log("saved data is: ", UpdatedTask);
+
+    res.status(201).json({ message: "Task assigned successfully and faculty task updated" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+const onclickCheckInUpdateTaskAssign = asyncHandler(async (req, res) => {
+  console.log("Received data for update:", req.body);
+  const { Task_ID } = req.body;
+  try {
+    await connectDB();
+    const Taskdetail = Task_ID;
+    console.log("updated task ID", Taskdetail);
+
+    // Define the update operation to set Task_Completed to "yet to complete"
+    const updateOperation = {
+      $set: { Task_Completed: "yet to complete" }
+    };
+
+    // Use TaskAssign.updateOne to update the specified task
+    const UpdatedTask = await TaskAssign.updateOne(
+      { Task_ID: Taskdetail },
+      updateOperation
+    );
+
+    console.log("saved data is: ", UpdatedTask);
+
+    res.status(201).json({ message: "UpdatedTaskAssign" });
+  } catch (error) {
+    console.error("Error saving UpdatedTaskAssign document:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+const fetchStudentAssessment = async (req, res) => {
+  try {
+    const { regno } = req.body;
+
+    // Find the student details using the registration number
+    const studentDetails = await StudentDetails.findOne({ regno });
+
+    // If student details not found, return 404 error
+    if (!studentDetails) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Find the assigned subject using the registration number
+    const assignSubject = await Assignedsubject.findOne({ 'AcademicYear.program.semesters.sections.students.regno': regno });
+
+    if (!assignSubject) {
+      return res.status(404).json({ error: "AssignSubject not found" });
+    }
+
+    // Extract specific academic year, program, semester, section details
+    const academicYear = assignSubject.AcademicYear.year;
+    const programName = assignSubject.AcademicYear.program[0].programname;
+    const semesterNumber = assignSubject.AcademicYear.program[0].semesters[0].semesterNumber;
+    const sectionName = assignSubject.AcademicYear.program[0].semesters[0].sections[0].sectionName;
+
+    // Find academic year in AddAssessment database
+    const academicYearFound = await AddAssessment.findOne({
+      'AcademicYear.year': academicYear
+    });
+
+    if (!academicYearFound) {
+      return res.status(404).json({ error: "Academic year not found" });
+    }
+
+    // Find program inside academic year
+    const programFound = academicYearFound.AcademicYear.program.find(program => program.programname === programName);
+
+    if (!programFound) {
+      return res.status(404).json({ error: "Program not found" });
+    }
+
+    // Find semester inside program
+    const semesterFound = programFound.semesters.find(semester => semester.semesterNumber === semesterNumber);
+
+    if (!semesterFound) {
+      return res.status(404).json({ error: "Semester not found" });
+    }
+
+    // Find section inside semester
+    const sectionFound = semesterFound.sections.find(section => section.sectionName === sectionName);
+
+    if (!sectionFound) {
+      return res.status(404).json({ error: "Section not found" });
+    }
+
+    // Extract assessments for the found section
+    const assessments = sectionFound.assessment;
+
+    // If assessments not found, return 404 error
+    if (!assessments || assessments.length === 0) {
+      return res.status(404).json({ error: "Assessments not found" });
+    }
+
+    // Send 200 success response with assessments
+    return res.status(200).json({   academicYear,
+      programName,
+      semesterNumber,
+      sectionName,
+      assessments
+     });
+  } catch (error) {
+    // Handle any errors and send 500 error response
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
+
+
+export { Studentlogin ,student, parent, studentmail, searchStudent, UpdateStudentDetails, saveTaskAssignStudent, onclickCheckInUpdateTaskAssign, fetchStudentAssessment};

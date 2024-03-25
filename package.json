@@ -19,6 +19,7 @@
     "axios": "^1.6.5",
     "dotenv": "^16.3.1",
     "mongoose": "^8.0.4",
+    "multer-gridfs-storage": "^5.0.2",
     "nodemailer": "^6.9.8",
     "react-router-dom": "^6.22.0",
     "react-select": "^5.8.0",

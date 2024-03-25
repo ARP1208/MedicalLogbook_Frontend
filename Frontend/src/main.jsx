@@ -56,6 +56,11 @@ import GenerateInternalMarks from "./Layout/Faculty/GenrateInternalmarks.jsx";
 import Assessmenthomepage from "./Layout/Faculty/Assessmenthomepage.jsx";
 import Assessmentdashboard from "./Layout/Faculty/Assessmentdashboard.jsx";
 import EditAssessment from "./Layout/Faculty/EditAssessment.jsx";
+import Dashboardhomepage from "./Layout/Faculty/Dashboardhomepage.jsx";
+import Studentnavbar from "./Components/Student/Studentnavbar.jsx";
+import Studenthomepage from "./Layout/Student/Studenthomepage.jsx";
+import Profilestudenthomepage from "./Layout/Student/Profilestudenthomepage.jsx";
+import Pglogstudenthome from "./Layout/Student/Pglogstudenthome.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -224,7 +229,33 @@ const router = createBrowserRouter(
         path="/EditAssessment"
         element={<EditAssessment />}
       ></Route>
-      
+        <Route
+        index={true}
+        path="/Dashboardhomepage"
+        element={<Dashboardhomepage />}
+      ></Route>
+      <Route
+        index={true}
+        path="/Studentnavbar"
+        element={<Studentnavbar />}
+      ></Route>
+      <Route
+        index={true}
+        path="/Studenthomepage"
+        element={<Studenthomepage />}
+      ></Route>
+      <Route
+        index={true}
+        path="/Profilestudenthomepage"
+        element={<Profilestudenthomepage />}
+      ></Route>
+      <Route
+        index={true}
+        path="/Pglogstudenthome"
+        element={<Pglogstudenthome />}
+      ></Route>
+    
+
     </Route>
     
   )
