@@ -134,7 +134,7 @@ const AssignSubject = () => {
                       sectionName: formData.selectedSection.value,
                       students: [
                         {
-                          regNo: formData.rollNo,
+                          regno: formData.rollNo,
                           name: formData.name,
                           subjects: subjectsData.map(subject => ({
                             subjectName: subject.subjectName,
@@ -206,7 +206,7 @@ const AssignSubject = () => {
                     {
                       sectionName: jsonArrays[0]['Section'],
                       students: jsonArrays.map(item => ({
-                        regNo: item['Roll number'],
+                        regno: item['Roll number'],
                         name: item['Name'],
                         subjects: parseSubjectDetails(item)
                       }))

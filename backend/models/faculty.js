@@ -35,28 +35,16 @@ const TaskAssignschema = new mongoose.Schema({
   Task_Name: { type: String },
   Task_ID: { type: String },
   Task_Description: { type: String },
+  start_Date: { type: Date },
+  End_Date: { type: Date },
+  Task_Completed: { type: String},
   Students: [{
-    Roll_No: { type: String },
+    regno: { type: String },
     Name: { type: String },
-    start_Date: { type: Date },
-    End_Date: { type: Date }
   }]
 });
 
-const previewTask = new mongoose.Schema({
-  Feedback:
-  {
-    type: String,
-  },
-  completed:
-  {
-    type: Boolean,
 
-    default: false
-  },
-  Task: [TaskAssignschema]
-
-});
 
 //////////Internal and Midterm marks page for admin /////////
 const assignmarks = new mongoose.Schema({
@@ -141,8 +129,7 @@ const addassessment = new mongoose.Schema({
 const FacultyDetails = mongoose.model('FacultyDetails', facultyDetailsSchema);
 const FacultyLogin = mongoose.model('FacultyLogin', facultyLoginSchema);
 const TaskAssign = mongoose.model("TaskAssign", TaskAssignschema);
-const PreviewTask = mongoose.model("PreviewTask", previewTask);
 const AssignMarks = mongoose.model("AssignMarks", assignmarks);
 const AddAssessment = mongoose.model("AddAssessment", addassessment)
 
-export { FacultyDetails, FacultyLogin, TaskAssign, PreviewTask, AssignMarks,AddAssessment };
+export { FacultyDetails, FacultyLogin, TaskAssign, AssignMarks,AddAssessment };
