@@ -73,20 +73,12 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
     // window.close();
   };
 
-  const handlePreview = () => {
-    const popupWidth = 600; // Adjust width as needed
-    const popupHeight = 400; // Adjust height as needed
-
-    const left = (window.innerWidth - popupWidth) / 2;
-    const top = (window.innerHeight - popupHeight) / 2;
-
-    const popupOptions = `width=${popupWidth},height=${popupHeight},left=${left},top=${top},resizable,scrollbars=yes`;
-
+  const handlePreview = (name) => {
+    console.log(name)
     const pdfWindow = window.open("", "_blank");
     if (uploadedImage) {
-      // const pdfWindow = window.open("", "_blank");
       pdfWindow.document.write(
-        "<html><head><title>PDF Preview</title></head><body>"
+        `<html><head><title>${name}</title></head><body>`
       );
       pdfWindow.document.write(
         `<embed width="100%" height="100%" src="${uploadedImage}" target = 'blank' type="application/pdf">`
@@ -97,14 +89,19 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
     }
   };
 
+  const convertToHTMLDate = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  };
+
   return (
     <section className="relative top-0 inset-0">
-      <div className="relative flex left-2 top-4 w-auto mb-5">
+      <div className="relative flex left-12 top-7 w-auto mb-5">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
           Edit Announcements
         </button>
       </div>
-      <div className="border-2 w-65vw md:h-3/4 rounded-md border-sky-500 flex flex-col justify-center items-center mt-2 sm:h-auto sm:mt-10 m-5">
+      <div className="border-2 w-65vw md:h-3/4 rounded-md border-sky-500 flex flex-col justify-center items-center sm:h-auto sm:mt-10 m-5">
         <div className="p-5 gap-4 grid-flow-row grid w-full md:w-3/4 lg:w-1/2">
           <form className="w-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-start">
@@ -125,7 +122,7 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
                 <input
                   type="date"
                   id="scheduleDate"
-                  value={editedAnnouncement.scheduleDate}
+                  value={convertToHTMLDate(editedAnnouncement.scheduleDate)}
                   onChange={(e) => setEditedAnnouncement({ ...editedAnnouncement, scheduleDate: e.target.value })}
                   pattern="[0-9]{2}"
                   className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
@@ -187,21 +184,20 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
               >
                 Save Changes
               </button>
-              <button
-            className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
-            onClick={handlePreview}
-          >
-            Preview
-          </button>
-           {/* Show Announcementhomepage if needed */}
+
             </div>
           </form>
 
-          
-         
+          <button
+            className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
+            onClick={() => { handlePreview(selectedAnnouncement.uploadedFileName) }}
+          >
+            Preview
+          </button>
+          {/* Show Announcementhomepage if needed */}
         </div>
       </div>
-    </section>
+    </section >
   );
 };
 

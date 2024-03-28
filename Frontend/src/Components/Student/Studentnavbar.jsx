@@ -26,6 +26,21 @@ const Studentnavbar = () => {
           </NavLink>
         </nav>
 
+
+         {/* Announcements Navbar */}
+         <nav className="text-lg font-semibold ">
+          <NavLink
+            to="/StudentAnnouncementhome"
+            className={({ isActive }) =>
+              isActive
+                ? "text-white bg-blue-500  p-3 no-underline"
+                : "text-black no-underline"
+            }
+          >
+            {" "}
+            Announcements{" "}
+          </NavLink>
+        </nav>
       
         {/* PG-Log Navbar */}
         <nav className="text-lg font-semibold ">
@@ -88,20 +103,9 @@ const Studentnavbar = () => {
           </NavLink>
         </nav>
 
-         {/* More Navbar */}
-         <nav className="text-lg font-semibold ">
-          <NavLink
-            to="/Dashboardhomepage"
-            className={({ isActive }) =>
-              isActive
-                ? "text-white bg-blue-500  p-3 no-underline"
-                : "text-black no-underline"
-            }
-          >
-            {" "}
-            More{" "}
-          </NavLink>
-        </nav>
+        
+
+        
 
 
         <div className="absolute flex right-2 items-end p-0.5"  style={{zIndex: open ? 9999: 'auto'}}>

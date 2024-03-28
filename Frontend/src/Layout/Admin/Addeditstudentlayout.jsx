@@ -1285,7 +1285,7 @@ const Addeditstudentlayout = () => {
           className={`w-48 h-10  pl-1 pt-1 text-lg md:text-md focus:outline-none ${
             parentDetailsClicked
               ? "bg-white text-blue-500 focus:ring-4 rounded-lg focus:outline-none focus:ring-blue-300"
-              : "bg-blue-500 text-white   rounded-lg "
+              : "bg-blue-500 text-white rounded-lg "
           }`}
           onClick={handleParentDetailsClick}
         >
@@ -1294,13 +1294,13 @@ const Addeditstudentlayout = () => {
       </div>
 
       {showStudentCard && (
-        <div className="overflow-auto absolute top-20 w-60vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
+        <div className="overflow-auto absolute top-20 w-75vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
           {renderStudentForm()}
         </div>
       )}
 
       {showParentCard && (
-        <div className="overflow-auto absolute top-20 w-60vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
+        <div className="overflow-auto absolute top-20 w-75vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
           {renderParentForm()}
         </div>
       )}

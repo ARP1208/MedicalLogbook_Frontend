@@ -222,7 +222,7 @@ const Loginform = () => {
 
             <button
               type="submit"
-              className="bg-blue-500 text-sm w-auto h-15 text-center rounded-md"
+              className="bg-blue-500 text-sm w-auto h-15 text-center ml-3 rounded-md"
             >
               Login
             </button>

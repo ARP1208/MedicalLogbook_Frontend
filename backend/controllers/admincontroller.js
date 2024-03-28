@@ -1,10 +1,9 @@
+// adminController.js
 import { Admin, AdminAnnoucement, Admingradesheet, Assignedsubject } from '../models/admin.js';
 import { connectDB, closeDB } from "../config/db.js";
 import asyncHandler from "express-async-handler";
 import path from 'path';
 import fs from 'fs';
-
-
 
 const login = asyncHandler(async (req, res) => {
   const { emailId, password } = req.body;
@@ -62,7 +61,6 @@ const fetchAllAnnouncement = asyncHandler(async (req, res) => {
   }
 });
 
-// FUTURE SCOPE 
 const getFilebyAnnouncement = asyncHandler(async (req, res) => {
   let { announcementTitle } = req.body;
   const announcement_Title = announcementTitle
@@ -90,7 +88,7 @@ const getFilebyAnnouncement = asyncHandler(async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${announcement.uploadedFileName}"`);
 
     // Send the PDF file data as the response body
-    res.send(fileData);
+    res.send(fileData)
   } catch (error) {
     console.error("Error fetching Announcement:", error);
     res.status(500).json({ message: "Error fetching Announcement" });
@@ -169,6 +167,35 @@ const DeleteAnnouncement = asyncHandler(async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   } finally {
     await closeDB();
+  }
+});
+
+const filter_students = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  const { AcademicYear, programName, semesterNumber, sectionName } = req.body;
+  try {
+    await connectDB();
+    const result = await Assignedsubject.findOne({
+      "AcademicYear.year": AcademicYear,
+    });
+
+    if (result) {
+      const existingProgram = result.AcademicYear.program.find(program => program.programname === programName);
+      if (existingProgram) {
+        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === semesterNumber);
+        if (semesterIndex !== -1) {
+          const sections = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === sectionName);
+          if (sections !== -1) {
+            const students = existingProgram.semesters[semesterIndex].sections[sections].students;
+            console.log(students);
+            res.status(200).json({ students });
+          }
+        }
+      }
+    }
+
+  } catch (error) {
+    console.error('Error filtering :', error);
   }
 });
 
@@ -341,8 +368,6 @@ const getAdminGradesheet = asyncHandler(async (req, res) => {
       return res.json({ programNames });
     }
 
-
-
     // Find the requested program
     const requestedProgram = data.AcademicYear.program.find(p => p.programname === program.programname);
     if (!requestedProgram) {
@@ -376,8 +401,6 @@ const getAdminGradesheet = asyncHandler(async (req, res) => {
     if (!sectionnames) {
       return res.json({ sectionNames }); // Only return section names if sectionnames is not provided
     }
-
-
 
     // Retrieve student data for all sections in the requested section names
     const students = [];
@@ -425,8 +448,6 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
       return res.json({ programNames });
     }
 
-
-
     // Find the requested program
     const requestedProgram = data.AcademicYear.program.find(p => p.programname === program.programname);
     if (!requestedProgram) {
@@ -461,8 +482,6 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
       return res.json({ sectionNames }); // Only return section names if sectionnames is not provided
     }
 
-
-
     // Retrieve student data for all sections in the requested section names
     const students = [];
     filteredSections.forEach(section => {
@@ -485,13 +504,4 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 
+export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 

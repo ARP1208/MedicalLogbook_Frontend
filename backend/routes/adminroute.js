@@ -3,7 +3,8 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 
-import { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet, getAdminindividualGradesheet } from '../controllers/admincontroller.js';
+import { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet, getAdminindividualGradesheet } from '../controllers/admincontroller.js';
+
 
 
 const router = express.Router();
@@ -47,6 +48,7 @@ router.route("/admingradesheet").post(saveAdminGradesheet);
 router.route("/updategradesheet").post(updateAdminGradesheet);
 router.route("/assignsubject").post(saveAssignSubject);
 router.route("/getdetail").post(getAdminGradesheet);
+router.route("/filter_students").post(filter_students);
 router.route("/getAdminindividualGradesheet").post(getAdminindividualGradesheet);
 
 // router.post('/login', async (req, res) => {
