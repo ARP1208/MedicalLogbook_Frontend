@@ -321,6 +321,8 @@ const saveTaskAssignStudent = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    await closeDB();
   }
 });
 
@@ -349,6 +351,8 @@ const onclickCheckInUpdateTaskAssign = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error("Error saving UpdatedTaskAssign document:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    await closeDB();
   }
 });
 
@@ -429,9 +433,98 @@ const fetchStudentAssessment = async (req, res) => {
   }
 };
 
+const saveAssessmentStudent = asyncHandler(async (req, res) => {
+  console.log("Received data for saving Assessment :", req.body);
+  const { assessmentId, assessmentName, regno, mark } = req.body;
+
+  try {
+    // Check if assessmentId already exists
+    await connectDB();
+    const existingAssessment = await StudentAssessmentMark.findOne({ assessmentId });
+    if (existingAssessment) {
+      console.error("assessmentId already exists:", assessmentId);
+      return res.status(400).json({ error: "assessmentId already exists" });
+    }
+
+    // Save the new task assessment
+    const newAssessment = new StudentAssessmentMark({
+      assessmentId,
+      assessmentName,
+      regno,
+      mark
+    });
+    const savedAssessment = await newAssessment.save();
+    console.log("Saved Assessment:", savedAssessment);
+    res.status(200).json(savedAssessment); // Optional: Return saved data
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    await closeDB();
+  }
+});
+
+
+///////////////Academic /////////////////////////////////
+const fetchStudentGradeSheet = async (req, res) => {
+  try {
+    const { regno, name, semesters } = req.body;
+
+    // Find the assigned subjects for the student
+    const assignedSubjects = await Assignedsubject.find({ 'AcademicYear.program.semesters.sections.students.regno': regno });
+
+    if (!assignedSubjects || assignedSubjects.length === 0) {
+      return res.status(404).json({ error: "Assigned subjects not found" });
+    }
+
+    // Filter assigned subjects based on input semesters
+    const filteredSubjects = assignedSubjects.filter(student =>
+      student.AcademicYear.program[0].semesters.some(semester => semesters.includes(semester.semesterNumber))
+    );
+
+    if (!filteredSubjects || filteredSubjects.length === 0) {
+      return res.status(404).json({ error: "No subjects found for specified semesters" });
+    }
+
+    // Prepare the gradesheet with subject details
+    const gradeSheet = filteredSubjects.map(student => {
+      const academicYear = student.AcademicYear.year;
+      const programName = student.AcademicYear.program[0].programname;
+      const semesterNumber = student.AcademicYear.program[0].semesters.find(semester =>
+        semesters.includes(semester.semesterNumber)
+      ).semesterNumber;
+      const sectionName = student.AcademicYear.program[0].semesters[0].sections[0].sectionName;
+      
+      // Access subject details safely
+      const subjectDetails = student.AcademicYear.program[0].semesters.reduce((acc, semester) => {
+        if (semesters.includes(semester.semesterNumber)) {
+          acc.push(...semester.sections[0].students
+            .filter(student => student.regno === regno && student.name === name)
+            .flatMap(student => student.subjects));
+        }
+        return acc;
+      }, []);
+
+      return {  subjectDetails };
+    });
+
+    // Send 200 success response with gradesheet
+    return res.status(200).json({ regno, name, semesters, gradeSheet });
+  } catch (error) {
+    // Handle any errors and send 500 error response
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 
 
 
 
-export { Studentlogin ,student, parent, studentmail, searchStudent, UpdateStudentDetails, saveTaskAssignStudent, onclickCheckInUpdateTaskAssign, fetchStudentAssessment};
+
+
+
+
+
+
+export { Studentlogin ,student, parent, studentmail, searchStudent, UpdateStudentDetails, saveTaskAssignStudent, onclickCheckInUpdateTaskAssign, fetchStudentAssessment, saveAssessmentStudent, fetchStudentGradeSheet};

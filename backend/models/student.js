@@ -57,7 +57,7 @@ const TaskAssignStudentschema = new mongoose.Schema({
 });
 
 const AssessmentMarkSchema = new mongoose.Schema({
-  assessmentId : { typle: String},
+  assessmentId : { type: String},
   assessmentName : { type: String},
   regno : { type: String},
   mark : { type: Number}

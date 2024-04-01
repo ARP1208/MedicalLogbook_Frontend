@@ -242,6 +242,7 @@ const getFilebyAnnouncement = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Error fetching Announcement" });
   }
 });
+
 const fetchAnnouncementByTitle = asyncHandler(async (req, res) => {
   let { announcementTitle } = req.body;
   const announcement_Title = announcementTitle
