@@ -1,10 +1,9 @@
+// adminController.js
 import { Admin, AdminAnnoucement, Assignedsubject } from '../models/admin.js';
 import { connectDB, closeDB } from "../config/db.js";
 import asyncHandler from "express-async-handler";
 import path from 'path';
 import fs from 'fs';
-
-
 
 const login = asyncHandler(async (req, res) => {
   const { emailId, password } = req.body;
@@ -208,7 +207,6 @@ const fetchAllAnnouncement = asyncHandler(async (req, res) => {
   }
 });
 
-// FUTURE SCOPE 
 const getFilebyAnnouncement = asyncHandler(async (req, res) => {
   let { announcementTitle } = req.body;
   const announcement_Title = announcementTitle
@@ -236,7 +234,7 @@ const getFilebyAnnouncement = asyncHandler(async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${announcement.uploadedFileName}"`);
 
     // Send the PDF file data as the response body
-    res.send(fileData);
+    res.send(fileData)
   } catch (error) {
     console.error("Error fetching Announcement:", error);
     res.status(500).json({ message: "Error fetching Announcement" });
@@ -319,70 +317,98 @@ const DeleteAnnouncement = asyncHandler(async (req, res) => {
   }
 });
 
+const filter_students = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  const { AcademicYear, programName, semesterNumber, sectionName } = req.body;
+  try {
+    await connectDB();
+    const result = await Assignedsubject.findOne({
+      "AcademicYear.year": AcademicYear,
+    });
 
-///////////////////Gradesheet Component /////////////////////////
+    if (result) {
+      const existingProgram = result.AcademicYear.program.find(program => program.programname === programName);
+      if (existingProgram) {
+        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === semesterNumber);
+        if (semesterIndex !== -1) {
+          const sections = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === sectionName);
+          if (sections !== -1) {
+            const students = existingProgram.semesters[semesterIndex].sections[sections].students;
+            console.log(students);
+            res.status(200).json({ students });
+          }
+        }
+      }
+    }
 
-// const saveAdminGradesheet = asyncHandler(async (req, res) => {
-//   console.log("Received data:", req.body);
+  } catch (error) {
+    console.error('Error filtering :', error);
+  }
+});
 
-//   try {
-//     await connectDB();
+const saveAdminGradesheet = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
 
-//     const { AcademicYear } = req.body;
+  try {
+    await connectDB();
 
-//     // Check if a document with the given AcademicYear already exists
-//     const existingDocument = await Admingradesheet.findOne({ 'AcademicYear.year': AcademicYear.year });
+    const { AcademicYear } = req.body;
 
-//     if (existingDocument) {
-//       const existingProgram = existingDocument.AcademicYear.program.find(program => program.programname === AcademicYear.program[0].programname);
-//       if (existingProgram) {
-//         const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === AcademicYear.program[0].semesters[0].semesterNumber);
-//         if (semesterIndex !== -1) {
-//           const sectionIndex = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === AcademicYear.program[0].semesters[0].sections[0].sectionName);
-//           if (sectionIndex !== -1) {
-//             // Section exists, add only new students to that section
-//             const section = existingProgram.semesters[semesterIndex].sections[sectionIndex];
-//             const newStudents = AcademicYear.program[0].semesters[0].sections[0].students.filter(newStudent => {
-//               return !section.students.some(existingStudent => existingStudent.regNo === newStudent.regNo);
-//             });
-//             section.students.push(...newStudents);
-//           } else {
-//             // Section doesn't exist, add a new section with students
-//             existingProgram.semesters[semesterIndex].sections.push(AcademicYear.program[0].semesters[0].sections[0]);
-//           }
-//         } else {
-//           // Semester doesn't exist, add a new semester with sections and students
-//           existingProgram.semesters.push(AcademicYear.program[0].semesters[0]);
-//         }
-//       } else {
-//         // Program doesn't exist, add new program with semesters, sections, and students
-//         existingDocument.AcademicYear.program.push(AcademicYear.program[0]);
-//       }
+    // Check if a document with the given AcademicYear already exists
+    const existingDocument = await Admingradesheet.findOne({ 'AcademicYear.year': AcademicYear.year });
 
-//       const options = {
-//         new: true,
-//       };
+    if (existingDocument) {
+      const existingProgram = existingDocument.AcademicYear.program.find(program => program.programname === AcademicYear.program[0].programname);
+      if (existingProgram) {
+        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === AcademicYear.program[0].semesters[0].semesterNumber);
+        if (semesterIndex !== -1) {
+          const sectionIndex = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === AcademicYear.program[0].semesters[0].sections[0].sectionName);
+          if (sectionIndex !== -1) {
+            // Section exists, add only new students to that section
+            const section = existingProgram.semesters[semesterIndex].sections[sectionIndex];
+            const newStudents = AcademicYear.program[0].semesters[0].sections[0].students.filter(newStudent => {
+              return !section.students.some(existingStudent => existingStudent.regNo === newStudent.regNo);
+            });
+            section.students.push(...newStudents);
+          } else {
+            // Section doesn't exist, add a new section with students
+            existingProgram.semesters[semesterIndex].sections.push(AcademicYear.program[0].semesters[0].sections[0]);
+          }
+        } else {
+          // Semester doesn't exist, add a new semester with sections and students
+          existingProgram.semesters.push(AcademicYear.program[0].semesters[0]);
+        }
+      } else {
+        // Program doesn't exist, add new program with semesters, sections, and students
+        existingDocument.AcademicYear.program.push(AcademicYear.program[0]);
+      }
 
-//       const result = await existingDocument.save();
-//       console.log(result);
+      const options = {
+        new: true,
+      };
 
-//       res.status(200).json({ success: true, message: 'AdminGradesheet updated successfully' });
-//     } else {
-//       // If no document exists, create a new one
-//       const newAdminGradesheet = new Admingradesheet({
-//         AcademicYear,
-//       });
+      const result = await existingDocument.save();
+      console.log(result);
 
-//       const savedAdminGradesheet = await newAdminGradesheet.save();
-//       console.log("Saved data is:", savedAdminGradesheet);
+      res.status(200).json({ success: true, message: 'AdminGradesheet updated successfully' });
+    } else {
+      // If no document exists, create a new one
+      const newAdminGradesheet = new Admingradesheet({
+        AcademicYear,
+      });
 
-//       res.status(201).json({ message: 'AdminGradesheet saved successfully' });
-//     }
-//   } catch (error) {
-//     console.error('Error saving AdminGradesheet document:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+      const savedAdminGradesheet = await newAdminGradesheet.save();
+      console.log("Saved data is:", savedAdminGradesheet);
+
+      res.status(201).json({ message: 'AdminGradesheet saved successfully' });
+    }
+  } catch (error) {
+    console.error('Error saving AdminGradesheet document:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 
 const updateAdminGradesheet = asyncHandler(async (req, res) => {
   try {
@@ -481,8 +507,6 @@ const getAdminGradesheet = asyncHandler(async (req, res) => {
       return res.json({ programNames });
     }
 
-
-
     // Find the requested program
     const requestedProgram = data.AcademicYear.program.find(p => p.programname === program.programname);
     if (!requestedProgram) {
@@ -516,8 +540,6 @@ const getAdminGradesheet = asyncHandler(async (req, res) => {
     if (!sectionnames) {
       return res.json({ sectionNames }); // Only return section names if sectionnames is not provided
     }
-
-
 
     // Retrieve student data for all sections in the requested section names
     const students = [];
@@ -565,8 +587,6 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
       return res.json({ programNames });
     }
 
-
-
     // Find the requested program
     const requestedProgram = data.AcademicYear.program.find(p => p.programname === program.programname);
     if (!requestedProgram) {
@@ -601,8 +621,6 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
       return res.json({ sectionNames }); // Only return section names if sectionnames is not provided
     }
 
-
-
     // Retrieve student data for all sections in the requested section names
     const students = [];
     filteredSections.forEach(section => {
@@ -625,14 +643,4 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-
-
-export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, updateAdminGradesheet, saveAssignSubject, 
-saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 
+export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject,saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 

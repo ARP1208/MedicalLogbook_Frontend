@@ -1,9 +1,9 @@
 import React, { useState,useEffect} from "react";
 import LogoNav from "../../Components/Admin/LogoNav";
-import FacultyNavbar from "../../Components/Faculty/FacultyNavbar";
-import Facultyannouncement from "./Facultyannouncement";
+import Studentannouncement from "./Studentannouncement";
+import Studentnavbar from "../../Components/Student/Studentnavbar";
 
-const Facultyhomepage = () => {
+const StudentAnnouncementhome = () => {
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     const storedPreference = sessionStorage.getItem('sidebarCollapsed');
@@ -35,8 +35,8 @@ const Facultyhomepage = () => {
   return (
     <section>
       <LogoNav />
-      <FacultyNavbar />
-      {showAnnouncement && <Facultyannouncement />}
+      <Studentnavbar />
+      {showAnnouncement && <Studentannouncement />}
       <div className="fixed h-full">
         <nav className={`sideb h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
 
@@ -71,4 +71,4 @@ const Facultyhomepage = () => {
   );
 };
 
-export default Facultyhomepage;
+export default StudentAnnouncementhome;

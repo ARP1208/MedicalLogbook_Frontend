@@ -462,6 +462,12 @@ height: 52px;
 .w-20vw{
   width: 20vw;
 }
+.w-80vw{
+  width: 80vw;
+}
+.left-45{
+  left: 180px;
+}
 }
 
 .glassmorphism {

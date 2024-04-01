@@ -72,7 +72,7 @@ const Announcementhomepage = () => {
 
             <button onClick={() => handleOptions("Announcement")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
               <i class="fa-solid fa-bullhorn p-2" style={{ color: "#ffffff" }} />
-              <p className="relative top-2 text-base">Announcement</p>
+              <p className="relative top-2 text-base">Announcements</p>
             </button>
 
             <button onClick={() => handleOptions("Createannouncement")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">

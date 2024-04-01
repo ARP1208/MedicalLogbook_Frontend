@@ -25,7 +25,7 @@ const Createannouncement = () => {
         setUploadedFileName(file.name);
       };
       reader.readAsDataURL(file);
-    }z
+    } z
   };
 
   const handleChange = (e) => {
@@ -95,6 +95,7 @@ const Createannouncement = () => {
 
       setUploadedFileName("");
       setUploadedFile(null);
+      setUploadedImage(null);
 
       // if (announcementResponse.status >= 200 && announcementResponse.status < 300) {
       //   console.log(announcementResponse.data);
@@ -113,13 +114,13 @@ const Createannouncement = () => {
 
   return (
     <section className="relative top-0 m-0 left-40 overflow-hidden">
-      <div className="relative flex left-7 top-7 w-auto mb-10 z-10">
+      <div className="relative flex left-12 top-7 w-auto mb-10 z-10">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
           Create Announcement
         </button>
       </div>
 
-      <div className="border-2 md:h-3/4 w-65vw rounded-md border-sky-500 relative flex flex-col justify-center items-center m-5 sm:mt-10 sm:h-auto md:mt-20 z-10">
+      <div className="border-2 md:h-3/4 w-70vw rounded-md border-sky-500 relative flex flex-col justify-center items-center m-5 sm:mt-10 sm:h-auto md:mt-20 z-10">
         <div className="p-5 gap-2 grid-flow-row grid w-full md:w-3/4 lg:w-1/2 mx-auto">
           <form action="" className="relative" >
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 text-start">
@@ -209,17 +210,16 @@ const Createannouncement = () => {
                 Create
               </button>
 
-              <button
+            </div>
+          </form>
+
+          <button
             onClick={() => handlePreview(uploadedFileName)}
             className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
           >
             Preview
           </button>
 
-            </div>
-          </form>
-
-         
         </div>
       </div>
     </section>

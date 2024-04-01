@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Select from "react-select";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const GenerateSemester = () => {
   const Semester = [
@@ -18,10 +20,31 @@ const GenerateSemester = () => {
   return Semester;
 };
 
+const GenerateSubject = () => {
+  const Subject = [
+    { value: "select Subject", label: "Select Subject" },
+    { value: "sub1", label: "Subject 1" },
+    { value: "sub2", label: "Subject 2" },
+    { value: "sub3", label: "Subject 3" },
+    { value: "sub4", label: "Subject 4" },
+  ];
+
+  return Subject;
+};
+
 const Dailyattendance = ({ subjectname, subcode, examination }) => {
+
+  const [startDate, setStartDate] = React.useState(new Date());
+  const [EndDate, setEndDate] = React.useState(new Date());
+
   const [selectedSemester, setSelectedSemester] = React.useState({
     value: "Select Semester",
     label: "Select Semester",
+  });
+
+  const [selectedSubject, setselectedSubject] = React.useState({
+    value: "Select Subject",
+    label: "Select Subject",
   });
 
   return (
@@ -32,23 +55,53 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
         </button>
       </div>
 
-      <div className="border-1 px-10 py-5 h-auto h-60vh w-auto overflow-hidden rounded-md border-black flex flex-col justify-center items-center mx-10 mt-20">
+      <div className="border-1 px-10 py-4 h-auto w-auto overflow-hidden rounded-md border-black flex flex-col justify-center items-center mx-10 mt-18">
         <div className="overflow-hidden block">
-          <div className="grid grid-cols-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-10 text-balance">
-            <h6>Name: ABC</h6>
-            <h6>Registration Number: 22097001</h6>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-x-10 gap-y-5 text-balance">
+            <div className="flex flex-row gap-x-7 justify-center items-center">
+            Semester
             <Select
               value={selectedSemester}
               onChange={setSelectedSemester}
               options={GenerateSemester()}
-              className="w-15vw"
+              className="w-20vw"
             />
-            <h6>GPA: 0.00</h6>
-            <h6>CGPA: 0.00</h6>
-            <h6>Total Credits Earned: 24</h6>
+            </div>
+            <div className="flex flex-row gap-x-5 justify-center items-center">
+            Subject
+            <Select
+              value={selectedSubject}
+              onChange={setselectedSubject}
+              options={GenerateSubject()}
+              className="w-20vw"
+            />
+            </div>
+            <div className="flex flex-row gap-x-5 justify-center items-center">
+              From Date
+            <DatePicker
+              id="startDate"
+              selected={startDate}
+              onChange={(date) => setStartDate(date)}
+              className="border rounded w-20vw py-2 px-3 text-gray-700 leading-tight"
+            />
+            </div>
+           <div className="flex flex-row gap-x-5 justify-center items-center">
+            To Date
+            <DatePicker
+              id="EndDate"
+              selected={EndDate}
+              onChange={(date) => setEndDate(date)}
+              className="border rounded w-20vw py-2 px-3 text-gray-700 leading-tight"
+            />
+            </div>
+          </div>
+          <div className=" grid grid-cols-3 mt-5">
+          <h6>Name: ABC</h6>
+            <h6>Registration Number: 22097001</h6> 
+            <h6>Semester: 3 </h6>
           </div>
           <form>
-            <div className="flex w-70vw h-40vh border-1 mt-4 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
+            <div className="flex w-70vw h-40vh border-1 mt-2 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
               <table className="w-full h-10 text-center rounded-md border-collapse">
                 <thead>
                   <tr>
@@ -71,18 +124,26 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td className="border border-black px-4 py-2">10/03/2024</td>
+                    <td className="border border-black px-4 py-2">
+                      10/03/2024
+                    </td>
                     <td className="border border-black px-4 py-2">MONDAY</td>
                     <td className="border border-black px-4 py-2">SUB123</td>
                     <td className="border border-black px-4 py-2">PHYSICS</td>
-                    <td className="border border-black px-4 py-2"><span style={{color:"red"}}>ABSENT</span></td>
+                    <td className="border border-black px-4 py-2">
+                      <span style={{ color: "red" }}>ABSENT</span>
+                    </td>
                   </tr>
                   <tr>
-                    <td className="border border-black px-4 py-2">11/03/2024</td>
+                    <td className="border border-black px-4 py-2">
+                      11/03/2024
+                    </td>
                     <td className="border border-black px-4 py-2">TUESDAY</td>
                     <td className="border border-black px-4 py-2">SUB124</td>
                     <td className="border border-black px-4 py-2">MATHS</td>
-                    <td className="border border-black px-4 py-2"><span style={{color:"green"}}>PRESENT</span></td>
+                    <td className="border border-black px-4 py-2">
+                      <span style={{ color: "green" }}>PRESENT</span>
+                    </td>
                   </tr>
                 </tbody>
               </table>

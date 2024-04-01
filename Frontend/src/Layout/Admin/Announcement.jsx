@@ -36,28 +36,6 @@ const Announcement = () => {
     fetchAnnouncements();
   }, []);
 
-  // useEffect(() => {
-  //   const handleDelete = async (announcementTitle) => {
-  //     try {
-  //       console.log(announcementTitle);
-  //       const response = await fetch(`http://127.0.0.1:8000/admin/DeleteAnnouncement`, {
-  //         method: 'DELETE',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({ announcementTitle: announcementTitle }),
-  //       });
-  //       const data = await response.json();
-  //       console.log(data); // Log the response data
-  //     } catch (error) {
-  //       console.error('Error deleting announcement:', error.message);
-  //     }
-  //   };
-
-  //   if (error) {
-  //     console.error('Error fetching announcements:', error.message); // Log error message
-  //   }
-  // }, [error]);
 
   const handleDelete = (announcementTitle) => {
     console.log(announcementTitle);
@@ -120,7 +98,7 @@ const Announcement = () => {
         />
       ) : (
         <>
-          <div className="absolute flex left-5 top-5 w-auto ">
+          <div className="absolute flex left-10 top-5 w-auto ">
             {showAnnouncementButton && (
               <button
                 className="bg-sky-500 rounded-md w-auto text-lg"
@@ -134,7 +112,7 @@ const Announcement = () => {
           <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10">
             <div className="p-10">
               <div className="overflow-hidden block">
-                <div className="flex w-80vw h-50vh mb-4 border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto  border-sky-500 rounded-xl">
+                <div className="flex w-70vw h-50vh mb-4 border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto  border-sky-500 rounded-xl">
                   <table className="w-full h-10 text-center rounded-md border-collapse">
                     <thead>
                       <tr>

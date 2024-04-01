@@ -61,6 +61,7 @@ import Studentnavbar from "./Components/Student/Studentnavbar.jsx";
 import Studenthomepage from "./Layout/Student/Studenthomepage.jsx";
 import Profilestudenthomepage from "./Layout/Student/Profilestudenthomepage.jsx";
 import Pglogstudenthome from "./Layout/Student/Pglogstudenthome.jsx";
+import StudentAnnouncementhome from "./Layout/Student/StudentAnnouncementhome.jsx";
 
 
 const router = createBrowserRouter(
@@ -255,7 +256,11 @@ const router = createBrowserRouter(
         path="/Pglogstudenthome"
         element={<Pglogstudenthome />}
       ></Route>
-    
+      <Route
+        index={true}
+        path="/StudentAnnouncementhome"
+        element={<StudentAnnouncementhome />}
+      ></Route>
 
     </Route>
     

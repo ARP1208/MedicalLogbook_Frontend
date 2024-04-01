@@ -21,7 +21,7 @@ const FacultyNavbar = () => {
             }
           >
             {" "}
-            Announcement{" "}
+            Announcements{" "}
           </NavLink>
         </nav>
 

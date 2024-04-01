@@ -95,15 +95,99 @@ const Createassessment = () => {
       // Reset options
     }
   };
+  const handleCreateAssessment = async () => {
+    const assessmentData = {
+      AcademicYear: {
+        year: academicYear.value,
+        program: [
+          {
+            programname: selectedProgram.value,
+            semesters: [
+              {
+                semesterNumber: selectedSemester.value,
+                sections: [
+                  {
+                    sectionName: selectedSection.value,
+                    assessment: [
+                      {
+                        assessmentId: assessmentid,
+                        assessmentName: assessmentName,
+                        assessmentquestion: questions.map((q) => ({
+                          question: q.question,
+                          optionA: q.options[0],
+                          optionB: q.options[1],
+                          optionC: q.options[2],
+                          optionD: q.options[3],
+                          answer: q.answer,
+                        })),
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    };
+  
+    try {
+      const response = await fetch(
+        'http://localhost:8000/faculty/saveAddAssessment',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(assessmentData),
+        }
+      );
+      console.log(response);
+      if (!response.ok) {
+        throw new Error('Error adding assessment');
+      }
+      console.log('Assessment added successfully', response);
+      alert('Assessment added successfully');
+      resetFormState();
+    } catch (error) {
+      console.error('Error adding assessment:', error);
+      alert('Failed to add assessment. Please try again.');
+    }
+  };
+  
+  const resetFormState = () => {
+    setAcademicYear({ value: 'select Academic year', label: 'select Academic year' });
+    setSelectedProgram({ value: 'select Program', label: 'select Program' });
+    setSelectedSemester({ value: 'select Semester', label: 'select Semester' });
+    setSelectedSection({ value: 'select Section', label: 'select Section' });
+    setAssessmentName('');
+    setAssessmentid('');
+    setQuestion('');
+    setOptions(['', '', '', '']);
+    setQuestions([]);
+    setAnswer('');
+    setOpen(false);
+  };
+  
+  // Function to handle preview button click
+  const handlePreview = () => {
+    setOpen(true);
+  };
 
   const handleOptionChange = (index, e) => {
     const newOptions = [...options];
     newOptions[index] = e.target.value;
     setOptions(newOptions);
   };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Call your handleCreateAssessment function here
+  };
+  
 
   return (
     <section className="fixed">
+       <form onSubmit={handleSubmit}>
       <div className="fixed flex left-5 top-32 ml-50 h-auto w-auto">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
           Create Assessment
@@ -194,13 +278,13 @@ const Createassessment = () => {
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white ml-4 py-2 px-4 w-auto  rounded focus:outline-none focus:shadow-outline"
-          >
+            onClick={handleCreateAssessment}>
             Create
           </button>
           <button
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white ml-4 py-2 px-4 w-auto  rounded focus:outline-none focus:shadow-outline"
-              onClick={() => setOpen(true)}
+              onClick={handlePreview}
             >
               Preview
             </button>
@@ -265,6 +349,7 @@ const Createassessment = () => {
           </div>
         </div>
       </div>
+      </form>
     </section>
   );
 };
