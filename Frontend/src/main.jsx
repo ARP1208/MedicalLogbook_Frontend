@@ -62,7 +62,9 @@ import Studenthomepage from "./Layout/Student/Studenthomepage.jsx";
 import Profilestudenthomepage from "./Layout/Student/Profilestudenthomepage.jsx";
 import Pglogstudenthome from "./Layout/Student/Pglogstudenthome.jsx";
 import StudentAnnouncementhome from "./Layout/Student/StudentAnnouncementhome.jsx";
-
+import ProfileHodHome from "./Layout/HOD/ProfileHodHome.jsx";
+import HODhomePage from "./Layout/HOD/HODhomePage.jsx";
+import DepartmentalAnnHome from "./Layout/HOD/DepartmentalAnnHome.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -262,6 +264,23 @@ const router = createBrowserRouter(
         element={<StudentAnnouncementhome />}
       ></Route>
 
+      <Route
+        index={true}
+        path="/HODhomePage"
+        element={<HODhomePage />}
+      ></Route>
+
+      <Route
+        index={true}
+        path="/ProfileHome"
+        element={<ProfileHodHome />}
+      ></Route>
+
+      <Route
+        index={true}
+        path="/DepartmentalAnnHome"
+        element={<DepartmentalAnnHome />}
+      ></Route>
     </Route>
     
   )

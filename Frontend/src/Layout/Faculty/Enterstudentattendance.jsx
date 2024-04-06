@@ -126,6 +126,23 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
     setAttendance(updatedAttendance);
   };
 
+  
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      const text = event.target.result;
+      const parsedJsonArray = await csvtojson().fromString(text);
+      console.log("Value are: ", parsedJsonArray); // Print JSON data to console
+      setJsonArray(parsedJsonArray); // Store JSON array in state
+      setCsvData(parsedJsonArray)
+      setOpenCsvPopup(true); // Show CSV popup
+    };
+
+    reader.readAsText(file);
+  };
+
   return (
     <section className="left-50 absolute">
       <div className="absolute flex left-10 top-4">
@@ -261,16 +278,68 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
           </div>
         </form>
         <div className="relative flex justify-center items-center gap-2">
-          <button
-            className="bg-blue-500 rounded-md w-40 h-auto text-white text-lg">
-            Upload CSV
-          </button>
+        <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className="hidden"
+              id="csv-upload"
+
+            />
+            <button
+              type="button"
+              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline cursor-pointer"
+              onClick={() => document.getElementById("csv-upload").click()}
+            >
+              Upload CSV
+            </button>
           <button
             className="bg-blue-500 rounded-md w-20 h-auto text-white text-lg">
             Save
           </button>
         </div>
       </div>
+
+      {/* {openCsvPopup && (
+        <Attendancecsvpopup
+          open={openCsvPopup}
+          onClose={() => setOpenCsvPopup(false)}
+        >
+          <div className="lg:w-50vw md:w-30vw sm:20vw lg:h-45vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg overflow-auto">
+            <div className="text-2xl font-black text-blue-950 justify-self-center m-20">
+              Your csv has been Uploaded !!!
+            </div>
+            <h5>To view the more details, Please Click on preview</h5>
+            <div className="flex gap-3 justify-center items-center py-2">
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
+                onClick={() => setOpenPreviewPopup(true)}
+              >
+                Preview
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
+                onClick={handleSaveButtonClick}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </Attendancecsvpopup>
+      )}
+
+      {openPreviewPopup && (
+        <Assignsubjectpreview
+          open={openPreviewPopup}
+          onClose={() => setOpenPreviewPopup(false)}
+          csvData={csvData} // Pass the csvData prop here
+        >
+
+        </Assignsubjectpreview>
+      )} */}
+
     </section>
   );
 };
