@@ -77,6 +77,8 @@ const Createassessment = () => {
 
   const [assessmentName, setAssessmentName] = useState("");
   const [assessmentid, setAssessmentid] = useState("");
+  const [assessmentduration, setassessmentduration] = useState("");
+  const [assessmentmarks, setassessmentmarks] = useState("");
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
   const [questions, setQuestions] = useState([]);
@@ -193,11 +195,11 @@ const Createassessment = () => {
           Create Assessment
         </button>
         <div
-          className={`fixed p-4 flex left-5 ml-50 top-45 flex-wrap w-70vw justify-center items-center border-sky-500 border-3 rounded-md bg-gray-200 ${
+          className={`fixed p-4 flex left-5 ml-50 top-45 flex-wrap w-75vw justify-center items-center border-sky-500 border-3 rounded-md bg-gray-200 ${
             open ? "blur-background" : ""
           }`}
         >
-          <div className="flex justify-center items-center gap-5 mb-4 sm:grid sm:grid-cols-1 md:grid-cols-2">
+          <div className="flex justify-center items-center gap-5 mb-4 sm:grid sm:grid-cols-1 md:grid-cols-4">
             <input
               placeholder="Enter Assessment Name"
               value={assessmentName}
@@ -208,6 +210,20 @@ const Createassessment = () => {
               placeholder="Enter Assessment Id"
               value={assessmentid}
               onChange={(e) => setAssessmentid(e.target.value)}
+              className="shadow  border  rounded text-gray-700 px-3 py-2  focus:outline-none focus:shadow-outline"
+            />
+            <input
+              placeholder="Duration in minutes"
+              value={assessmentduration}
+              type="number"
+              onChange={(e) => setassessmentduration(e.target.value)}
+              className="shadow  border  rounded text-gray-700 px-3 py-2  focus:outline-none focus:shadow-outline"
+            />
+            <input
+              placeholder="Maximum Marks"
+              value={assessmentmarks}
+              type="number"
+              onChange={(e) => setassessmentmarks(e.target.value)}
               className="shadow  border  rounded text-gray-700 px-3 py-2  focus:outline-none focus:shadow-outline"
             />
           </div>
@@ -303,6 +319,12 @@ const Createassessment = () => {
                 </h5>
                 <h5 className="font-bold mt-4">
                   Assessment Name: {assessmentName}
+                </h5>
+                <h5 className="font-bold mt-4">
+                  Duration: {assessmentduration}
+                </h5>
+                <h5 className="font-bold mt-4">
+                  Maximum marks: {assessmentmarks}
                 </h5>
                 </div>
                 <div className="mt-6 text-start ml-10">

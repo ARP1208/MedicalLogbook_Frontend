@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
-import { useEffect } from 'react';
 
 const generateYearOptions = () => {
   const currentYear = new Date().getFullYear();
@@ -76,12 +75,14 @@ const generateRegNumbers = (count) => {
 
 const Entermarksgradesheet = () => {
   const regNumbers = generateRegNumbers(20);
-  const [academicYear, setAcademicYear] = React.useState({ value: 'select Academic year', label: 'select Academic year' });
-  const [selectedProgram, setSelectedProgram] = React.useState({ value: 'select Program', label: 'select Program' });
-  const [selectedSemester, setSelectedSemester] = React.useState({ value: 'select Semester', label: 'select Semester' });
-  const [selectedSection, setSelectedSection] = React.useState({ value: 'select Section', label: 'select Section' });
-  const [selectedSubjects, setSelectedSubjects] = React.useState(subjectOptions.map(subject => ({ ...subject, marks: '' })));
-  const [selectedStudents, setSelectedStudents] = React.useState([]);
+  const [academicYear, setAcademicYear] = useState({ value: 'select Academic year', label: 'select Academic year' });
+  const [selectedProgram, setSelectedProgram] = useState({ value: 'select Program', label: 'select Program' });
+  const [selectedSemester, setSelectedSemester] = useState({ value: 'select Semester', label: 'select Semester' });
+  const [selectedSection, setSelectedSection] = useState({ value: 'select Section', label: 'select Section' });
+  const [selectedSubjects, setSelectedSubjects] = useState(subjectOptions.map(subject => ({ ...subject, marks: '' })));
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [extractedMarks, setExtractedMarks] = useState([[]]);
+  const [modifiedRows, setModifiedRows] = useState(new Set());
 
   const handleSubjectChange = (index, newValue) => {
     const updatedSubjects = [...selectedSubjects];
@@ -112,47 +113,92 @@ const Entermarksgradesheet = () => {
       }
 
       const responseData = await response.json();
-      setSelectedStudents(responseData.students);
-      console.log(responseData.students);
-      return responseData.students;
+
+      // Assuming the response data is an array of students
+      if (Array.isArray(responseData.students)) {
+        // Update selectedStudents state properly
+        console.log(responseData.students);
+        const allMarks = responseData.students.map(student =>
+          student.subjects.map(subject => subject.marks || 0)
+        );
+        console.log(allMarks);
+        setExtractedMarks(allMarks);
+        setSelectedStudents(responseData.students.map(student => ({ regno: student.regno, name: student.name })));
+        return responseData.students;
+      } else {
+        throw new Error('Response data is not in the expected format');
+      }
     } catch (e) {
       console.log("Error filtering students: ", e);
-      throw error;
+      throw e;
+    }
+  }
+
+  const set_marks = async (data) => {
+    console.log(data)
+    try {
+      const url = "http://127.0.0.1:8000/admin/setmarks";
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+      console.log(response);
+    } catch (e) {
+      console.log("Error setting marks ", e);
     }
   }
 
   useEffect(() => {
     // Check if all variables are set
-    if (academicYear.value != 'select Academic year' && selectedProgram.value != 'select Program' && selectedSemester.value != 'select Semester' && selectedSection.value != 'select Section') {
+    if (academicYear.value !== 'select Academic year' && selectedProgram.value !== 'select Program' && selectedSemester.value !== 'select Semester' && selectedSection.value !== 'select Section') {
+      setSelectedStudents([]);
       get_students(academicYear.value, selectedProgram.value, selectedSemester.value, selectedSection.value);
     }
   }, [academicYear, selectedProgram, selectedSemester, selectedSection]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Submitting...");
 
-    // Collect the marks entered by the user
-    const marksData = [];
-    selectedStudents.forEach((student, studentIndex) => {
-      const marksEntry = {
-        regNo: student.regNo,
-        marks: []
-      };
-      selectedSubjects.forEach((_, subjectIndex) => {
-        const inputId = `marks-${studentIndex}-${subjectIndex}`;
-        const inputValue = document.getElementById(inputId).value;
-        marksEntry.marks.push(inputValue);
-      });
-      marksData.push(marksEntry);
-    });
+    // Collect the marks entered by the user for modified rows only
+    const marksData = selectedStudents.map((student, studentIndex) => {
+      if (modifiedRows.has(studentIndex)) { // Check if the row is modified
+        const marksEntry = {
+          AcademicYear: academicYear.value,
+          programName: selectedProgram.value,
+          semesterNumber: selectedSemester.value,
+          sectionName: selectedSection.value,
+          regno: student.regno,
+          marks: selectedSubjects.reduce((acc, subject, subjectIndex) => {
+            const inputId = `marks-${studentIndex}-${subjectIndex}`;
+            const inputValue = document.getElementById(inputId).value;
+            acc[subject.label] = inputValue ? parseInt(inputValue) : 0;
+            return acc;
+          }, {})
+        };
+        return marksEntry;
+      } else {
+        return null; // Skip unmodified rows
+      }
+    }).filter(Boolean); // Filter out null entries
 
     // Log the collected marks data
     console.log('Collected Marks Data:', marksData);
+
+    // Call set_marks for each element in marksData
+    await Promise.all(marksData.map(set_marks));
+
+    console.log("All marks set successfully.");
   };
 
-
-
+  // Function to handle changes in input fields
+  const handleInputChange = (studentIndex, subjectIndex) => {
+    // Mark the row as modified
+    setModifiedRows(prevRows => new Set(prevRows).add(studentIndex));
+  };
 
   return (
     <section className='absolute overflow-hidden top-18 left-38 m-10'>
@@ -184,7 +230,7 @@ const Entermarksgradesheet = () => {
           />
         </div>
         <div className='overflow-hidden block'>
-          <form action="#" onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <div className="flex w-65vw h-40vh border-1 mt-4 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
               <table className="w-full h-10 text-center rounded-md border-collapse">
                 <thead>
@@ -201,11 +247,22 @@ const Entermarksgradesheet = () => {
                   {selectedStudents.map((student, index) => (
                     <tr key={index}>
                       <td className="border border-black px-4 py-2">{index + 1}</td>
-                      <td className="border border-black px-4 py-2">{student.regNo}</td>
+                      <td className="border border-black px-4 py-2">{student.regno}</td>
                       <td className="border border-black px-4 py-2">{student.name}</td>
-                      {[...Array(selectedSubjects.length)].map((_, emptyIndex) => (
-                        <td key={`empty-${emptyIndex}`} className="border border-black px-4 py-2">
-                          <input type="number" max="100" min="0" id={`marks-${index}-${emptyIndex}`} placeholder='marks' className='h-full w-full placeholder:text-center text-center' />
+                      {selectedSubjects.map((subject, subjectIndex) => (
+                        <td key={subjectIndex} className="border border-black px-4 py-2">
+                          <input
+                            id={`marks-${index}-${subjectIndex}`}
+                            type="number"
+                            className="w-20"
+                            value={extractedMarks[index][subjectIndex]}
+                            onChange={(e) => {
+                              const updatedMarks = [...extractedMarks];
+                              updatedMarks[index][subjectIndex] = e.target.value;
+                              setExtractedMarks(updatedMarks);
+                              handleInputChange(index, subjectIndex); // Call the function to mark the row as modified
+                            }}
+                          />
                         </td>
                       ))}
                     </tr>

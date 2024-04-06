@@ -43,9 +43,7 @@ const Attendance = ({ subjectname, subcode, examination }) => {
               options={GenerateSemester()}
               className="w-15vw"
             />
-            <h6>GPA: 0.00</h6>
-            <h6>CGPA: 0.00</h6>
-            <h6>Total Credits Earned: 24</h6>
+
           </div>
           <form>
             <div className="flex w-70vw h-45vh border-1 mt-4 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">

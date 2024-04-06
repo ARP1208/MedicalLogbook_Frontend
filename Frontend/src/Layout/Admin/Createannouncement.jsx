@@ -54,17 +54,17 @@ const Createannouncement = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-    console.log('handlesubmit')
+    //   console.log('handlesubmit')
     let formData = new FormData();
-    let date = new Date(adminData.scheduleDate)
-    const formattedDate = date.toLocaleDateString('en-UK');
-    console.log(formattedDate);
+    //   let date = new Date(adminData.scheduleDate)
+    //   // const formattedDate = date.toLocaleDateString('en-UK');
+    //   console.log(formattedDate);
 
     try {
       alert("Data saved");
       console.log(uploadedFileName);
       formData.append("announcementTitle", adminData.announcementTitle);
-      formData.append("scheduleDate", formattedDate.toString());
+      formData.append("scheduleDate", adminData.scheduleDate);
       formData.append("uploadedFileName", uploadedFile);
       formData.append("uploadedFileName", uploadedFileName);
       formData.append("scheduleTime", adminData.scheduleTime);

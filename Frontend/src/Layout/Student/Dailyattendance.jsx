@@ -139,8 +139,8 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
                       11/03/2024
                     </td>
                     <td className="border border-black px-4 py-2">TUESDAY</td>
-                    <td className="border border-black px-4 py-2">SUB124</td>
-                    <td className="border border-black px-4 py-2">MATHS</td>
+                    <td className="border border-black px-4 py-2">SUB123</td>
+                    <td className="border border-black px-4 py-2">PHYSICS</td>
                     <td className="border border-black px-4 py-2">
                       <span style={{ color: "green" }}>PRESENT</span>
                     </td>

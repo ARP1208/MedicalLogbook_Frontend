@@ -1309,13 +1309,13 @@ const Profilestudent = () => {
       </div>
 
       {showStudentCard && (
-        <div className="overflow-auto absolute top-20 w-60vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
+        <div className="overflow-auto absolute top-20 w-75vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
           {renderStudentForm()}
         </div>
       )}
 
       {showParentCard && (
-        <div className="overflow-auto absolute top-20 w-60vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
+        <div className="overflow-auto absolute top-20 w-75vw mt-3 ml-60 h-60vh border-2 border-blue-500 rounded-2xl">
           {renderParentForm()}
         </div>
       )}

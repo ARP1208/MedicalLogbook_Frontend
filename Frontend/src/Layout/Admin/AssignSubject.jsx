@@ -110,6 +110,7 @@ const AssignSubject = () => {
         const subject = document.getElementById(`subject${i + 1}`).value;
         const faculty = document.getElementById(`faculty${i + 1}`).value;
         const subjectCode = document.getElementById(`subjectcode${i + 1}`).value;
+        const credit = document.getElementById(`credit${i + 1}`).value;
         subjectsData.push({ subjectName: subject, facultyName: faculty, subjectCode: subjectCode });
       }
 
@@ -376,7 +377,7 @@ const AssignSubject = () => {
           Assign Subject
         </button>
       </div>
-      <div className="fixed p-4 flex left-5 ml-50 top-45 flex-wrap w-fit border-sky-500 border-3 rounded-md bg-gray-200">
+      <div className="fixed p-4 flex left-5 ml-50 top-45 flex-wrap w-80vw border-sky-500 border-3 rounded-md bg-gray-200">
         <form onSubmit={handleSubmit}>
           <div className="flex-col md:flex-row gap-3 justify-center items-center grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 pb-4">
             <Select
@@ -520,6 +521,19 @@ const AssignSubject = () => {
                       className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       value={formData.subjects[index]?.subjectCode || ''}
                       onChange={(e) => handleSubjectChange(e, index, 'subjectCode')}
+                    />
+                  </label>
+                  <label
+                    htmlFor={`credit${index + 1}`}
+                    className="block text-start text-gray-700 font-bold"
+                  >
+                    Credit {index + 1}
+                    <input
+                      type="number"
+                      id={`credit${index + 1}`}
+                      className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      value={formData.subjects[index]?.credit || ''}
+                      onChange={(e) => handleSubjectChange(e, index, 'credit')}
                     />
                   </label>
                 </div>

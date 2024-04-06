@@ -7,6 +7,7 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
   const [uploadedFileName, setUploadedFileName] = useState(selectedAnnouncement.uploadedFileName);
   const [showeditAnnouncement, setShoweditAnnouncement] = useState(false);
   const [showsave, setShowsave] = useState(false);
+  const [isDateModified, setIsDateModified] = useState(false);
 
   const getfile = async () => {
     try {
@@ -45,6 +46,11 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
     getfile();
     setEditedAnnouncement(selectedAnnouncement);
   }, [selectedAnnouncement]);
+
+  const handleDateChange = (e) => {
+    setIsDateModified(true); // Set isDateModified to true when the user changes the date
+    setEditedAnnouncement({ ...editedAnnouncement, scheduleDate: e.target.value });
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -122,8 +128,8 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
                 <input
                   type="date"
                   id="scheduleDate"
-                  value={convertToHTMLDate(editedAnnouncement.scheduleDate)}
-                  onChange={(e) => setEditedAnnouncement({ ...editedAnnouncement, scheduleDate: e.target.value })}
+                  value={editedAnnouncement.scheduleDate}
+                  onChange={handleDateChange}
                   pattern="[0-9]{2}"
                   className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
                   placeholder="Enter the Schedule date"
@@ -194,7 +200,6 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
           >
             Preview
           </button>
-          {/* Show Announcementhomepage if needed */}
         </div>
       </div>
     </section >

@@ -343,6 +343,33 @@ const Addeditfaculty = () => {
                   <div className="text-red-500">{errors.department}</div>
                 )}
               </div>
+              <div className="flex flex-col">
+                <label>Designation</label>
+                <select
+                  className="py-1 px-10 border border-black"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}>
+                  <option>Select</option>
+                  <option>HOD</option>
+                  <option>Associate Professor</option>
+                  <option>Assistant Professor</option>
+                  <option>Adhoc Professor</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label>Gender</label>
+                <select
+                  className="py-1 px-10 border border-black"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}>
+                  <option>Select</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                </select>
+              </div>
 
               <div className="flex flex-col">
                 <label>Mother tongue:</label>
@@ -383,17 +410,7 @@ const Addeditfaculty = () => {
                   <div className="text-red-500">{errors.dateOfBirth}</div>
                 )}
               </div>
-              <div className="flex flex-col">
-                <label>Gender</label>
-                <select
-                  className="py-1 px-10"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}>
-                  <option>Male</option>
-                  <option>Female</option>
-                </select>
-              </div>
+             
               <div className="flex flex-col">
                 <label>Present mobile number:</label>
                 <input
