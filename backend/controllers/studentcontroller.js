@@ -1,12 +1,16 @@
-import { StudentDetails, StudentLogin, TaskAssignStudent, StudentAssessmentMark } from "../models/student.js";
-import { Assignedsubject } from '../models/admin.js';
-import { TaskAssign, AddAssessment } from "../models/faculty.js";
+import {
+  StudentDetails,
+  StudentLogin,
+  TaskAssignStudent,
+  StudentAssessmentMark,
+} from "../models/student.js";
+import { Assignedsubject } from "../models/admin.js";
+import { TaskAssign, AddAssessment, AssignMarks } from "../models/faculty.js";
 import { connectDB, closeDB } from "../config/db.js";
 import nodemailer from "nodemailer";
 import Parent from "../models/parentdetails.js";
 import express from "express";
 import asyncHandler from "express-async-handler";
-
 
 /////////Student login and fetching the data to display in Student profile./////////////
 // const Studentlogin = asyncHandler(async (req, res) => {
@@ -86,13 +90,15 @@ const Studentlogin = asyncHandler(async (req, res) => {
 
     // Fetch data from Assignedsubject using regno
     const assignedSubjects = await Assignedsubject.findOne({
-      "AcademicYear.program.semesters.sections.students.regno": regno
+      "AcademicYear.program.semesters.sections.students.regno": regno,
     });
 
     if (!assignedSubjects) {
       // Data not found in Assignedsubject
       console.log("Assigned subject details not found for regno:", regno);
-      return res.status(404).json({ error: "Assigned subject details not found" });
+      return res
+        .status(404)
+        .json({ error: "Assigned subject details not found" });
     }
 
     // Data found, extract necessary information
@@ -102,9 +108,8 @@ const Studentlogin = asyncHandler(async (req, res) => {
       message: "Successfully logged in!",
       studentDetails,
       regno,
-      assignedSubjects
+      assignedSubjects,
     });
-
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -202,7 +207,7 @@ const parent = asyncHandler(async (req, res) => {
 const searchStudent = asyncHandler(async (req, res) => {
   const { searchTerm } = req.body;
   console.log("Received credentials:", {
-    searchTerm 
+    searchTerm,
   });
 
   // Check if searchTerm is empty
@@ -212,8 +217,6 @@ const searchStudent = asyncHandler(async (req, res) => {
       message: "Please provide a non-empty search parameter",
     });
   }
-
-
 
   try {
     await connectDB();
@@ -227,7 +230,9 @@ const searchStudent = asyncHandler(async (req, res) => {
       orConditions.push({ regno });
     } else {
       // If searchTerm is not a valid number, search by name or programBranch
-      orConditions.push({ studentname: { $regex: String(searchTerm), $options: "i" } });
+      orConditions.push({
+        studentname: { $regex: String(searchTerm), $options: "i" },
+      });
       orConditions.push({ course: { $regex: searchTerm, $options: "i" } });
     }
 
@@ -261,15 +266,17 @@ const searchStudent = asyncHandler(async (req, res) => {
 
 const UpdateStudentDetails = asyncHandler(async (req, res) => {
   console.log("Received data for update:", req.body);
-  const {enrollmentNumber } = req.body;
+  const { enrollmentNumber } = req.body;
   try {
     await connectDB();
     const studentId = enrollmentNumber;
-    console.log("student ID",studentId);
-    const newUpdateStudent = {...req.body};
-  
+    console.log("student ID", studentId);
+    const newUpdateStudent = { ...req.body };
 
-    const UpdatedStudent = await StudentDetails.updateOne({ enrollmentNumber: studentId }, { $set: newUpdateStudent });
+    const UpdatedStudent = await StudentDetails.updateOne(
+      { enrollmentNumber: studentId },
+      { $set: newUpdateStudent }
+    );
     console.log("saved data is: ", UpdatedStudent);
 
     res.status(201).json({ message: "UpdatedStudent" });
@@ -280,7 +287,6 @@ const UpdateStudentDetails = asyncHandler(async (req, res) => {
     await closeDB();
   }
 });
-
 
 ///////////PG log Component///////////////////////////////////////
 const saveTaskAssignStudent = asyncHandler(async (req, res) => {
@@ -306,7 +312,7 @@ const saveTaskAssignStudent = asyncHandler(async (req, res) => {
 
     // Define the update operation to set Task_Completed to "completed"
     const updateOperation = {
-      $set: { Task_Completed: "completed" }
+      $set: { Task_Completed: "completed" },
     };
 
     // Use TaskAssign.updateOne to update the specified task
@@ -317,7 +323,9 @@ const saveTaskAssignStudent = asyncHandler(async (req, res) => {
 
     console.log("saved data is: ", UpdatedTask);
 
-    res.status(201).json({ message: "Task assigned successfully and faculty task updated" });
+    res
+      .status(201)
+      .json({ message: "Task assigned successfully and faculty task updated" });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -336,7 +344,7 @@ const onclickCheckInUpdateTaskAssign = asyncHandler(async (req, res) => {
 
     // Define the update operation to set Task_Completed to "yet to complete"
     const updateOperation = {
-      $set: { Task_Completed: "yet to complete" }
+      $set: { Task_Completed: "yet to complete" },
     };
 
     // Use TaskAssign.updateOne to update the specified task
@@ -369,7 +377,9 @@ const fetchStudentAssessment = async (req, res) => {
     }
 
     // Find the assigned subject using the registration number
-    const assignSubject = await Assignedsubject.findOne({ 'AcademicYear.program.semesters.sections.students.regno': regno });
+    const assignSubject = await Assignedsubject.findOne({
+      "AcademicYear.program.semesters.sections.students.regno": regno,
+    });
 
     if (!assignSubject) {
       return res.status(404).json({ error: "AssignSubject not found" });
@@ -378,12 +388,15 @@ const fetchStudentAssessment = async (req, res) => {
     // Extract specific academic year, program, semester, section details
     const academicYear = assignSubject.AcademicYear.year;
     const programName = assignSubject.AcademicYear.program[0].programname;
-    const semesterNumber = assignSubject.AcademicYear.program[0].semesters[0].semesterNumber;
-    const sectionName = assignSubject.AcademicYear.program[0].semesters[0].sections[0].sectionName;
+    const semesterNumber =
+      assignSubject.AcademicYear.program[0].semesters[0].semesterNumber;
+    const sectionName =
+      assignSubject.AcademicYear.program[0].semesters[0].sections[0]
+        .sectionName;
 
     // Find academic year in AddAssessment database
     const academicYearFound = await AddAssessment.findOne({
-      'AcademicYear.year': academicYear
+      "AcademicYear.year": academicYear,
     });
 
     if (!academicYearFound) {
@@ -391,21 +404,27 @@ const fetchStudentAssessment = async (req, res) => {
     }
 
     // Find program inside academic year
-    const programFound = academicYearFound.AcademicYear.program.find(program => program.programname === programName);
+    const programFound = academicYearFound.AcademicYear.program.find(
+      (program) => program.programname === programName
+    );
 
     if (!programFound) {
       return res.status(404).json({ error: "Program not found" });
     }
 
     // Find semester inside program
-    const semesterFound = programFound.semesters.find(semester => semester.semesterNumber === semesterNumber);
+    const semesterFound = programFound.semesters.find(
+      (semester) => semester.semesterNumber === semesterNumber
+    );
 
     if (!semesterFound) {
       return res.status(404).json({ error: "Semester not found" });
     }
 
     // Find section inside semester
-    const sectionFound = semesterFound.sections.find(section => section.sectionName === sectionName);
+    const sectionFound = semesterFound.sections.find(
+      (section) => section.sectionName === sectionName
+    );
 
     if (!sectionFound) {
       return res.status(404).json({ error: "Section not found" });
@@ -420,12 +439,15 @@ const fetchStudentAssessment = async (req, res) => {
     }
 
     // Send 200 success response with assessments
-    return res.status(200).json({   academicYear,
-      programName,
-      semesterNumber,
-      sectionName,
-      assessments
-     });
+    return res
+      .status(200)
+      .json({
+        academicYear,
+        programName,
+        semesterNumber,
+        sectionName,
+        assessments,
+      });
   } catch (error) {
     // Handle any errors and send 500 error response
     console.error(error);
@@ -433,87 +455,298 @@ const fetchStudentAssessment = async (req, res) => {
   }
 };
 
-const saveAssessmentStudent = asyncHandler(async (req, res) => {
-  console.log("Received data for saving Assessment :", req.body);
-  const { assessmentId, assessmentName, regno, mark } = req.body;
+const saveAssessmentStudent = async (req, res) => {
+  console.log("Received assessment mark data:", req.body);
 
   try {
-    // Check if assessmentId already exists
-    await connectDB();
-    const existingAssessment = await StudentAssessmentMark.findOne({ assessmentId });
-    if (existingAssessment) {
-      console.error("assessmentId already exists:", assessmentId);
-      return res.status(400).json({ error: "assessmentId already exists" });
+    const { AcademicYear } = req.body;
+
+    // Check if a document with the given AcademicYear already exists
+    let existingDocument = await StudentAssessmentMark.findOne({ 'AcademicYear.year': AcademicYear.year });
+
+    if (existingDocument) {
+      // If document exists, update the assessments data
+
+      // Find or create the program
+      let programIndex = existingDocument.AcademicYear.program.findIndex(program => program.programname === AcademicYear.program[0].programname);
+      if (programIndex === -1) {
+        existingDocument.AcademicYear.program.push({
+          programname: AcademicYear.program[0].programname,
+          semesters: []
+        });
+        programIndex = existingDocument.AcademicYear.program.length - 1;
+      }
+
+      // Find or create the semester
+      let semesterIndex = existingDocument.AcademicYear.program[programIndex].semesters.findIndex(semester => semester.semesterNumber === AcademicYear.program[0].semesters[0].semesterNumber);
+      if (semesterIndex === -1) {
+        existingDocument.AcademicYear.program[programIndex].semesters.push({
+          semesterNumber: AcademicYear.program[0].semesters[0].semesterNumber,
+          sections: []
+        });
+        semesterIndex = existingDocument.AcademicYear.program[programIndex].semesters.length - 1;
+      }
+
+      // Find or create the section
+      let sectionIndex = existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections.findIndex(section => section.sectionName === AcademicYear.program[0].semesters[0].sections[0].sectionName);
+      if (sectionIndex === -1) {
+        existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections.push({
+          sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
+          Students: []
+        });
+        sectionIndex = existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections.length - 1;
+      }
+
+      // Check if student exists
+      let studentIndex = existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].Students.findIndex(student => student.regno === AcademicYear.program[0].semesters[0].sections[0].Students[0].regno);
+      if (studentIndex === -1) {
+        existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].Students.push({
+          regno: AcademicYear.program[0].semesters[0].sections[0].Students[0].regno,
+          assessments: []
+        });
+        studentIndex = existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].Students.length - 1;
+      }
+
+      // Check if assessments already exist for the student
+      const assessments = AcademicYear.program[0].semesters[0].sections[0].Students[0].assessments;
+      const existingAssessmentIds = existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].Students[studentIndex].assessments.map(assessment => assessment.assessmentId);
+      const existingAssessmentNames = existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].Students[studentIndex].assessments.map(assessment => assessment.assessmentName);
+      const newAssessmentIds = assessments.map(assessment => assessment.assessmentId);
+      const newAssessmentNames = assessments.map(assessment => assessment.assessmentName);
+
+      const duplicateId = newAssessmentIds.some(id => existingAssessmentIds.includes(id));
+      const duplicateName = newAssessmentNames.some(name => existingAssessmentNames.includes(name));
+
+      if (duplicateId || duplicateName) {
+        return res.status(400).json({ error: 'Assessment with the same ID or Name already exists for this student.' });
+      }
+
+      // Add assessments
+      existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections[sectionIndex].Students[studentIndex].assessments.push(...assessments);
+
+      const result = await existingDocument.save();
+      console.log(result);
+
+      res.status(200).json({ success: true, message: 'Assessment marks updated successfully' });
+    } else {
+      // If no document exists, create a new one
+      const newAssessmentMarkDocument = new StudentAssessmentMark({
+        AcademicYear,
+      });
+
+      const savedAssessmentMarkDocument = await newAssessmentMarkDocument.save();
+      console.log("Saved assessment mark data is:", savedAssessmentMarkDocument);
+
+      res.status(201).json({ message: 'Assessment marks saved successfully' });
     }
-
-    // Save the new task assessment
-    const newAssessment = new StudentAssessmentMark({
-      assessmentId,
-      assessmentName,
-      regno,
-      mark
-    });
-    const savedAssessment = await newAssessment.save();
-    console.log("Saved Assessment:", savedAssessment);
-    res.status(200).json(savedAssessment); // Optional: Return saved data
   } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    await closeDB();
+    console.error('Error saving assessment marks document:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-});
+};
 
 
-///////////////Academic /////////////////////////////////
+
+
+// ///////////////Academic /////////////////////////////////
+
 const fetchStudentGradeSheet = async (req, res) => {
+  const { regno, name, semesters } = req.body;
+
+  console.log("data is: ", regno, name, semesters);
+
   try {
-    const { regno, name, semesters } = req.body;
-
-    // Find the assigned subjects for the student
-    const assignedSubjects = await Assignedsubject.find({ 'AcademicYear.program.semesters.sections.students.regno': regno });
-
-    if (!assignedSubjects || assignedSubjects.length === 0) {
-      return res.status(404).json({ error: "Assigned subjects not found" });
-    }
-
-    // Filter assigned subjects based on input semesters
-    const filteredSubjects = assignedSubjects.filter(student =>
-      student.AcademicYear.program[0].semesters.some(semester => semesters.includes(semester.semesterNumber))
-    );
-
-    if (!filteredSubjects || filteredSubjects.length === 0) {
-      return res.status(404).json({ error: "No subjects found for specified semesters" });
-    }
-
-    // Prepare the gradesheet with subject details
-    const gradeSheet = filteredSubjects.map(student => {
-      const academicYear = student.AcademicYear.year;
-      const programName = student.AcademicYear.program[0].programname;
-      const semesterNumber = student.AcademicYear.program[0].semesters.find(semester =>
-        semesters.includes(semester.semesterNumber)
-      ).semesterNumber;
-      const sectionName = student.AcademicYear.program[0].semesters[0].sections[0].sectionName;
-      
-      // Access subject details safely
-      const subjectDetails = student.AcademicYear.program[0].semesters.reduce((acc, semester) => {
-        if (semesters.includes(semester.semesterNumber)) {
-          acc.push(...semester.sections[0].students
-            .filter(student => student.regno === regno && student.name === name)
-            .flatMap(student => student.subjects));
-        }
-        return acc;
-      }, []);
-
-      return {  subjectDetails };
+    // Find the semester from the database Assignedsubject
+    const result = await Assignedsubject.findOne({
+      'AcademicYear.program.semesters.semesterNumber': semesters
     });
 
-    // Send 200 success response with gradesheet
-    return res.status(200).json({ regno, name, semesters, gradeSheet });
+    console.log("semester data is: ", result);
+    
+    // If semester does not exist, show error
+    if (!result) {
+      return res.status(404).json({ error: 'Semester does not exist' });
+    }
+
+    // Find the student by regno and name inside the found semester
+    const student = result.AcademicYear.program.flatMap(program => 
+      program.semesters.flatMap(sem => 
+        sem.sections.flatMap(section => 
+          section.students.find(student => student.regno === regno && student.name === name)
+        )
+      )
+    ).filter(Boolean)[0];
+
+    console.log("student data is: ", student);
+
+    // If student does not exist, show error
+    if (!student) {
+      return res.status(404).json({ error: 'Student does not exist' });
+    }
+
+    // Get the subjects array of the student
+    const subjects = student.subjects;
+
+    // Return the subjects array
+    res.json(subjects);
   } catch (error) {
-    // Handle any errors and send 500 error response
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const fetchStudentTestMarks = async (req, res) => {
+  const { regno, name, semesters } = req.body;
+
+  console.log("Data received: ", regno, name, semesters);
+
+  try {
+    // Find the semester from the database AssignMarks
+    const result = await AssignMarks.findOne({
+      'AcademicYear.program.semesters.semesterNumber': semesters
+    });
+
+    console.log("Semester data: ", result);
+
+    // If semester does not exist, show error
+    if (!result) {
+      return res.status(404).json({ error: 'Semester does not exist' });
+    }
+
+    // Find the student by regno and name inside the found semester
+    const studentsubject = result.AcademicYear.program.flatMap(program => 
+      program.semesters.flatMap(sem => 
+        sem.sections.flatMap(section => 
+          section.subjects.map(subject => ({
+            subjectName: subject.subjectName,
+            subjectcode: subject.subjectcode
+          }))
+        )
+      )
+    ).filter(Boolean)[0];
+
+    console.log("studentsubject data: ", studentsubject);
+
+    // Find the student by regno and name inside the found semester
+    const studenttest = result.AcademicYear.program.flatMap(program => 
+      program.semesters.flatMap(sem => 
+        sem.sections.flatMap(section => 
+          section.subjects.flatMap(subject => 
+            subject.students.find(student => student.regno === regno && student.name === name)
+          )
+        )
+      )
+    ).filter(Boolean)[0];
+
+    console.log("Student data: ", studenttest);
+
+    // If student does not exist, show error
+    if (!studenttest) {
+      return res.status(404).json({ error: 'Student does not exist' });
+    }
+
+    // Get the subject array of the section if exists
+    const subjects = studentsubject;
+    console.log("subjects data: ", subjects);
+
+    // Get the test array of the student
+    const tests = studenttest.Test;
+
+    // Find the semester from the database StudentAssessmentMark
+    const resultMark = await StudentAssessmentMark.findOne({
+      'AcademicYear.program.semesters.semesterNumber': semesters
+    });
+
+    console.log("Semester data: ", resultMark);
+
+    // If semester does not exist, show error
+    if (!resultMark) {
+      return res.status(404).json({ error: 'Semester does not exist' });
+    }
+
+    
+
+    // Find the student by regno inside the found semester
+    const student = resultMark.AcademicYear.program.flatMap(program => 
+      program.semesters.flatMap(sem => 
+        sem.sections.flatMap(section => 
+          section.Students.find(student => student.regno === regno)
+        )
+      )
+    ).filter(Boolean)[0];
+
+    console.log("Student data: ", student);
+
+    // If student does not exist, show error
+    if (!student) {
+      return res.status(404).json({ error: 'Student does not exist' });
+    }
+
+    // Get the assessments array of the student
+    const assessments = student.assessments;
+
+    // Return the subject, test, and assessments array
+    res.json({ subjects, tests, assessments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const fetchStudentCourseDetails = async (req, res) => {
+  const { regno, name, semesters } = req.body;
+
+  console.log("data is: ", regno, name, semesters);
+
+  try {
+    // Find the semester from the database Assignedsubject
+    const result = await Assignedsubject.findOne({
+      'AcademicYear.program.semesters.semesterNumber': semesters
+    });
+
+    console.log("semester data is: ", result);
+    
+    // If semester does not exist, show error
+    if (!result) {
+      return res.status(404).json({ error: 'Semester does not exist' });
+    }
+
+    // Find the student by regno and name inside the found semester
+    const studentsection = result.AcademicYear.program.flatMap(program => 
+      program.semesters.flatMap(sem => 
+        sem.sections.map(section => ({
+          sectionName: section.sectionName
+        }))
+      )
+    ).filter(Boolean)[0];
+    
+    console.log("studentsection data: ", studentsection);
+
+    // Find the student by regno and name inside the found semester
+    const student = result.AcademicYear.program.flatMap(program => 
+      program.semesters.flatMap(sem => 
+        sem.sections.flatMap(section => 
+          section.students.find(student => student.regno === regno && student.name === name)
+        )
+      )
+    ).filter(Boolean)[0];
+
+    console.log("student data is: ", student);
+
+    // If student does not exist, show error
+    if (!student) {
+      return res.status(404).json({ error: 'Student does not exist' });
+    }
+
+    // Get the subjects array of the student
+    const section = studentsection
+    const subjects = student;
+
+    // Return the subjects array
+    res.json({section, subjects });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -527,4 +760,19 @@ const fetchStudentGradeSheet = async (req, res) => {
 
 
 
-export { Studentlogin ,student, parent, studentmail, searchStudent, UpdateStudentDetails, saveTaskAssignStudent, onclickCheckInUpdateTaskAssign, fetchStudentAssessment, saveAssessmentStudent, fetchStudentGradeSheet};
+
+export {
+  Studentlogin,
+  student,
+  parent,
+  studentmail,
+  searchStudent,
+  UpdateStudentDetails,
+  saveTaskAssignStudent,
+  onclickCheckInUpdateTaskAssign,
+  fetchStudentAssessment,
+  saveAssessmentStudent,
+  fetchStudentGradeSheet,
+  fetchStudentTestMarks,
+  fetchStudentCourseDetails
+};

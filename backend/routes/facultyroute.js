@@ -14,6 +14,8 @@ import {
   updateAssignMarks,
   saveAddAssessment,
   getFacultyindividualAssessment,
+  getAssessmentByQuestionNumber,
+  showAssessment,
 //   DeleteTaskAssign,
   DeleteAssessment,
 } from "../controllers/facultycontroller.js";
@@ -40,6 +42,8 @@ router.route("/saveAddAssessment").post(saveAddAssessment);
 router
   .route("/getFacultyindividualAssessment")
   .post(getFacultyindividualAssessment);
+router.route("/getAssessmentByQuestionNumber").post(getAssessmentByQuestionNumber);
+router.route("/showfacultyAssessment").post(showAssessment);
 router.route("/DeleteAssessment").delete(DeleteAssessment);
 
 //////////////PG Log Component////////////////////////

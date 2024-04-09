@@ -56,12 +56,37 @@ const TaskAssignStudentschema = new mongoose.Schema({
   }]
 });
 
+
 const AssessmentMarkSchema = new mongoose.Schema({
-  assessmentId : { type: String},
-  assessmentName : { type: String},
-  regno : { type: String},
-  mark : { type: Number}
-})
+  AcademicYear: {
+    year: String,
+    program: [
+      {
+        programname: String,
+        semesters: [
+          {
+            semesterNumber: String,
+            sections: [
+              {
+                sectionName: String,
+                Students: [{
+                  regno: Number,
+                  assessments: [{
+                    assessmentId: String,
+                    assessmentName: String, 
+                    totalMarks: Number,
+                    markObtain: Number
+                  }]
+                }]
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+});
+
 
 
 

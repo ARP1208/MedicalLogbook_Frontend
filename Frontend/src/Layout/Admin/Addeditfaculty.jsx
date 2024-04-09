@@ -11,6 +11,7 @@ const Addeditfaculty = () => {
     motherTongue: "",
     facultyid: "",
     department: "",
+    designation:"HOD",
     dateOfJoining: "",
     dateOfBirth: "",
     gender: "Male",
@@ -34,6 +35,7 @@ const Addeditfaculty = () => {
         motherTongue: facultyData.motherTongue,
         facultyid: facultyData.facultyid,
         department: facultyData.department,
+        designation: facultyData.designation,
         dateOfJoining: facultyData.dateOfJoining ? facultyData.dateOfJoining.slice(0, 10) : "",
         dateOfBirth: facultyData.dateOfBirth ? facultyData.dateOfBirth.slice(0, 10) : "",
         gender: facultyData.gender,
@@ -213,6 +215,7 @@ const Addeditfaculty = () => {
           motherTongue: "",
           facultyid: "",
           department: "",
+          designation:"",
           dateOfJoining: "",
           dateOfBirth: "",
           gender: "",
@@ -225,7 +228,7 @@ const Addeditfaculty = () => {
           socialCategory: "",
         });
 
-        
+
 
         // Check if the request was successful (status code 2xx)
         if (facultyresponse.status >= 200 && facultyresponse.status < 300) {
@@ -275,7 +278,7 @@ const Addeditfaculty = () => {
   };
 
 
-  
+
   return (
     <section>
       <div className="fixed left-10 top-30 ml-40">
@@ -343,6 +346,33 @@ const Addeditfaculty = () => {
                   <div className="text-red-500">{errors.department}</div>
                 )}
               </div>
+              <div className="flex flex-col">
+                <label>Designation</label>
+                <select
+                  className="py-1 px-10 border border-black"
+                  name="designation"
+                  value={formData.designation}
+                  onChange={handleChange}>
+                  <option>Select</option>
+                  <option>HOD</option>
+                  <option>Associate Professor</option>
+                  <option>Assistant Professor</option>
+                  <option>Adhoc Professor</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label>Gender</label>
+                <select
+                  className="py-1 px-10 border border-black"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}>
+                  <option>Select</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                </select>
+              </div>
 
               <div className="flex flex-col">
                 <label>Mother tongue:</label>
@@ -383,17 +413,7 @@ const Addeditfaculty = () => {
                   <div className="text-red-500">{errors.dateOfBirth}</div>
                 )}
               </div>
-              <div className="flex flex-col">
-                <label>Gender</label>
-                <select
-                  className="py-1 px-10"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}>
-                  <option>Male</option>
-                  <option>Female</option>
-                </select>
-              </div>
+             
               <div className="flex flex-col">
                 <label>Present mobile number:</label>
                 <input
@@ -494,9 +514,9 @@ const Addeditfaculty = () => {
                 type="submit"
                 value="save"
                 className="bg-blue-500 rounded-md w-40 h-auto text-white md:text-22 sm:text-lg"
-                
+
               >
-                Save 
+                Save
               </button>
             </div>
           </form>

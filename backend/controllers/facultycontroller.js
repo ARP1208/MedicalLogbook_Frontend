@@ -21,7 +21,7 @@ const Facultylogin = asyncHandler(async (req, res) => {
   console.log("Received credentials:", { emailId, password });
 
   try {
-    // Find the admin with the provided email
+    // Find the user with the provided email
     const facultylog = await FacultyLogin.findOne({ emailId, password });
 
     console.log(facultylog);
@@ -30,32 +30,18 @@ const Facultylogin = asyncHandler(async (req, res) => {
       console.log("Invalid credentials:", { emailId, password });
       res.status(401).json({ error: "Invalid credentials" });
     } else {
-      // Passwords match, send a success message
-      console.log("Faculty successfully logged in");
-
-      // Fetch faculty details data
+      // Passwords match, check if the user is an HOD
       const facultyDetails = await FacultyDetails.findOne({ emailId });
 
-      if (facultyDetails) {
-        // Faculty details found, send the details to the client
-        console.log("Faculty details fetched:", facultyDetails);
-
-        // Fetch all the academic years from the indican database
-        const academicYears = await Assignedsubject.find().distinct(
-          "AcademicYear.year"
-        );
-
-        // Send the academic years to the frontend
-        res.json({
-          message: "Successfully logged in!",
-          facultyDetails,
-          academicYears,
-        });
-      } else {
-        // Faculty details not found
-        console.log("Faculty details not found for email:", emailId);
-        res.status(404).json({ error: "Faculty details not found" });
+      if (facultyDetails.designation === 'HOD') {
+        // User is an HOD, save their credentials to the hodschema
+        const newHod = new hodlogin({ emailId, password });
+        const savedHod = await newHod.save();
+        console.log("HOD credentials saved:", savedHod);
       }
+
+      // Send success message to the client
+      res.json({ message: "Successfully logged in!" });
     }
   } catch (error) {
     console.error("Error during login:", error);
@@ -63,22 +49,26 @@ const Facultylogin = asyncHandler(async (req, res) => {
   }
 });
 
-
-////////////////
 const faculty = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
+
   try {
-    await connectDB();
+    // Check if the user registering is an HOD
+    if (req.body.designation === 'HOD') {
+      const newHod = new hodlogin(req.body);
+      const savedHod = await newHod.save();
+      console.log("HOD credentials saved:", savedHod);
+    }
+
+    // Save faculty details to the FacultyDetails schema
     const newfaculty = new FacultyDetails(req.body);
     const savedfaculty = await newfaculty.save();
-    console.log("saved data is: ", savedfaculty);
+    console.log("Saved faculty data:", savedfaculty);
 
-    res.status(201).json({ message: "savedfaculty" });
+    res.status(201).json({ message: "Faculty data saved successfully" });
   } catch (error) {
     console.error("Error saving faculty document:", error);
     res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    await closeDB();
   }
 });
 
@@ -92,7 +82,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const facultymail = asyncHandler(async (req, res) => {
-  const { emailId, applicationNumber } = req.body;
+  const { emailId, applicationNumber, designation } = req.body;
   console.log("Received credentials:", emailId);
   const password = applicationNumber;
   try {
@@ -112,21 +102,159 @@ const facultymail = asyncHandler(async (req, res) => {
     });
 
     await connectDB();
-    const newFacultyLogin = new FacultyLogin({ emailId, password });
-    const savedFacultyLogin = await newFacultyLogin.save();
-    console.log("successfully login data saved data is: ", savedFacultyLogin);
+    if (designation === 'HOD') {
+      try {
+        const existingHod = await hodlogin.findOneAndUpdate(
+          { emailId },
+          { $set: { password } },
+          { new: true }
+        );
+        if (existingHod) {
+          console.log("Existing HOD credentials updated:", existingHod);
+        } else {
+          const newHod = new hodlogin({ emailId, password });
+          const savedHod = await newHod.save();
+          console.log("New HOD credentials saved:", savedHod);
+        }
+      } catch (err) {
+        console.error("Error updating HOD credentials:", err);
+      }
+    } else {
+      const newFacultyLogin = new FacultyLogin({ emailId, password });
+      const savedFacultyLogin = await newFacultyLogin.save();
+      console.log("Faculty credentials saved:", savedFacultyLogin);
+    }
 
     console.log("sent email is: ", emailId);
 
     res.status(200).json({
       success: true,
-      message: "Faculty email sent successfully and also saved in the database",
+      message: "Faculty email sent successfully",
     });
   } catch (error) {
-    console.error("Error saving faculty details:", error);
-    res.status(500).json({ success: false, message: "Error saving faculty" });
+    console.error("Error saving credentials:", error);
+    res.status(500).json({ success: false, message: "Error sending email or saving credentials" });
   }
 });
+
+
+
+
+
+
+
+
+// const Facultylogin = asyncHandler(async (req, res) => {
+//   const { emailId, password } = req.body;
+
+//   console.log("Received credentials:", { emailId, password });
+
+//   try {
+//     // Find the admin with the provided email
+//     const facultylog = await FacultyLogin.findOne({ emailId, password });
+
+//     console.log(facultylog);
+
+//     if (!facultylog) {
+//       console.log("Invalid credentials:", { emailId, password });
+//       res.status(401).json({ error: "Invalid credentials" });
+//     } else {
+//       // Passwords match, send a success message
+//       console.log("Faculty successfully logged in");
+
+//       // Fetch faculty details data
+//       const facultyDetails = await FacultyDetails.findOne({ emailId });
+
+//       if (facultyDetails) {
+//         // Faculty details found, send the details to the client
+//         console.log("Faculty details fetched:", facultyDetails);
+
+//         // Fetch all the academic years from the indican database
+//         const academicYears = await Assignedsubject.find().distinct(
+//           "AcademicYear.year"
+//         );
+
+//         // Send the academic years to the frontend
+//         res.json({
+//           message: "Successfully logged in!",
+//           facultyDetails,
+//           academicYears,
+//         });
+//       } else {
+//         // Faculty details not found
+//         console.log("Faculty details not found for email:", emailId);
+//         res.status(404).json({ error: "Faculty details not found" });
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Error during login:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
+
+// ////////////////
+// const faculty = asyncHandler(async (req, res) => {
+//   console.log("Received data:", req.body);
+//   try {
+//     await connectDB();
+//     const newfaculty = new FacultyDetails(req.body);
+//     const savedfaculty = await newfaculty.save();
+//     console.log("saved data is: ", savedfaculty);
+
+//     res.status(201).json({ message: "savedfaculty" });
+//   } catch (error) {
+//     console.error("Error saving faculty document:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   } finally {
+//     await closeDB();
+//   }
+// });
+
+// // Nodemailer transporter setup
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: "shettytejas96@gmail.com",
+//     pass: "ndhg gltd onks xuan",
+//   },
+// });
+
+// const facultymail = asyncHandler(async (req, res) => {
+//   const { emailId, applicationNumber } = req.body;
+//   console.log("Received credentials:", emailId);
+//   const password = applicationNumber;
+//   try {
+//     const mailOptions = {
+//       from: "prajwalshetty@gmail.com",
+//       to: emailId,
+//       subject: "Welcome to Your App",
+//       text: `Thank you for registering! Your login credentials:\n\nEmail: ${emailId}\nPassword: ${applicationNumber}`,
+//     };
+
+//     transporter.sendMail(mailOptions, (error, info) => {
+//       if (error) {
+//         console.error("Error sending email:", error);
+//       } else {
+//         console.log("Email sent:", info.response);
+//       }
+//     });
+
+//     await connectDB();
+//     const newFacultyLogin = new FacultyLogin({ emailId, password });
+//     const savedFacultyLogin = await newFacultyLogin.save();
+//     console.log("successfully login data saved data is: ", savedFacultyLogin);
+
+//     console.log("sent email is: ", emailId);
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Faculty email sent successfully and also saved in the database",
+//     });
+//   } catch (error) {
+//     console.error("Error saving faculty details:", error);
+//     res.status(500).json({ success: false, message: "Error saving faculty" });
+//   }
+// });
 
 const searchfaculty = asyncHandler(async (req, res) => {
   const { searchTerm } = req.body;
@@ -323,7 +451,7 @@ const saveAssignMarks = asyncHandler(async (req, res) => {
               const existingSubject = section.subjects.find(sub => sub.subjectcode === subject.subjectcode);
               if (existingSubject) {
                 subject.students.forEach(student => {
-                  const existingStudentIndex = existingSubject.students.findIndex(s => s.regNo === student.regNo);
+                  const existingStudentIndex = existingSubject.students.findIndex(s => s.regno === student.regno);
                   if (existingStudentIndex !== -1) {
                     // Student already exists, update marks
                     student.Test.forEach(test => {
@@ -451,11 +579,11 @@ const updateAssignMarks = asyncHandler(async (req, res) => {
 
               // Iterate through each student in the subject
               for (const studentData of students) {
-                const { regNo, Test } = studentData;
+                const { regno, Test } = studentData;
 
                 // Find the existing student or add a new one
                 let existingStudent = existingSubject.students.find(
-                  (student) => student.regNo === regNo
+                  (student) => student.regno === regno
                 );
                 if (existingStudent) {
                   // Update existing student's test marks
@@ -605,7 +733,6 @@ const saveAddAssessment = asyncHandler(async (req, res) => {
   }
 });
 
-
 const getFacultyindividualAssessment = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
   try {
@@ -622,6 +749,8 @@ const getFacultyindividualAssessment = asyncHandler(async (req, res) => {
 
     // Check if data is available before accessing properties
     const data = await AddAssessment.findOne(query);
+
+    console.log("data is: ", data);
     if (!data) {
       return res.status(404).json({ error: 'Data not found' });
     }
@@ -630,12 +759,10 @@ const getFacultyindividualAssessment = asyncHandler(async (req, res) => {
       return res.json({ programNames });
     }
 
-
-
     // Find the requested program
     const requestedProgram = data.AcademicYear.program.find(p => p.programname === program.programname);
     if (!requestedProgram) {
-      return res.status(404).json({ error: `Program '${program.programname}' data not found `});
+      return res.status(404).json({ error: `Program '${program.programname}' data not found` });
     }
 
     // If semesterNumber is not provided, return the list of semester numbers for the program
@@ -647,7 +774,7 @@ const getFacultyindividualAssessment = asyncHandler(async (req, res) => {
     // Find the requested semester
     const requestedSemester = requestedProgram.semesters.find(s => s.semesterNumber === semesterNumber);
     if (!requestedSemester) {
-      return res.status(404).json({ error: `Semester '${semesterNumber}' data not found `});
+      return res.status(404).json({ error: `Semester '${semesterNumber}' data not found` });
     }
 
     // If sectionnames is provided, filter out sections that match the provided section name
@@ -656,33 +783,104 @@ const getFacultyindividualAssessment = asyncHandler(async (req, res) => {
       filteredSections = requestedSemester.sections.filter(sec => sectionnames.includes(sec.sectionName));
     }
 
-    // Extract section names of the requested semester
-    const sectionNames = filteredSections.map(sec => sec.sectionName);
-    console.log("Section Names:", sectionNames);
-    if (!sectionNames) {
-      return res.json({ error: `No sections found for the provided section names '${sectionnames}'` });
-    }
-    if (!sectionnames) {
-      return res.json({ sectionNames }); // Only return section names if sectionnames is not provided
-    }
-
-
-
-    // Retrieve student data for all sections in the requested section names
-    const assessment = [];
+    // Extract assessmentId and assessmentName from the filtered sections
+    const assessments = [];
     filteredSections.forEach(section => {
-      assessment.push(...section.assessment.map(assessment => ({
-        assessmentId: assessment.assessmentId,
-        assessmentName: assessment.assessmentName,
-        // subjects: student.subjects
-      })));
+      section.assessment.forEach(assessment => {
+        assessments.push({
+          assessmentId: assessment.assessmentId,
+          assessmentName: assessment.assessmentName
+        });
+      });
     });
 
-    // Send the requested section names and student data in the response
-    return res.json({
+    // Send the requested assessments in the response
+    return res.json({ assessments });
 
-      assessment
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+const getAssessmentByQuestionNumber = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  try {
+    const { assessmentId, assessmentName, assessmentquestion } = req.body;
+
+    // Check if all necessary fields are provided
+    if (!assessmentId || !assessmentName || !Number.isInteger(assessmentquestion)) {
+      return res.status(400).json({ error: 'Assessment ID, assessment name, and valid question index are required' });
+    }
+
+    // Search for the assessment by the provided details
+    const data = await AddAssessment.findOne({
+      'AcademicYear.program': {
+        $elemMatch: {
+          'semesters.sections.assessment': {
+            $elemMatch: {
+              assessmentId: assessmentId,
+              assessmentName: assessmentName
+            }
+          }
+        }
+      }
     });
+
+    if (!data) {
+      return res.status(404).json({ error: `Assessment with ID '${assessmentId}' and name '${assessmentName}' not found` });
+    }
+
+    // Get the specified question from the assessment
+    const assessment = data.AcademicYear.program.flatMap(program => program.semesters.map(semester => semester.sections.flatMap(section => section.assessment.filter(assessment => assessment.assessmentId === assessmentId && assessment.assessmentName === assessmentName)))).flat()[0];
+
+    if (!assessment) {
+      return res.status(404).json({ error: `Assessment with ID '${assessmentId}' and name '${assessmentName}' does not contain questions` });
+    }
+
+    const questionIndex = parseInt(assessmentquestion);
+    if (questionIndex >= 0 && questionIndex < assessment.assessmentquestion.length) {
+      const selectedQuestion = assessment.assessmentquestion[questionIndex];
+      return res.json({ assessmentId, assessmentName, question: selectedQuestion });
+    } else {
+      return res.status(404).json({ error: `Question index '${questionIndex}' is out of range for assessment with ID '${assessmentId}' and name '${assessmentName}'` });
+    }
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+const showAssessment = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  try {
+    const { academicYear, program, semester, section, assessmentId, assessmentName } = req.body;
+
+    // Check if all necessary fields are provided
+    if (!academicYear || !program || !semester || !section || !assessmentId || !assessmentName) {
+      return res.status(400).json({ error: 'Academic year, program, semester, section, assessment ID, and assessment name are required' });
+    }
+
+    // Search for the assessment by the provided details
+    const data = await AddAssessment.findOne({
+      'AcademicYear.year': academicYear,
+      'AcademicYear.program.programname': program,
+      'AcademicYear.program.semesters.semesterNumber': semester,
+      'AcademicYear.program.semesters.sections.sectionName': section,
+      'AcademicYear.program.semesters.sections.assessment.assessmentId': assessmentId,
+      'AcademicYear.program.semesters.sections.assessment.assessmentName': assessmentName
+    }, {
+      'AcademicYear.program.semesters.sections.assessment.$': 1 // Projection to retrieve only the matched assessment
+    });
+
+    if (!data) {
+      return res.status(404).json({ error: `Assessment with Academic year '${academicYear}', program '${program}', semester '${semester}', section '${section}', assessment ID '${assessmentId}', and assessment name '${assessmentName}' not found `});
+    }
+
+    const assessment = data.AcademicYear.program[0].semesters[0].sections[0].assessment[0]; // Assuming only one assessment matches the query
+
+    return res.json(assessment.assessmentquestion); // Send the assessment questions in the response
 
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -935,6 +1133,8 @@ export {
   updateAssignMarks,
   saveAddAssessment,
   getFacultyindividualAssessment,
+  getAssessmentByQuestionNumber,
+  showAssessment,
   // DeleteTaskAssign,
   DeleteAssessment
 };

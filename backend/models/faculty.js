@@ -39,7 +39,7 @@ const TaskAssignschema = new mongoose.Schema({
   End_Date: { type: Date },
   Task_Completed: { type: String},
   Students: [{
-    regno: { type: String },
+    regno: { type: Number },
     Name: { type: String },
   }]
 });
@@ -65,7 +65,7 @@ const assignmarks = new mongoose.Schema({
                   subjectName: String,
                   students: [
                     {
-                      regNo: String,
+                      regno: Number,
                       name: String,
                       Test: [
                         {
@@ -103,6 +103,8 @@ const addassessment = new mongoose.Schema({
                   {
                     assessmentId : String,
                     assessmentName : String,
+                    Duration : Number,
+                    totalMark : Number,
                     assessmentquestion : [
                       {
                         questionno : Number,
