@@ -4,6 +4,8 @@ import { connectDB, closeDB } from "../config/db.js";
 import asyncHandler from "express-async-handler";
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const login = asyncHandler(async (req, res) => {
   const { emailId, password } = req.body;
@@ -241,6 +243,36 @@ const getFilebyAnnouncement = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteFile = asyncHandler(async (req, res) => {
+  const { file } = req.body;
+  const outdatedFile = file;
+
+  console.log("Requested file to delete is ", outdatedFile);
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+
+  // Construct the file path relative to the root of your server application
+  const filePath = path.join(__dirname, '../uploads', outdatedFile);
+
+  // Check if the file exists
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error("Error accessing file:", err);
+      return res.status(404).json({ success: false, message: 'File not found' });
+    }
+
+    // Delete the file
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+        return res.status(500).json({ success: false, message: 'Failed to delete file' });
+      }
+      
+      console.log('File deleted successfully');
+      return res.status(200).json({ success: true, message: 'File deleted successfully' });
+    });
+  });
+});
+
 const fetchAnnouncementByTitle = asyncHandler(async (req, res) => {
   let { announcementTitle } = req.body;
   const announcement_Title = announcementTitle
@@ -271,8 +303,9 @@ const UpdateAnnouncement = asyncHandler(async (req, res) => {
     const announcementId = a_id;
     console.log("announcementTitle", announcementId);
     const newUpdateAnnouncement = { ...req.body };
-
-
+    if (req.file) {
+      newUpdateAnnouncement.file = req.file.path;
+    }
     const UpdatedAnnouncement = await AdminAnnoucement.updateOne({ _id: a_id }, { $set: newUpdateAnnouncement });
     console.log("saved data is: ", UpdatedAnnouncement);
 
@@ -290,29 +323,39 @@ const DeleteAnnouncement = asyncHandler(async (req, res) => {
   const { announcementTitle } = req.body;
 
   try {
+    // Connect to the database
     await connectDB();
-    const announcementId = announcementTitle;
-    console.log("announcementID", announcementId);
 
-    const announcement = await AdminAnnoucement.findOne({ announcementTitle: announcementId });
-    console.log("Filename is:", announcement.uploadedFileName);
-    const filepath = path.join('backend/uploads', announcement.uploadedFileName);
+    // Find the announcement by title
+    const announcement = await AdminAnnoucement.findOne({ announcementTitle });
 
-    // Assuming AdminAnnoucement is your Mongoose model
-    const deletedAnnouncement = await AdminAnnoucement.deleteOne({ announcementTitle: announcementId });
+    // Check if the announcement exists
+    if (!announcement) {
+      console.log("Announcement not found for deletion");
+      return res.status(404).json({ error: "Announcement not found for deletion" });
+    }
+
+    // Delete the associated file
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const filePath = path.join(__dirname, '../uploads', announcement.uploadedFileName);
+
+    // Delete the announcement document
+    const deletedAnnouncement = await AdminAnnoucement.deleteOne({ announcementTitle });
+
     // Check if the document was deleted successfully
     if (deletedAnnouncement.deletedCount === 1) {
-      fs.unlinkSync(filepath);
-      console.log("Deleted announcement with title:", announcementId);
-      res.status(200).json({ message: "Announcement deleted successfully" });
+      fs.unlinkSync(filePath);
+      console.log("Deleted announcement with title:", announcementTitle);
+      return res.status(200).json({ message: "Announcement deleted successfully" });
     } else {
-      console.log("Announcement not found for deletion");
-      res.status(404).json({ error: "Announcement not found for deletion" });
+      console.log("Failed to delete announcement with title:", announcementTitle);
+      return res.status(500).json({ error: "Failed to delete announcement" });
     }
   } catch (error) {
-    console.error("Error deleting announcement document:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error deleting announcement:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   } finally {
+    // Close the database connection
     await closeDB();
   }
 });
@@ -347,8 +390,68 @@ const filter_students = asyncHandler(async (req, res) => {
 });
 
 
-////////////////// Grade Sheet////////////////////////
+const setMarks = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  const { AcademicYear, programName, semesterNumber, sectionName, regno, marks } = req.body;
 
+  try {
+    // Ensure database connection is established
+    await connectDB();
+
+    // Query the database to find the relevant document
+    const result = await Assignedsubject.findOne({
+      "AcademicYear.year": AcademicYear,
+    });
+
+    console.log("Result:", result);
+
+    // If document found, update marks for the student
+    if (result) {
+      const existingProgram = result.AcademicYear.program.find(program => program.programname === programName);
+
+      if (existingProgram) {
+        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === semesterNumber);
+
+        if (semesterIndex !== -1) {
+          const sectionIndex = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === sectionName);
+
+          if (sectionIndex !== -1) {
+            const studentIndex = existingProgram.semesters[semesterIndex].sections[sectionIndex].students.findIndex(student => student.regno === regno);
+
+            if (studentIndex !== -1) {
+              console.log("Setting marks for student:", existingProgram.semesters[semesterIndex].sections[sectionIndex].students[studentIndex]);
+
+              // Update marks for each subject
+              existingProgram.semesters[semesterIndex].sections[sectionIndex].students[studentIndex].subjects.forEach(subject => {
+                if (marks.hasOwnProperty(subject.subjectName)) {
+                  subject.marks = marks[subject.subjectName];
+                }
+              });
+
+              // Save the updated document
+              await result.save();
+              console.log("Marks updated successfully.");
+
+              // Respond with success message
+              return res.status(200).json({ message: "Marks updated successfully" });
+            }
+          }
+        }
+      }
+    }
+
+    // If no matching data found, respond with 404 status
+    console.log("No matching data found.");
+    return res.status(404).json({ message: "No matching data found" });
+  } catch (error) {
+    // Log and respond with internal server error
+    console.error('Error updating marks:', error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+//////////////// Grade Sheet //////////////////////////
 const saveAdminGradesheet = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
 
@@ -644,4 +747,4 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
   }
 });
 
-export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject,saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 
+export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, deleteFile, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, setMarks, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject,saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 

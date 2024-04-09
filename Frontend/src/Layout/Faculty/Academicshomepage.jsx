@@ -1,9 +1,9 @@
 import React, { useState,useEffect} from "react";
 import LogoNav from "../../Components/Admin/LogoNav";
 import FacultyNavbar from "../../Components/Faculty/FacultyNavbar";
-import Facultyannouncement from "./Facultyannouncement";
 import Internalmarks from "./Internalmarks";
 import Editmarks from "./Editmarks";
+import Enterstudentattendance from "./Enterstudentattendance";
 
 const Academicshomepage = () => {
 
@@ -15,6 +15,7 @@ const Academicshomepage = () => {
 
   const [showInternalmarks, setshowInternalmarks] = useState(false);
   const [showeditmarks,setshoweditmarks]=useState(false);
+  const [showstudentattendance,setshowstudentattendance]=useState(false);
 
   useEffect(() => {
     // Save collapsed state changes to sessionStorage
@@ -30,14 +31,22 @@ const Academicshomepage = () => {
     if(component === "Home"){
       setshowInternalmarks(false);
       setshoweditmarks(false);
+      setshowstudentattendance(false);
     }
     else if (component === "Internalmarks") {
       setshowInternalmarks(true);
       setshoweditmarks(false);
+      setshowstudentattendance(false);
     }
     else if(component === "Editmarks"){
       setshoweditmarks(true);
       setshowInternalmarks(false);
+      setshowstudentattendance(false);
+    }
+    else if(component === "Attendance"){
+      setshoweditmarks(false);
+      setshowInternalmarks(false);
+      setshowstudentattendance(true);
     }
   };
 
@@ -47,6 +56,7 @@ const Academicshomepage = () => {
       <FacultyNavbar />
       {showInternalmarks && <Internalmarks />}
       {showeditmarks && <Editmarks/>}
+      {showstudentattendance && <Enterstudentattendance/>}
       <div className="fixed h-full">
         <nav className={`sideb h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
 
@@ -70,7 +80,7 @@ const Academicshomepage = () => {
             className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 "
           >
             <i className="fa-solid fa-pen-to-square" style={{ color: "#ffffff" }}/>
-            <p className="relative top-2 text-base">&nbsp;&nbsp;Marks</p>
+            <p className="relative top-2 text-base">&nbsp;Internal&nbsp;Marks</p>
           </button>
 
           <button
@@ -80,6 +90,15 @@ const Academicshomepage = () => {
               
             <i className="fa-solid fa-file-pen" style={{ color: "#ffffff" }}/>
             <p className="relative top-2 text-base">&nbsp;Edit&nbsp;Marks</p>
+          </button>
+
+          <button
+            onClick={() => handleOptions("Attendance")}
+            className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 "
+          >
+              
+              <i className="fa-solid fa-user-check p-2" style={{ color: "#ffffff" }} />
+            <p className="relative top-2 text-base">&nbsp;Attendance</p>
           </button>
         </nav>
       </div>

@@ -16,7 +16,8 @@ const adminAnnoucementSchema = new mongoose.Schema({
   scheduleDate: { type: String },
   uploadedFile: { type: Buffer },
   uploadedFileName: { type: String },
-  scheduleTime: { type: String }
+  scheduleTime: { type: String },
+  department: {type: String}
 })
 
 //////////GradeSheet page for admin /////////

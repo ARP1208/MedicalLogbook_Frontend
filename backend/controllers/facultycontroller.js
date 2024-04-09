@@ -6,6 +6,7 @@ import {
   AddAssessment,
 } from "../models/faculty.js";
 import { StudentDetails } from "../models/student.js";
+import { hodlogin} from '../models/hod.js';
 import { Assignedsubject, AdminAnnoucement } from "../models/admin.js";
 import { connectDB, closeDB } from "../config/db.js";
 import nodemailer from "nodemailer";
@@ -136,125 +137,6 @@ const facultymail = asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, message: "Error sending email or saving credentials" });
   }
 });
-
-
-
-
-
-
-
-
-// const Facultylogin = asyncHandler(async (req, res) => {
-//   const { emailId, password } = req.body;
-
-//   console.log("Received credentials:", { emailId, password });
-
-//   try {
-//     // Find the admin with the provided email
-//     const facultylog = await FacultyLogin.findOne({ emailId, password });
-
-//     console.log(facultylog);
-
-//     if (!facultylog) {
-//       console.log("Invalid credentials:", { emailId, password });
-//       res.status(401).json({ error: "Invalid credentials" });
-//     } else {
-//       // Passwords match, send a success message
-//       console.log("Faculty successfully logged in");
-
-//       // Fetch faculty details data
-//       const facultyDetails = await FacultyDetails.findOne({ emailId });
-
-//       if (facultyDetails) {
-//         // Faculty details found, send the details to the client
-//         console.log("Faculty details fetched:", facultyDetails);
-
-//         // Fetch all the academic years from the indican database
-//         const academicYears = await Assignedsubject.find().distinct(
-//           "AcademicYear.year"
-//         );
-
-//         // Send the academic years to the frontend
-//         res.json({
-//           message: "Successfully logged in!",
-//           facultyDetails,
-//           academicYears,
-//         });
-//       } else {
-//         // Faculty details not found
-//         console.log("Faculty details not found for email:", emailId);
-//         res.status(404).json({ error: "Faculty details not found" });
-//       }
-//     }
-//   } catch (error) {
-//     console.error("Error during login:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-// ////////////////
-// const faculty = asyncHandler(async (req, res) => {
-//   console.log("Received data:", req.body);
-//   try {
-//     await connectDB();
-//     const newfaculty = new FacultyDetails(req.body);
-//     const savedfaculty = await newfaculty.save();
-//     console.log("saved data is: ", savedfaculty);
-
-//     res.status(201).json({ message: "savedfaculty" });
-//   } catch (error) {
-//     console.error("Error saving faculty document:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   } finally {
-//     await closeDB();
-//   }
-// });
-
-// // Nodemailer transporter setup
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: "shettytejas96@gmail.com",
-//     pass: "ndhg gltd onks xuan",
-//   },
-// });
-
-// const facultymail = asyncHandler(async (req, res) => {
-//   const { emailId, applicationNumber } = req.body;
-//   console.log("Received credentials:", emailId);
-//   const password = applicationNumber;
-//   try {
-//     const mailOptions = {
-//       from: "prajwalshetty@gmail.com",
-//       to: emailId,
-//       subject: "Welcome to Your App",
-//       text: `Thank you for registering! Your login credentials:\n\nEmail: ${emailId}\nPassword: ${applicationNumber}`,
-//     };
-
-//     transporter.sendMail(mailOptions, (error, info) => {
-//       if (error) {
-//         console.error("Error sending email:", error);
-//       } else {
-//         console.log("Email sent:", info.response);
-//       }
-//     });
-
-//     await connectDB();
-//     const newFacultyLogin = new FacultyLogin({ emailId, password });
-//     const savedFacultyLogin = await newFacultyLogin.save();
-//     console.log("successfully login data saved data is: ", savedFacultyLogin);
-
-//     console.log("sent email is: ", emailId);
-
-//     res.status(200).json({
-//       success: true,
-//       message: "Faculty email sent successfully and also saved in the database",
-//     });
-//   } catch (error) {
-//     console.error("Error saving faculty details:", error);
-//     res.status(500).json({ success: false, message: "Error saving faculty" });
-//   }
-// });
 
 const searchfaculty = asyncHandler(async (req, res) => {
   const { searchTerm } = req.body;

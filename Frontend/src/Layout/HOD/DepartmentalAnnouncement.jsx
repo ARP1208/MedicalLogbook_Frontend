@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
-import EditAnnouncement from "./EditAnnouncement";
+import EditDepartmentalAnn from "./EditDepartmentalAnn";
 import axios from "axios";
 
 const DepartmentalAnnouncement = () => {
   const [announcements, setAnnouncements] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [showEditAnnouncement, setShowEditAnnouncement] = useState(false);
-  const [showAnnouncementButton, setShowAnnouncementButton] = useState(true);
+  const [showEditDepartmentalAnn, setShowEditDepartmentalAnn] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
   const [adminannoucements, setAnnouncement] = useState([]);
   const [error, setError] = useState(null);
-  const [isAnnouncementEditable, setIsAnnouncementEditable] = useState(null);
+  const [isAnnouncemtEditable, setIsAnnouncementEditable] = useState(null);
 
   const fetchAnnouncements = async () => {
     try {
@@ -50,29 +48,28 @@ const DepartmentalAnnouncement = () => {
     }
   };
 
-  const handleEditAnnouncement = (selectedAnnouncement) => {
+  const handleEditDepartmentalAnn = (selectedAnnouncement) => {
     setSelectedAnnouncement(selectedAnnouncement);
     setIsAnnouncementEditable(true);
-    setShowEditAnnouncement(true);
-    setShowAnnouncementButton(false);
+    setShowEditDepartmentalAnn(true);
   };
 
   const handleShowAnnouncement = (selectedAnnouncement) => {
+    console.log("Show announcement:", selectedAnnouncement);
     setSelectedAnnouncement(selectedAnnouncement);
     setIsAnnouncementEditable(false);
-    setShowEditAnnouncement(true);
-    setShowAnnouncementButton(false);
+    setShowEditDepartmentalAnn(true);
   };
 
   return (
     <section className="left-50 top-33 absolute">
-      {showEditAnnouncement ? (
-        <EditAnnouncement
+      {showEditDepartmentalAnn ? (
+        <EditDepartmentalAnn
           selectedAnnouncement={selectedAnnouncement}
-          isEditable={isAnnouncementEditable}
+          isEditable={isAnnouncemtEditable}
           onSave={() => {
-            setIsAnnouncementEditable(null);
-            setShowEditAnnouncement(false);
+            // setIsAnnouncementEditable(null);
+            setShowEditDepartmentalAnn(false);
           }}
         />
       ) : (
@@ -112,7 +109,7 @@ const DepartmentalAnnouncement = () => {
                       ) : (
                         adminannoucements.map((announcement, index) => {
                           const isInFilteredAnnouncements =
-                            announcement.department == undefined;
+                            announcement.department !== undefined;
                           return (
                             <tr key={index}>
                               <td className="border border-black px-4 py-2">
@@ -127,7 +124,7 @@ const DepartmentalAnnouncement = () => {
                                     <button
                                       className="w-20 rounded-md bg-blue-500 text-lg mr-2"
                                       onClick={() =>
-                                        handleEditAnnouncement(announcement)
+                                        handleEditDepartmentalAnn(announcement)
                                       }
                                     >
                                       Edit

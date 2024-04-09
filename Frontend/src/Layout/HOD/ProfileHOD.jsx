@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-import axios from "axios";
+//import axios from "axios";
 
-
-const Addeditfaculty = () => {
+const ProfileHOD = () => {
   const [formData, setFormData] = useState({
     facultyname: "",
     applicationNumber: "",
     motherTongue: "",
     facultyid: "",
     department: "",
-    designation:"HOD",
     dateOfJoining: "",
     dateOfBirth: "",
-    gender: "Male",
+    gender: "",
     presentMobileNumber: "",
     previousMobileNumber: "",
     emailId: "",
@@ -35,9 +33,12 @@ const Addeditfaculty = () => {
         motherTongue: facultyData.motherTongue,
         facultyid: facultyData.facultyid,
         department: facultyData.department,
-        designation: facultyData.designation,
-        dateOfJoining: facultyData.dateOfJoining ? facultyData.dateOfJoining.slice(0, 10) : "",
-        dateOfBirth: facultyData.dateOfBirth ? facultyData.dateOfBirth.slice(0, 10) : "",
+        dateOfJoining: facultyData.dateOfJoining
+          ? facultyData.dateOfJoining.slice(0, 10)
+          : "",
+        dateOfBirth: facultyData.dateOfBirth
+          ? facultyData.dateOfBirth.slice(0, 10)
+          : "",
         gender: facultyData.gender,
         presentMobileNumber: facultyData.presentMobileNumber,
         previousMobileNumber: facultyData.previousMobileNumber,
@@ -57,8 +58,7 @@ const Addeditfaculty = () => {
     if (name === "dateOfBirth" || name === "dateOfJoining") {
       // Convert the date value to the format "YYYY-MM-DD"
       const dateObject = new Date(value);
-      formattedValue =
-        dateObject.toISOString().split("T")[0];
+      formattedValue = dateObject.toISOString().split("T")[0];
     }
 
     setFormData({ ...formData, [name]: formattedValue });
@@ -134,7 +134,7 @@ const Addeditfaculty = () => {
     }
 
     if (!formData.facultyid) {
-      newErrors.facultyid = "required"
+      newErrors.facultyid = "required";
     } else if (!/\d{4}/.test(formData.facultyid)) {
       newErrors.facultyid = "invalid format";
     }
@@ -173,20 +173,14 @@ const Addeditfaculty = () => {
 
     if (!formData.bloodGroup) {
       newErrors.bloodGroup = "bloodGroup is required";
-    } else if (!/^(A|B|AB|O)[+-]$/.test(formData.bloodGroup)) {
-      newErrors.bloodGroup = "Invalid blood group";
     }
 
     if (!formData.religion) {
       newErrors.religion = "religion is required";
-    } else if (!/^[A-Za-z\s-]{1,50}$/.test(formData.religion)) {
-      newErrors.religion = "Invalid Religion format";
     }
 
     if (!formData.nationality) {
       newErrors.nationality = "nationality is required";
-    } else if (!/^[A-Za-z\s-]{1,50}$/.test(formData.nationality)) {
-      newErrors.nationality = "Invalid Nationality format";
     }
 
     setErrors(newErrors);
@@ -207,7 +201,6 @@ const Addeditfaculty = () => {
               "Content-Type": "application/json",
             },
           }
-
         );
         setFormData({
           facultyname: "",
@@ -215,7 +208,6 @@ const Addeditfaculty = () => {
           motherTongue: "",
           facultyid: "",
           department: "",
-          designation:"",
           dateOfJoining: "",
           dateOfBirth: "",
           gender: "",
@@ -227,8 +219,6 @@ const Addeditfaculty = () => {
           religion: "",
           socialCategory: "",
         });
-
-
 
         // Check if the request was successful (status code 2xx)
         if (facultyresponse.status >= 200 && facultyresponse.status < 300) {
@@ -277,13 +267,152 @@ const Addeditfaculty = () => {
     }
   };
 
+  const handleupdatedetails = async (e) => {
+    e.preventDefault();
+    const newErrors = {};
+    if (!formData.facultyname) {
+      newErrors.facultyname = "Name is required";
+    } else if (formData.facultyname.length > 50) {
+      newErrors.facultyname = "Name cannot exceed 50 characters";
+    }
 
+    if (!formData.previousMobileNumber) {
+      newErrors.previousMobileNumber = "Phone number is required";
+    } else if (!/\d{10}/.test(formData.previousMobileNumber)) {
+      newErrors.previousMobileNumber = "Phone number must be 10 digits";
+    }
+
+    if (!formData.presentMobileNumber) {
+      newErrors.presentMobileNumber = "Phone number is required";
+    } else if (!/\d{10}/.test(formData.presentMobileNumber)) {
+      newErrors.presentMobileNumber = "Phone number must be 10 digits";
+    }
+
+    if (!formData.facultyid) {
+      newErrors.facultyid = "required";
+    } else if (!/\d{4}/.test(formData.facultyid)) {
+      newErrors.facultyid = "invalid format";
+    }
+
+    if (!formData.department) {
+      newErrors.department = "required";
+    } else if (!/^[A-Za-z]{3,5}$/.test(formData.department)) {
+      newErrors.department = "invalid format";
+    }
+
+    if (!formData.dateOfBirth) {
+      newErrors.dateOfBirth = "Date of Birth is required";
+    } else if (!isValidDate(formData.dateOfBirth, "dateOfBirth")) {
+      return;
+    }
+
+    if (!formData.dateOfJoining) {
+      newErrors.dateOfJoining = "Date of Joining is required";
+    } else if (!isValidDate(formData.dateOfJoining, "dateOfJoining")) {
+      return;
+    }
+
+    if (!formData.emailId) {
+      newErrors.emailId = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.emailId.trim())) {
+      newErrors.emailId = "Invalid email format";
+    }
+
+    if (!formData.applicationNumber) {
+      newErrors.applicationNumber = "application number is required";
+    }
+
+    if (!formData.motherTongue) {
+      newErrors.motherTongue = "motherTongue is required";
+    }
+
+    if (!formData.bloodGroup) {
+      newErrors.bloodGroup = "bloodGroup is required";
+    }
+
+    if (!formData.religion) {
+      newErrors.religion = "religion is required";
+    }
+
+    if (!formData.nationality) {
+      newErrors.nationality = "nationality is required";
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      console.log("Data saved successfully!");
+
+      console.log("Data to be sent:", formData);
+
+      try {
+        // alert("Data saved");
+        // Make a POST request to the backend API endpoint for login
+        const facultyupdatedresponse = await axios.post(
+          "http://localhost:8000/faculty/updatefaculty",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        // Check if the request was successful (status code 2xx)
+        if (
+          facultyupdatedresponse.status >= 200 &&
+          facultyupdatedresponse.status < 300
+        ) {
+          console.log(facultyupdatedresponse.data);
+
+          console.log("Data to be sent:", formData.emailId);
+          // Make a POST request to the backend API endpoint for login
+          const facultyemailresponse = await axios.post(
+            "http://localhost:8000/faculty/send-mail",
+            formData,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          // Check if the request was successful (status code 2xx)
+          if (
+            facultyemailresponse.status >= 200 &&
+            facultyemailresponse.status < 300
+          ) {
+            console.log(facultyemailresponse.data);
+
+            // You can perform additional actions here, such as redirecting the user
+          } else {
+            // Handle errors from the backend
+            const responseData = facultyemailresponse.data;
+            setErrors(responseData.errors || {});
+          }
+
+          console.log("faculty email data sent:", formData.emailId);
+
+          // You can perform additional actions here, such as redirecting the user
+        } else {
+          // Handle errors from the backend
+          const responseData = facultyresponse.data;
+          setErrors(responseData.errors || {});
+        }
+      } catch (error) {
+        console.error("Error during faculty entering data:", error);
+      }
+
+      // Add logic to handle login (e.g., send data to server)
+      console.log("faculty data submitted:", formData);
+    }
+  };
 
   return (
     <section>
-      <div className="fixed left-10 top-30 ml-40">
-        <button className=" bg-blue-500 w-48 h-10 rounded-lg ml-8 pl-1 pt-1 text-lg mt-7 focus:outline-none ">
-          Add Faculty
+      <div className="fixed left-5 top-30 ml-40">
+        <button className="bg-blue-500 w-48 h-10 rounded-lg ml-8 pl-1 pt-1 text-lg mt-7 focus:outline-none ">
+         Profile Details
         </button>
       </div>
       <div className="flex justify-center item-center">
@@ -302,6 +431,7 @@ const Addeditfaculty = () => {
                   name="facultyname"
                   value={formData.facultyname}
                   onChange={handleChange}
+                  readOnly
                 />
                 {errors.facultyname && (
                   <div className="text-red-500">{errors.facultyname}</div>
@@ -310,16 +440,18 @@ const Addeditfaculty = () => {
               <div className="flex flex-col">
                 <label>Application number:</label>
                 <input
-                  type="text"
+                  type="number"
                   className="border border-black"
                   name="applicationNumber"
                   value={formData.applicationNumber}
                   onChange={handleChange}
+                  readOnly
                 />
                 {errors.applicationNumber && (
                   <div className="text-red-500">{errors.applicationNumber}</div>
                 )}
               </div>
+
               <div className="flex flex-col">
                 <label>Faculty id:</label>
                 <input
@@ -328,6 +460,7 @@ const Addeditfaculty = () => {
                   name="facultyid"
                   value={formData.facultyid}
                   onChange={handleChange}
+                  readOnly
                 />
                 {errors.facultyid && (
                   <div className="text-red-500">{errors.facultyid}</div>
@@ -341,37 +474,25 @@ const Addeditfaculty = () => {
                   name="department"
                   value={formData.department}
                   onChange={handleChange}
+                  readOnly
                 />
                 {errors.department && (
                   <div className="text-red-500">{errors.department}</div>
                 )}
               </div>
               <div className="flex flex-col">
-                <label>Designation</label>
-                <select
-                  className="py-1 px-10 border border-black"
-                  name="designation"
-                  value={formData.designation}
-                  onChange={handleChange}>
-                  <option>Select</option>
-                  <option>HOD</option>
-                  <option>Associate Professor</option>
-                  <option>Assistant Professor</option>
-                  <option>Adhoc Professor</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col">
-                <label>Gender</label>
-                <select
-                  className="py-1 px-10 border border-black"
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}>
-                  <option>Select</option>
-                  <option>Male</option>
-                  <option>Female</option>
-                </select>
+                <label>Designation:</label>
+                <input
+                  type="text"
+                  className="border border-black"
+                  name="facultyname"
+                  value={formData.facultyname}
+                  onChange={handleChange}
+                  readOnly
+                />
+                {errors.facultyname && (
+                  <div className="text-red-500">{errors.facultyname}</div>
+                )}
               </div>
 
               <div className="flex flex-col">
@@ -413,8 +534,18 @@ const Addeditfaculty = () => {
                   <div className="text-red-500">{errors.dateOfBirth}</div>
                 )}
               </div>
-             
-             
+              <div className="flex flex-col">
+                <label>Gender</label>
+                <select
+                  className="py-1 px-10 border border-black"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                >
+                  <option>Male</option>
+                  <option>Female</option>
+                </select>
+              </div>
               <div className="flex flex-col">
                 <label>Present mobile number:</label>
                 <input
@@ -422,10 +553,12 @@ const Addeditfaculty = () => {
                   className="border border-black"
                   name="presentMobileNumber"
                   value={formData.presentMobileNumber}
-                  onChange={handlephoneChange}
+                  onChange={(e) => handleChange(e)}
                 />
                 {errors.presentMobileNumber && (
-                  <div className="text-red-500">{errors.presentMobileNumber}</div>
+                  <div className="text-red-500">
+                    {errors.presentMobileNumber}
+                  </div>
                 )}
               </div>
               <div className="flex flex-col">
@@ -438,7 +571,9 @@ const Addeditfaculty = () => {
                   onChange={handlephoneChange}
                 />
                 {errors.previousMobileNumber && (
-                  <div className="text-red-500">{errors.previousMobileNumber}</div>
+                  <div className="text-red-500">
+                    {errors.previousMobileNumber}
+                  </div>
                 )}
               </div>
               <div className="flex flex-col">
@@ -494,8 +629,6 @@ const Addeditfaculty = () => {
                 )}
               </div>
 
-
-
               <div className="flex flex-col">
                 <label>Social category:</label>
                 <input
@@ -515,9 +648,9 @@ const Addeditfaculty = () => {
                 type="submit"
                 value="save"
                 className="bg-blue-500 rounded-md w-40 h-auto text-white md:text-22 sm:text-lg"
-
+                onClick={handlefacultydetails}
               >
-                Save
+                Save changes
               </button>
             </div>
           </form>
@@ -527,4 +660,4 @@ const Addeditfaculty = () => {
   );
 };
 
-export default Addeditfaculty;
+export default ProfileHOD;

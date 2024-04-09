@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Announcementhomepage from "./Announcementhomepage";
 
-const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
+const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
   const [editedAnnouncement, setEditedAnnouncement] = useState(selectedAnnouncement);
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedFileName, setUploadedFileName] = useState(selectedAnnouncement.uploadedFileName);
+
+  const [showsave, setShowsave] = useState(false);
 
   const getfile = async () => {
     try {
@@ -33,9 +34,9 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
         setEditedAnnouncement({
           ...editedAnnouncement,
           uploadedFile: fileBlob,
+          uploadedFileName: fileBlob.name,
         });
       };
-      setUploadedFileName(selectedAnnouncement.uploadedFileName)
       reader.readAsDataURL(fileBlob);
     } catch (e) {
       console.log(
@@ -49,14 +50,6 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
     getfile();
     setEditedAnnouncement(selectedAnnouncement);
   }, [selectedAnnouncement]);
-
-  const handleDateChange = (e) => {
-    setIsDateModified(true); // Set isDateModified to true when the user changes the date
-    setEditedAnnouncement({
-      ...editedAnnouncement,
-      scheduleDate: e.target.value,
-    });
-  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -99,10 +92,6 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
     console.log(response);
   };
 
-  const goBack = () => {
-    window.close();
-  };
-
   const handlePreview = (name) => {
     console.log(name);
     const pdfWindow = window.open("", "_blank");
@@ -117,6 +106,10 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
     } else {
       alert("Please upload a PDF file first.");
     }
+  };
+
+  const goBack = () => {
+    window.close();
   };
 
   return (
@@ -154,7 +147,12 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
                   type="date"
                   id="scheduleDate"
                   value={editedAnnouncement.scheduleDate}
-                  onChange={handleDateChange}
+                  onChange={(e) =>
+                    setEditedAnnouncement({
+                      ...editedAnnouncement,
+                      scheduleDate: e.target.value,
+                    })
+                  }
                   pattern="[0-9]{2}"
                   className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
                   placeholder="Enter the Schedule date"
@@ -175,6 +173,20 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
                   disabled={!isEditable}
                 />
               </label>
+              {editedAnnouncement.department && (
+                <label htmlFor="dept" className="text-lg">
+                  Department:{" "}
+                  <input
+                    type="text"
+                    id="dept"
+                    className="border-1 px-4 w-full h-10 rounded-md mt-1"
+                    name="department"
+                    value={editedAnnouncement.department}
+                     //  validation added
+                    disabled={!isEditable}
+                  />
+                </label>
+              )}
 
               <label htmlFor="scheduleTime" className="text-lg">
                 Schedule Time :{" "}
@@ -191,30 +203,31 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
                   className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
                   name="scheduleTime"
                   placeholder="Enter the Schedule Time"
-                  required // Required validation added
+                   //  validation added
                   disabled={!isEditable}
                 />
               </label>
-            </div>
 
-            <div className="flex justify-center items-center mt-4">
-              <label htmlFor="fileInput" className="text-lg">
-                Upload PDF File:
-              </label>
-              <i
-                className="fa-solid fa-upload fa-lg pl-2"
-                onClick={() => document.getElementById("fileInput").click()}
-                style={{ cursor: "pointer" }}
-              />
-              <input
-                type="file"
-                id="fileInput"
-                onChange={handleFileChange}
-                className="border-1 px-4 w-full h-10 rounded-md mt-1"
-                placeholder="Upload the file"
-                style={{ display: "none" }}
-                disabled={!isEditable}
-              />
+              <div className="flex justify-center items-center mt-4">
+                <label htmlFor="fileInput" className="text-lg">
+                  Upload PDF File :{" "}
+                </label>
+                <i
+                  class="fa-solid fa-upload fa-lg pl-2"
+                  onClick={() => document.getElementById("fileInput").click()}
+                  style={{ cursor: "pointer" }}
+                />
+                <input
+                  type="file"
+                  id="fileInput"
+                  className="border-2 px-4 w-full h-10 rounded-md mt-1"
+                  placeholder="Upload the file"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                   //  validation added
+                  disabled={!isEditable}
+                />
+              </div>
             </div>
 
             {isEditable ? (
@@ -241,7 +254,7 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
           <button
             className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
             onClick={() => {
-              handlePreview(uploadedFileName);
+              handlePreview(selectedAnnouncement.uploadedFileName);
             }}
           >
             Preview
@@ -252,4 +265,4 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
   );
 };
 
-export default EditAnnouncement;
+export default EditDepartmentalAnn;

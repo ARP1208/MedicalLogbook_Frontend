@@ -9,6 +9,7 @@ const facultyDetailsSchema = new mongoose.Schema({
   dateOfJoining: { type: Date },
   facultyid: { type: Number },
   department: { type: String },
+  designation: { type: String },
   dateOfBirth: { type: Date },
   gender: { type: String },
   presentMobileNumber: { type: String },

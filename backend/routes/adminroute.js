@@ -3,7 +3,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 
-import { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject, getAdminGradesheet, getAdminindividualGradesheet ,saveCSVAssignSubject} from '../controllers/admincontroller.js';
+import { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, deleteFile, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, setMarks, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject,saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet } from '../controllers/admincontroller.js';
 
 
 
@@ -48,13 +48,16 @@ router.post('/announcement', upload.single('uploadedFileName'), announcement)
 router.route("/fetchAllAnnouncements").get(fetchAllAnnouncement);
 router.route("/fetchFile").post(getFilebyAnnouncement);
 router.route("/fetchAnnouncement").post(fetchAnnouncementByTitle);
-router.route("/UpdateAnnouncement").patch(UpdateAnnouncement);
+router.delete("/deleteFile", deleteFile);
+router.patch("/UpdateAnnouncement", upload.single('uploadedFileName'), UpdateAnnouncement);
+// router.route("/UpdateAnnouncement").patch(UpdateAnnouncement);
 router.route("/DeleteAnnouncement").delete(DeleteAnnouncement);
 
 
 ///////////////////Gradesheet Component /////////////////////////
 // router.route("/admingradesheet").post(saveAdminGradesheet);
 router.route("/updategradesheet").patch(updateAdminGradesheet);
+router.route("/setmarks").post(setMarks);
 router.route("/getdetail").post(getAdminGradesheet);
 router.route("/filter_students").post(filter_students);
 router.route("/getAdminindividualGradesheet").post(getAdminindividualGradesheet);

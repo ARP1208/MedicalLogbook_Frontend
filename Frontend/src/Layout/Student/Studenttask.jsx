@@ -192,7 +192,7 @@ const Studenttask = () => {
                     placeholder="Sort"
                   />
                 </div>
-                <div className="flex w-60vw h-50vh border-2 rounded-tl-3xl rounded-tr-3xl overflow-auto border-sky-500 rounded-xl">
+                <div className="flex w-70vw h-50vh border-2 rounded-tl-3xl rounded-tr-3xl overflow-auto border-sky-500 rounded-xl">
                   <table className="w-full h-10 text-center rounded-md border-collapse">
                     <thead>
                       <tr>

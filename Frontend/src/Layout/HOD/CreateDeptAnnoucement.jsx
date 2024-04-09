@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const Createannouncement = () => {
+const CreateDeptAnnoucement = () => {
   const [adminData, setAdminData] = useState({
     announcementTitle: "",
     scheduleDate: "",
     uploadedFileName: "",
     scheduleTime: "",
+    department: ""
   })
 
   const [uploadedImage, setUploadedImage] = useState(null);
@@ -58,11 +59,13 @@ const Createannouncement = () => {
 
     try {
       alert("Data saved");
+      console.log(uploadedFileName);
       formData.append("announcementTitle", adminData.announcementTitle);
       formData.append("scheduleDate", adminData.scheduleDate);
       formData.append("uploadedFileName", uploadedFile);
       formData.append("uploadedFileName", uploadedFileName);
       formData.append("scheduleTime", adminData.scheduleTime);
+      formData.append("department", adminData.department);
       console.log(formData);
 
       const announcementResponse = await axios.post(
@@ -82,6 +85,7 @@ const Createannouncement = () => {
         scheduleDate: "",
         uploadedFileName: "",
         scheduleTime: "",
+        department: ""
       });
 
       setUploadedFileName("");
@@ -107,7 +111,7 @@ const Createannouncement = () => {
     <section className="relative top-0 m-0 left-40 overflow-hidden">
       <div className="relative flex left-12 top-7 w-auto mb-10 z-10">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
-          Create Announcement
+          Create Departmental Announcement
         </button>
       </div>
 
@@ -145,7 +149,7 @@ const Createannouncement = () => {
               </label>
             </div>
 
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-2 text-start w-auto mt-4">
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-2 text-start w-auto mt-4">
               <label htmlFor="uploadedFileName" className="text-lg">
                 Uploaded File:{" "}
                 <input
@@ -156,6 +160,18 @@ const Createannouncement = () => {
                   onChange={handleChange}
                   value={uploadedFileName}
                   // readOnly // Make the input read-only to prevent manual changes
+                  required // Required validation added
+                />
+              </label>
+              <label htmlFor="uploadedFileName" className="text-lg">
+                Department:{" "}
+                <input
+                  type="text"
+                  id="uploadedFileName"
+                  className="border-1 px-4 w-full h-10 rounded-md mt-1"
+                  name="department"
+                  value={adminData.department}
+                  onChange={handleChange}
                   required // Required validation added
                 />
               </label>
@@ -173,9 +189,8 @@ const Createannouncement = () => {
                   required // Required validation added
                 />
               </label>
-            </div>
 
-            <div className="flex justify-center items-center mt-4">
+              <div className="flex justify-center items-center mt-4">
               <label htmlFor="fileInput" className="text-lg">
                 Upload PDF File :{" "}
               </label>
@@ -193,6 +208,9 @@ const Createannouncement = () => {
                 required // Required validation added
               />
             </div>
+            </div>
+
+            
 
             <div className="flex justify-center items-center mt-4 space-x-4">
               <button className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
@@ -217,4 +235,4 @@ const Createannouncement = () => {
   );
 };
 
-export default Createannouncement;
+export default CreateDeptAnnoucement;
