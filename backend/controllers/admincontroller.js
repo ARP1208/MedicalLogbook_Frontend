@@ -4,6 +4,8 @@ import { connectDB, closeDB } from "../config/db.js";
 import asyncHandler from "express-async-handler";
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const login = asyncHandler(async (req, res) => {
   const { emailId, password } = req.body;
@@ -241,6 +243,36 @@ const getFilebyAnnouncement = asyncHandler(async (req, res) => {
   }
 });
 
+const deleteFile = asyncHandler(async (req, res) => {
+  const { file } = req.body;
+  const outdatedFile = file;
+
+  console.log("Requested file to delete is ", outdatedFile);
+  const __dirname = dirname(fileURLToPath(import.meta.url));
+
+  // Construct the file path relative to the root of your server application
+  const filePath = path.join(__dirname, '../uploads', outdatedFile);
+
+  // Check if the file exists
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      console.error("Error accessing file:", err);
+      return res.status(404).json({ success: false, message: 'File not found' });
+    }
+
+    // Delete the file
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error("Error deleting file:", err);
+        return res.status(500).json({ success: false, message: 'Failed to delete file' });
+      }
+      
+      console.log('File deleted successfully');
+      return res.status(200).json({ success: true, message: 'File deleted successfully' });
+    });
+  });
+});
+
 const fetchAnnouncementByTitle = asyncHandler(async (req, res) => {
   let { announcementTitle } = req.body;
   const announcement_Title = announcementTitle
@@ -271,8 +303,9 @@ const UpdateAnnouncement = asyncHandler(async (req, res) => {
     const announcementId = a_id;
     console.log("announcementTitle", announcementId);
     const newUpdateAnnouncement = { ...req.body };
-
-
+    if (req.file) {
+      newUpdateAnnouncement.file = req.file.path;
+    }
     const UpdatedAnnouncement = await AdminAnnoucement.updateOne({ _id: a_id }, { $set: newUpdateAnnouncement });
     console.log("saved data is: ", UpdatedAnnouncement);
 
@@ -290,29 +323,39 @@ const DeleteAnnouncement = asyncHandler(async (req, res) => {
   const { announcementTitle } = req.body;
 
   try {
+    // Connect to the database
     await connectDB();
-    const announcementId = announcementTitle;
-    console.log("announcementID", announcementId);
 
-    const announcement = await AdminAnnoucement.findOne({ announcementTitle: announcementId });
-    console.log("Filename is:", announcement.uploadedFileName);
-    const filepath = path.join('backend/uploads', announcement.uploadedFileName);
+    // Find the announcement by title
+    const announcement = await AdminAnnoucement.findOne({ announcementTitle });
 
-    // Assuming AdminAnnoucement is your Mongoose model
-    const deletedAnnouncement = await AdminAnnoucement.deleteOne({ announcementTitle: announcementId });
+    // Check if the announcement exists
+    if (!announcement) {
+      console.log("Announcement not found for deletion");
+      return res.status(404).json({ error: "Announcement not found for deletion" });
+    }
+
+    // Delete the associated file
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const filePath = path.join(__dirname, '../uploads', announcement.uploadedFileName);
+
+    // Delete the announcement document
+    const deletedAnnouncement = await AdminAnnoucement.deleteOne({ announcementTitle });
+
     // Check if the document was deleted successfully
     if (deletedAnnouncement.deletedCount === 1) {
-      fs.unlinkSync(filepath);
-      console.log("Deleted announcement with title:", announcementId);
-      res.status(200).json({ message: "Announcement deleted successfully" });
+      fs.unlinkSync(filePath);
+      console.log("Deleted announcement with title:", announcementTitle);
+      return res.status(200).json({ message: "Announcement deleted successfully" });
     } else {
-      console.log("Announcement not found for deletion");
-      res.status(404).json({ error: "Announcement not found for deletion" });
+      console.log("Failed to delete announcement with title:", announcementTitle);
+      return res.status(500).json({ error: "Failed to delete announcement" });
     }
   } catch (error) {
-    console.error("Error deleting announcement document:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error deleting announcement:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   } finally {
+    // Close the database connection
     await closeDB();
   }
 });
@@ -706,4 +749,4 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
   }
 });
 
-export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, setMarks, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject,saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 
+export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, deleteFile, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, setMarks, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject,saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 

@@ -44,6 +44,7 @@ const Addeditfaculty = () => {
         nationality: facultyData.nationality,
         religion: facultyData.religion,
         socialCategory: facultyData.socialCategory,
+        designation:facultyData.designation,
       });
     }
   }, [location]);
@@ -348,7 +349,7 @@ const Addeditfaculty = () => {
                 <select
                   className="py-1 px-10 border border-black"
                   name="gender"
-                  value={formData.gender}
+                  value={formData.designation}
                   onChange={handleChange}>
                   <option>Select</option>
                   <option>HOD</option>

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Announcementhomepage from "./Announcementhomepage";
 
-const EditAnnouncement = ({ selectedAnnouncement }) => {
+const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
   const [editedAnnouncement, setEditedAnnouncement] = useState(selectedAnnouncement);
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedFileName, setUploadedFileName] = useState(selectedAnnouncement.uploadedFileName);
-  const [showeditAnnouncement, setShoweditAnnouncement] = useState(false);
-  const [showsave, setShowsave] = useState(false);
-  const [isDateModified, setIsDateModified] = useState(false);
 
   const getfile = async () => {
     try {
@@ -15,11 +12,11 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
       let response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
-          announcementTitle: selectedAnnouncement.announcementTitle
+          announcementTitle: selectedAnnouncement.announcementTitle,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       if (!response.ok) {
@@ -33,14 +30,20 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
       reader.onloadend = () => {
         setUploadedImage(reader.result);
         setUploadedFileName(fileBlob.name);
-        setEditedAnnouncement({ ...editedAnnouncement, uploadedFile: fileBlob, uploadedFileName: fileBlob.name });
+        setEditedAnnouncement({
+          ...editedAnnouncement,
+          uploadedFile: fileBlob,
+        });
       };
+      setUploadedFileName(selectedAnnouncement.uploadedFileName)
       reader.readAsDataURL(fileBlob);
-
     } catch (e) {
-      console.log("Error fetching the announcement's previously uploaded file: ", e);
+      console.log(
+        "Error fetching the announcement's previously uploaded file: ",
+        e
+      );
     }
-  }
+  };
 
   useEffect(() => {
     getfile();
@@ -49,7 +52,10 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
 
   const handleDateChange = (e) => {
     setIsDateModified(true); // Set isDateModified to true when the user changes the date
-    setEditedAnnouncement({ ...editedAnnouncement, scheduleDate: e.target.value });
+    setEditedAnnouncement({
+      ...editedAnnouncement,
+      scheduleDate: e.target.value,
+    });
   };
 
   const handleFileChange = (event) => {
@@ -60,27 +66,45 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
       reader.onloadend = () => {
         setUploadedImage(reader.result);
         setUploadedFileName(file.name);
-        setEditedAnnouncement({ ...editedAnnouncement, uploadedFile: file, uploadedFileName: file.name });
+        setEditedAnnouncement({
+          ...editedAnnouncement,
+          uploadedFile: file,
+          uploadedFileName: file.name,
+        });
       };
       reader.readAsDataURL(file);
     }
+    setUploadedFileName(file.name);
+    setUploadedImage(file);
   };
 
   const handleSaveChanges = () => {
     // onSave(editedAnnouncement);
+    let formData = FormData();
+
+    formData.append("a_id", editedAnnouncement._id)
+    formData.append("announcementTitle", editedAnnouncement.announcementTitle)
+    formData.append("scheduleDate", editedAnnouncement.scheduleDate)
+    formData.append("uploadedFileName", editedAnnouncement.uploadedFileName)
+    formData.append("uploadedFileName", editedAnnouncement.uploadedImage)
+    formData.append("scheduleTime", editedAnnouncement.scheduleTime)
+
     let response = fetch(`http://127.0.0.1:8000/admin/UpdateAnnouncement`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify({ a_id: editedAnnouncement._id, announcementTitle: editedAnnouncement.announcementTitle, scheduleDate: editedAnnouncement.scheduleDate, uploadedFileName: editedAnnouncement.uploadedFileName, scheduleTime: editedAnnouncement.scheduleTime }),
+      body: formData
     });
     console.log(response);
-    // window.close();
+  };
+
+  const goBack = () => {
+    window.close();
   };
 
   const handlePreview = (name) => {
-    console.log(name)
+    console.log(name);
     const pdfWindow = window.open("", "_blank");
     if (uploadedImage) {
       pdfWindow.document.write(
@@ -93,11 +117,6 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
     } else {
       alert("Please upload a PDF file first.");
     }
-  };
-
-  const convertToHTMLDate = (dateString) => {
-    const [day, month, year] = dateString.split('/');
-    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   };
 
   return (
@@ -117,9 +136,15 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
                   type="text"
                   id="announcementTitle"
                   value={editedAnnouncement.announcementTitle}
-                  onChange={(e) => setEditedAnnouncement({ ...editedAnnouncement, announcementTitle: e.target.value })}
+                  onChange={(e) =>
+                    setEditedAnnouncement({
+                      ...editedAnnouncement,
+                      announcementTitle: e.target.value,
+                    })
+                  }
                   className="px-4 border-1 border-black w-full h-10 rounded-md mt-1"
                   placeholder="Enter the Announcement"
+                  disabled={!isEditable}
                 />
               </label>
 
@@ -133,6 +158,7 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
                   pattern="[0-9]{2}"
                   className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
                   placeholder="Enter the Schedule date"
+                  disabled={!isEditable}
                 />
               </label>
             </div>
@@ -146,6 +172,7 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
                   className="border-1 px-4 w-full h-10 rounded-md mt-1"
                   value={uploadedFileName}
                   readOnly
+                  disabled={!isEditable}
                 />
               </label>
 
@@ -154,12 +181,18 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
                 <input
                   type="time"
                   id="scheduleTime"
-                  onChange={(e) => setEditedAnnouncement({ ...editedAnnouncement, scheduleTime: e.target.value })}
+                  onChange={(e) =>
+                    setEditedAnnouncement({
+                      ...editedAnnouncement,
+                      scheduleTime: e.target.value,
+                    })
+                  }
                   value={editedAnnouncement.scheduleTime}
                   className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
                   name="scheduleTime"
                   placeholder="Enter the Schedule Time"
                   required // Required validation added
+                  disabled={!isEditable}
                 />
               </label>
             </div>
@@ -180,29 +213,42 @@ const EditAnnouncement = ({ selectedAnnouncement }) => {
                 className="border-1 px-4 w-full h-10 rounded-md mt-1"
                 placeholder="Upload the file"
                 style={{ display: "none" }}
+                disabled={!isEditable}
               />
             </div>
 
-            <div className="flex justify-center items-center mt-4 space-x-4">
-              <button
-                className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
-                onClick={handleSaveChanges}
-              >
-                Save Changes
-              </button>
-
-            </div>
+            {isEditable ? (
+              <div className="flex justify-center items-center mt-4 space-x-4">
+                <button
+                  className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
+                  onClick={handleSaveChanges}
+                >
+                  Save Changes
+                </button>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center mt-4 space-x-4">
+                <button
+                  className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
+                  onClick={goBack()}
+                >
+                  Go Back
+                </button>
+              </div>
+            )}
           </form>
 
           <button
             className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg"
-            onClick={() => { handlePreview(selectedAnnouncement.uploadedFileName) }}
+            onClick={() => {
+              handlePreview(uploadedFileName);
+            }}
           >
             Preview
           </button>
         </div>
       </div>
-    </section >
+    </section>
   );
 };
 
