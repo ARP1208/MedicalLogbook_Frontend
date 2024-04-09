@@ -7,6 +7,7 @@ const CreateDeptAnnoucement = () => {
     scheduleDate: "",
     uploadedFileName: "",
     scheduleTime: "",
+    department: ""
   })
 
   const [uploadedImage, setUploadedImage] = useState(null);
@@ -25,7 +26,7 @@ const CreateDeptAnnoucement = () => {
         setUploadedFileName(file.name);
       };
       reader.readAsDataURL(file);
-    } z
+    } 
   };
 
   const handleChange = (e) => {
@@ -54,29 +55,22 @@ const CreateDeptAnnoucement = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-    console.log('handlesubmit')
     let formData = new FormData();
-    let date = new Date(adminData.scheduleDate)
-    const formattedDate = date.toLocaleDateString('en-UK');
-    console.log(formattedDate);
 
     try {
       alert("Data saved");
       console.log(uploadedFileName);
       formData.append("announcementTitle", adminData.announcementTitle);
-      formData.append("scheduleDate", formattedDate.toString());
+      formData.append("scheduleDate", adminData.scheduleDate);
       formData.append("uploadedFileName", uploadedFile);
       formData.append("uploadedFileName", uploadedFileName);
       formData.append("scheduleTime", adminData.scheduleTime);
+      formData.append("department", adminData.department);
       console.log(formData);
 
       const announcementResponse = await axios.post(
         "http://localhost:8000/admin/announcement",
         formData,
-        // {
-        //   ...adminData,
-        //   uploadedFileName: uploadedFile, // Add uploadedFileName to the payload
-        // },
         {
           headers: {
             "Content-Type": 'multipart/form-data',
@@ -91,22 +85,23 @@ const CreateDeptAnnoucement = () => {
         scheduleDate: "",
         uploadedFileName: "",
         scheduleTime: "",
+        department: ""
       });
 
       setUploadedFileName("");
       setUploadedFile(null);
       setUploadedImage(null);
 
-      // if (announcementResponse.status >= 200 && announcementResponse.status < 300) {
-      //   console.log(announcementResponse.data);
-      //   // Successful response handling
-      // } else {
-      //   // Handle errors from the backend
-      //   const responseData = announcementResponse.data;
-      //   console.error("Backend Error:", responseData.error || "Unknown error");
-      //   // Assuming setErrors is a state updater function
-      //   setErrors(responseData.errors || {});
-      // }
+      if (announcementResponse.status >= 200 && announcementResponse.status < 300) {
+        console.log(announcementResponse.data);
+        // Successful response handling
+      } else {
+        // Handle errors from the backend
+        const responseData = announcementResponse.data;
+        console.error("Backend Error:", responseData.error || "Unknown error");
+        // Assuming setErrors is a state updater function
+        setErrors(responseData.errors || {});
+      }
     } catch (error) {
       console.error("Error:", error);
     }
@@ -174,8 +169,9 @@ const CreateDeptAnnoucement = () => {
                   type="text"
                   id="uploadedFileName"
                   className="border-1 px-4 w-full h-10 rounded-md mt-1"
-                  name="uploadedFileName"
-               
+                  name="department"
+                  value={adminData.department}
+                  onChange={handleChange}
                   required // Required validation added
                 />
               </label>

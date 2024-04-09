@@ -23,6 +23,7 @@ const Editfaculty = () => {
     nationality: "",
     religion: "",
     socialCategory: "",
+    designation:"",
   });
   const [errors, setErrors] = useState({});
   const location = useLocation();
@@ -46,6 +47,7 @@ const Editfaculty = () => {
         nationality: facultyData.nationality,
         religion: facultyData.religion,
         socialCategory: facultyData.socialCategory,
+        designation:facultyData.designation,
       });
     }
   }, [location]);
@@ -481,6 +483,20 @@ const Editfaculty = () => {
                 {errors.department && (
                   <div className="text-red-500">{errors.department}</div>
                 )}
+              </div>
+              <div className="flex flex-col">
+                <label>Designation</label>
+                <select
+                  className="py-1 px-10 border border-black"
+                  name="gender"
+                  value={formData.designation}
+                  onChange={handleChange}>
+                  <option>Select</option>
+                  <option>HOD</option>
+                  <option>Associate Professor</option>
+                  <option>Assistant Professor</option>
+                  <option>Adhoc Professor</option>
+                </select>
               </div>
 
               <div className="flex flex-col">

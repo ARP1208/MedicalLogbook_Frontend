@@ -3,90 +3,62 @@ import EditDepartmentalAnn from "./EditDepartmentalAnn";
 import axios from "axios";
 
 const DepartmentalAnnouncement = () => {
-  const [announcements, setAnnouncements] = useState([
-    // Your initial announcements data
-  ]);
-  const [isEditing, setIsEditing] = useState(false); // State to track if editing mode is active
+  const [announcements, setAnnouncements] = useState([]);
   const [showEditDepartmentalAnn, setShowEditDepartmentalAnn] = useState(false);
-  const [showAnnouncementButton, setShowAnnouncementButton] = useState(true);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
   const [adminannoucements, setAnnouncement] = useState([]);
-  const [error, setError] = useState(null); // State to hold error information
+  const [error, setError] = useState(null);
+  const [isAnnouncemtEditable, setIsAnnouncementEditable] = useState(null);
 
   const fetchAnnouncements = async () => {
     try {
       const customHeaders = new Headers();
-      customHeaders.append('Content-Type', 'application/json');
-      customHeaders.append('Accept-Encoding', 'gzip, deflate, br');
+      customHeaders.append("Content-Type", "application/json");
+      customHeaders.append("Accept-Encoding", "gzip, deflate, br");
 
-      const response = await axios.get('http://localhost:8000/admin/fetchAllAnnouncements',
+      const response = await axios.get(
+        "http://localhost:8000/admin/fetchAllAnnouncements",
         {
-          headers: customHeaders
-        });
+          headers: customHeaders,
+        }
+      );
 
-      console.log(response.data)
-      console.log(response.headers)
       setAnnouncement(response.data);
     } catch (error) {
       setError(error);
     }
   };
 
-  useEffect(() => { // Fetch announcements when the component mounts
+  useEffect(() => {
     fetchAnnouncements();
   }, []);
 
+  const handleDelete = async (announcementTitle) => {
+    try {
+      await axios.delete("http://127.0.0.1:8000/admin/DeleteAnnouncement", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: { announcementTitle: announcementTitle },
+      });
 
-  const handleDelete = (announcementTitle) => {
-    console.log(announcementTitle);
-    let response = fetch(`http://127.0.0.1:8000/admin/DeleteAnnouncement`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ announcementTitle: announcementTitle }),
-    });
-    console.log(response);
+      fetchAnnouncements(); // Fetch the updated list of announcements
+    } catch (error) {
+      console.error("Error deleting announcement:", error.message);
+    }
   };
-
-  const deleteAndRefresh = async (announcementTitle) => {
-
-    // Delete the announcement
-    handleDelete(announcementTitle);
-    // Fetch the updated list of announcements
-    setInterval(fetchAnnouncements, 200);
-
-    console.error('Error deleting announcement and refreshing:', error.message);
-  }
 
   const handleEditDepartmentalAnn = (selectedAnnouncement) => {
     setSelectedAnnouncement(selectedAnnouncement);
-    // history("/EditDepartmentalAnn", {
-    //   state: { Announcement: selectedAnnouncement },
-    // });
+    setIsAnnouncementEditable(true);
     setShowEditDepartmentalAnn(true);
-    setShowAnnouncementButton(false); // Set the state to hide the "Announcements" button
-
   };
 
-  const handleSaveChanges = (updatedAnnouncement) => {
-    // Find the index of the updated announcement in the array
-    const index = announcements.findIndex((announcement) => announcement.id === updatedAnnouncement.id);
-    // Create a new array with the updated announcement
-    const updatedAnnouncements = [...announcements];
-    updatedAnnouncements[index] = updatedAnnouncement;
-    // Update the state with the new array
-    setAnnouncements(updatedAnnouncements);
-    // Exit editing mode
-    setIsEditing(false);
-    // Clear selected announcement
-    setSelectedAnnouncement(null);
-  };
-
-  // Function to handle edit button click
-  const handleEdit = (announcement) => {
-    setIsEditing(true);
-    setSelectedAnnouncement(announcement);
+  const handleShowAnnouncement = (selectedAnnouncement) => {
+    console.log("Show announcement:", selectedAnnouncement);
+    setSelectedAnnouncement(selectedAnnouncement);
+    setIsAnnouncementEditable(false);
+    setShowEditDepartmentalAnn(true);
   };
 
   return (
@@ -94,21 +66,14 @@ const DepartmentalAnnouncement = () => {
       {showEditDepartmentalAnn ? (
         <EditDepartmentalAnn
           selectedAnnouncement={selectedAnnouncement}
-          onSave={handleSaveChanges}
+          isEditable={isAnnouncemtEditable}
+          onSave={() => {
+            // setIsAnnouncementEditable(null);
+            setShowEditDepartmentalAnn(false);
+          }}
         />
       ) : (
         <>
-          <div className="absolute flex left-10 top-5 w-auto ">
-            {showAnnouncementButton && (
-              <button
-                className="bg-sky-500 rounded-md w-auto text-lg"
-                onClick={() => handleOptions("EditDepartmentalAnn")}
-              >
-                Announcements
-              </button>
-            )}
-          </div>
-
           <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10">
             <div className="p-10">
               <div className="overflow-hidden block">
@@ -123,45 +88,72 @@ const DepartmentalAnnouncement = () => {
                           Events
                         </th>
                         <th className="border bg-blue-950 text-white px-4 py-2">
-                          Edit
-                        </th>
-                        <th className="border bg-blue-950 text-white px-4 py-2">
-                          Delete
+                          Actions
                         </th>
                       </tr>
                     </thead>
                     <tbody>
                       {adminannoucements.length === 0 ? (
                         <tr>
-                          <td className="border border-black px-4 py-2" colSpan="6" style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                          <td
+                            className="border border-black px-4 py-2"
+                            colSpan="6"
+                            style={{
+                              textAlign: "center",
+                              verticalAlign: "middle",
+                            }}
+                          >
                             No announcements to be viewed
                           </td>
                         </tr>
                       ) : (
-                        adminannoucements.map((announcement, index) => (
-                          <tr key={index}>
-                            <td className="border border-black px-4 py-2">{index + 1}</td>
-                            <td className="border border-black px-4 py-2">
-                              {announcement.announcementTitle}
-                            </td>
-                            <td className="border border-black px-4 py-2 w-10">
-                              <button
-                                className="w-20 rounded-md bg-blue-500 text-lg"
-                                onClick={() => handleEditDepartmentalAnn(announcement)}
-                              >
-                                Edit
-                              </button>
-                            </td>
-                            <td className="border border-black px-4 py-2 w-10">
-                              <button
-                                className="w-20 rounded-md bg-blue-500 text-lg"
-                                onClick={() => deleteAndRefresh(announcement.announcementTitle)}
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        ))
+                        adminannoucements.map((announcement, index) => {
+                          const isInFilteredAnnouncements =
+                            announcement.department !== undefined;
+                          return (
+                            <tr key={index}>
+                              <td className="border border-black px-4 py-2">
+                                {index + 1}
+                              </td>
+                              <td className="border border-black px-4 py-2">
+                                {announcement.announcementTitle}
+                              </td>
+                              <td className="border border-black px-4 py-2">
+                                {isInFilteredAnnouncements ? (
+                                  <>
+                                    <button
+                                      className="w-20 rounded-md bg-blue-500 text-lg mr-2"
+                                      onClick={() =>
+                                        handleEditDepartmentalAnn(announcement)
+                                      }
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      className="w-20 rounded-md bg-blue-500 text-lg"
+                                      onClick={() =>
+                                        handleDelete(
+                                          announcement.announcementTitle
+                                        )
+                                      }
+                                    >
+                                      Delete
+                                    </button>
+                                  </>
+                                ) : (
+                                  <button
+                                    className="w-40 rounded-md bg-blue-500 text-lg"
+                                    onClick={() =>
+                                      handleShowAnnouncement(announcement)
+                                    }
+                                  >
+                                    Show
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })
                       )}
                     </tbody>
                   </table>

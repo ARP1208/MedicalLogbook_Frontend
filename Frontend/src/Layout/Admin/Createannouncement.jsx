@@ -25,7 +25,7 @@ const Createannouncement = () => {
         setUploadedFileName(file.name);
       };
       reader.readAsDataURL(file);
-    } z
+    } 
   };
 
   const handleChange = (e) => {
@@ -54,15 +54,10 @@ const Createannouncement = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
-    //   console.log('handlesubmit')
     let formData = new FormData();
-    //   let date = new Date(adminData.scheduleDate)
-    //   // const formattedDate = date.toLocaleDateString('en-UK');
-    //   console.log(formattedDate);
 
     try {
       alert("Data saved");
-      console.log(uploadedFileName);
       formData.append("announcementTitle", adminData.announcementTitle);
       formData.append("scheduleDate", adminData.scheduleDate);
       formData.append("uploadedFileName", uploadedFile);
@@ -73,10 +68,6 @@ const Createannouncement = () => {
       const announcementResponse = await axios.post(
         "http://localhost:8000/admin/announcement",
         formData,
-        // {
-        //   ...adminData,
-        //   uploadedFileName: uploadedFile, // Add uploadedFileName to the payload
-        // },
         {
           headers: {
             "Content-Type": 'multipart/form-data',
@@ -97,16 +88,16 @@ const Createannouncement = () => {
       setUploadedFile(null);
       setUploadedImage(null);
 
-      // if (announcementResponse.status >= 200 && announcementResponse.status < 300) {
-      //   console.log(announcementResponse.data);
-      //   // Successful response handling
-      // } else {
-      //   // Handle errors from the backend
-      //   const responseData = announcementResponse.data;
-      //   console.error("Backend Error:", responseData.error || "Unknown error");
-      //   // Assuming setErrors is a state updater function
-      //   setErrors(responseData.errors || {});
-      // }
+      if (announcementResponse.status >= 200 && announcementResponse.status < 300) {
+        console.log(announcementResponse.data);
+        // Successful response handling
+      } else {
+        // Handle errors from the backend
+        const responseData = announcementResponse.data;
+        console.error("Backend Error:", responseData.error || "Unknown error");
+        // Assuming setErrors is a state updater function
+        setErrors(responseData.errors || {});
+      }
     } catch (error) {
       console.error("Error:", error);
     }
