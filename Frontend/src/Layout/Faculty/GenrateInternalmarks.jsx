@@ -182,7 +182,7 @@ const GenrateInternalMarks = ({ subjectname, subcode, examination }) => {
             </div>
           </form>
         </div>
-      </div>
+      <div style={{zIndex:9999}}>
       {openCsvPopup && (
         <Internalmarkscsvpopup open={openCsvPopup} onClose={handlesaveclose}>
           <div className="lg:w-50vw md:w-30vw sm:20vw lg:h-45vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg overflow-auto">
@@ -216,6 +216,8 @@ const GenrateInternalMarks = ({ subjectname, subcode, examination }) => {
     csvData={csvData}
   />
 )}
+</div>
+</div>
     </section>
   );
 };

@@ -353,7 +353,6 @@ const Addeditfaculty = () => {
                   name="designation"
                   value={formData.designation}
                   onChange={handleChange}>
-                  <option>Select</option>
                   <option>HOD</option>
                   <option>Associate Professor</option>
                   <option>Assistant Professor</option>
@@ -368,7 +367,6 @@ const Addeditfaculty = () => {
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}>
-                  <option>Select</option>
                   <option>Male</option>
                   <option>Female</option>
                 </select>

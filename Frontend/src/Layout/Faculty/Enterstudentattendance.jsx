@@ -324,9 +324,8 @@ const EnterStudentAttendance = () => {
             Save
           </button>
         </div>
-      </div>
-
-      {/* CSV popup */}
+        {/* CSV popup */}
+        <div style={{zIndex:9999}}>
       {openCsvPopup && (
         <Attendancecsvpopup  open={openCsvPopup}
         onClose={() => setOpenCsvPopup(false)}>
@@ -357,8 +356,9 @@ const EnterStudentAttendance = () => {
             </div>
           </Attendancecsvpopup>
       )}
-
+</div>
       {/* Preview popup */}
+      <div style={{zIndex:9999}}>
       {openPreviewPopup && (
         <Attendancepreviewpopup
           open={openPreviewPopup}
@@ -366,6 +366,10 @@ const EnterStudentAttendance = () => {
           csvData={csvData} // Pass your CSV data here
         />
       )}
+      </div>
+      </div>
+
+      
     </section>
   );
 };
