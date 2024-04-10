@@ -11,6 +11,7 @@ const Addeditfaculty = () => {
     motherTongue: "",
     facultyid: "",
     department: "",
+    designation:"HOD",
     dateOfJoining: "",
     dateOfBirth: "",
     gender: "Male",
@@ -34,6 +35,7 @@ const Addeditfaculty = () => {
         motherTongue: facultyData.motherTongue,
         facultyid: facultyData.facultyid,
         department: facultyData.department,
+        designation: facultyData.designation,
         dateOfJoining: facultyData.dateOfJoining ? facultyData.dateOfJoining.slice(0, 10) : "",
         dateOfBirth: facultyData.dateOfBirth ? facultyData.dateOfBirth.slice(0, 10) : "",
         gender: facultyData.gender,
@@ -44,7 +46,6 @@ const Addeditfaculty = () => {
         nationality: facultyData.nationality,
         religion: facultyData.religion,
         socialCategory: facultyData.socialCategory,
-        designation:facultyData.designation,
       });
     }
   }, [location]);
@@ -214,6 +215,7 @@ const Addeditfaculty = () => {
           motherTongue: "",
           facultyid: "",
           department: "",
+          designation:"",
           dateOfJoining: "",
           dateOfBirth: "",
           gender: "",
@@ -226,7 +228,7 @@ const Addeditfaculty = () => {
           socialCategory: "",
         });
 
-        
+
 
         // Check if the request was successful (status code 2xx)
         if (facultyresponse.status >= 200 && facultyresponse.status < 300) {
@@ -276,7 +278,7 @@ const Addeditfaculty = () => {
   };
 
 
-  
+
   return (
     <section>
       <div className="fixed left-10 top-30 ml-40">
@@ -348,7 +350,7 @@ const Addeditfaculty = () => {
                 <label>Designation</label>
                 <select
                   className="py-1 px-10 border border-black"
-                  name="gender"
+                  name="designation"
                   value={formData.designation}
                   onChange={handleChange}>
                   <option>Select</option>
@@ -411,6 +413,7 @@ const Addeditfaculty = () => {
                   <div className="text-red-500">{errors.dateOfBirth}</div>
                 )}
               </div>
+             
              
               <div className="flex flex-col">
                 <label>Present mobile number:</label>
@@ -512,9 +515,9 @@ const Addeditfaculty = () => {
                 type="submit"
                 value="save"
                 className="bg-blue-500 rounded-md w-40 h-auto text-white md:text-22 sm:text-lg"
-                
+
               >
-                Save 
+                Save
               </button>
             </div>
           </form>
