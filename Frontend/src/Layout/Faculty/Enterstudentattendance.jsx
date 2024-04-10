@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Select from "react-select";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import Attendancecsvpopup from "./Attendancecsvpopup";
+import Attendancepreviewpopup from "./Attendancepreviewpopup";
+import csvtojson from "csvtojson"; 
 
 const generateYearOptions = () => {
   const currentYear = new Date().getFullYear();
@@ -18,8 +19,8 @@ const generateYearOptions = () => {
 };
 
 const GenerateProgram = () => {
-  return [
-    { value: "select Program", label: "select Program" },
+  const Program = [
+    { value: "select Program", label: "Select Program" },
     { value: "MBBS", label: "MBBS" },
     { value: "MS", label: "MS" },
     { value: "MD", label: "MD" },
@@ -31,16 +32,20 @@ const GenerateProgram = () => {
     { value: "BSMS", label: "BSMS" },
     { value: "BNYS", label: "BNYS" },
   ];
+
+  return Program;
 };
 
 const GenerateSection = () => {
-  return [
-    { value: "select Section", label: "select Section" },
+  const Section = [
+    { value: "Select Section", label: "Select Section" },
     { value: "A", label: "Section A" },
     { value: "B", label: "Section B" },
     { value: "C", label: "Section C" },
     { value: "D", label: "Section D" },
   ];
+
+  return Section;
 };
 
 const GenerateSemester = () => {
@@ -72,13 +77,12 @@ const GenerateSubject = () => {
   return Subject;
 };
 
-const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
+const EnterStudentAttendance = () => {
   // State to manage academic year
-  const [academicYear, setAcademicYear] = useState({
-    value: "select Academic year",
-    label: "select Academic year",
+  const [academicYear, setAcademicYear] = React.useState({
+    value: "Select Academic Year",
+    label: "Select Academic Year",
   });
-
   // State to manage selected semester
   const [selectedSemester, setSelectedSemester] = useState({
     value: "select Semester",
@@ -106,7 +110,15 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
   // State to manage student attendance
   const [attendance, setAttendance] = useState([]);
 
-  // Sample data for demonstration
+  // State for CSV popup visibility
+  const [openCsvPopup, setOpenCsvPopup] = useState(false);
+
+  // State for Preview popup visibility
+  const [openPreviewPopup, setOpenPreviewPopup] = useState(false);
+
+  // State to store CSV data
+  const [csvData, setCsvData] = useState([]);
+
   const students = [
     { registrationNo: "220970001", name: "ABCD", subject: "PHYSICS" },
     { registrationNo: "220970002", name: "XYZ", subject: "PHYSICS" },
@@ -126,7 +138,7 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
     setAttendance(updatedAttendance);
   };
 
-  
+  // Function to handle file change
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -134,14 +146,19 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
     reader.onload = async (event) => {
       const text = event.target.result;
       const parsedJsonArray = await csvtojson().fromString(text);
-      console.log("Value are: ", parsedJsonArray); // Print JSON data to console
-      setJsonArray(parsedJsonArray); // Store JSON array in state
-      setCsvData(parsedJsonArray)
-      setOpenCsvPopup(true); // Show CSV popup
+      console.log("Value are: ", parsedJsonArray); 
+      //setJsonArray(parsedJsonArray);
+      setOpenCsvPopup(true);
+      setCsvData(parsedJsonArray);
+      
     };
-
     reader.readAsText(file);
   };
+  
+  const handlesaveclose = () => {
+    setOpenCsvPopup(false);
+  };
+
 
   return (
     <section className="left-50 absolute">
@@ -163,6 +180,8 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
                 readOnly
                 className="w-15vw"
                 required
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
               />
             </div>
 
@@ -174,6 +193,8 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
                 options={GenerateSemester()}
                 className="w-15vw"
                 required
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
               />
             </div>
             <div className="flex flex-row gap-x-5 justify-center items-center">
@@ -184,6 +205,8 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
                 options={GenerateProgram()}
                 className="w-15vw"
                 required
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
               />
             </div>
             <div className="flex flex-row gap-x-5 justify-center items-center ml-12">
@@ -194,6 +217,8 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
                 options={GenerateSubject()}
                 className="w-15vw"
                 required
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
               />
             </div>
             <div className="flex flex-row gap-x-5 justify-center items-center ml-3">
@@ -204,6 +229,8 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
                 options={GenerateSection()}
                 className="w-15vw"
                 required
+                menuPortalTarget={document.body}
+                menuPosition={'fixed'}
               />
             </div>
             <div className="flex flex-row gap-x-5 justify-center items-center ml-8">
@@ -278,21 +305,20 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
           </div>
         </form>
         <div className="relative flex justify-center items-center gap-2">
-        <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              className="hidden"
-              id="csv-upload"
-
-            />
-            <button
-              type="button"
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline cursor-pointer"
-              onClick={() => document.getElementById("csv-upload").click()}
-            >
-              Upload CSV
-            </button>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            className="hidden"
+            id="csv-upload"
+          />
+          <button
+            type="button"
+            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline cursor-pointer"
+            onClick={() => document.getElementById("csv-upload").click()}
+          >
+            Upload CSV
+          </button>
           <button
             className="bg-blue-500 rounded-md w-20 h-auto text-white text-lg">
             Save
@@ -300,13 +326,12 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
         </div>
       </div>
 
-      {/* {openCsvPopup && (
-        <Attendancecsvpopup
-          open={openCsvPopup}
-          onClose={() => setOpenCsvPopup(false)}
-        >
+      {/* CSV popup */}
+      {openCsvPopup && (
+        <Attendancecsvpopup  open={openCsvPopup}
+        onClose={() => setOpenCsvPopup(false)}>
           <div className="lg:w-50vw md:w-30vw sm:20vw lg:h-45vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg overflow-auto">
-            <div className="text-2xl font-black text-blue-950 justify-self-center m-20">
+         <div className="text-2xl font-black text-blue-950 justify-self-center m-20">
               Your csv has been Uploaded !!!
             </div>
             <h5>To view the more details, Please Click on preview</h5>
@@ -321,25 +346,26 @@ const EnterStudentAttendance = ({ subjectName, subcode, examination }) => {
               <button
                 type="submit"
                 className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
-                onClick={handleSaveButtonClick}
+                onClick={() => {
+                  handlesaveclose(); // Close the CSV popup
+                  setOpenPreviewPopup(false); // Open the preview popup
+                }}
               >
                 Save
               </button>
             </div>
-          </div>
-        </Attendancecsvpopup>
+            </div>
+          </Attendancecsvpopup>
       )}
 
+      {/* Preview popup */}
       {openPreviewPopup && (
-        <Assignsubjectpreview
+        <Attendancepreviewpopup
           open={openPreviewPopup}
           onClose={() => setOpenPreviewPopup(false)}
-          csvData={csvData} // Pass the csvData prop here
-        >
-
-        </Assignsubjectpreview>
-      )} */}
-
+          csvData={csvData} // Pass your CSV data here
+        />
+      )}
     </section>
   );
 };

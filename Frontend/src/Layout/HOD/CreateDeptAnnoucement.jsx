@@ -194,7 +194,7 @@ const CreateDeptAnnoucement = () => {
               <label htmlFor="fileInput" className="text-lg">
                 Upload PDF File :{" "}
               </label>
-              <i class="fa-solid fa-upload fa-lg pl-2"
+              <i className="fa-solid fa-upload fa-lg pl-2"
                 onClick={() => document.getElementById("fileInput").click()}
                 style={{ cursor: "pointer" }}
               />

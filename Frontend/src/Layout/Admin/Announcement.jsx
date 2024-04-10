@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import EditAnnouncement from "./EditAnnouncement";
 import axios from "axios";
 
-const DepartmentalAnnouncement = () => {
+const Announcementhomepage = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [showEditAnnouncement, setShowEditAnnouncement] = useState(false);
@@ -170,4 +170,4 @@ const DepartmentalAnnouncement = () => {
   );
 };
 
-export default DepartmentalAnnouncement;
+export default Announcementhomepage;

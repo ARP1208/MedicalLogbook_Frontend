@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import Announcementhomepage from "./Announcementhomepage";
 
 const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
-  const [editedAnnouncement, setEditedAnnouncement] = useState(selectedAnnouncement);
+  const [editedAnnouncement, setEditedAnnouncement] =
+    useState(selectedAnnouncement);
   const [uploadedImage, setUploadedImage] = useState(null);
-  const [uploadedFileName, setUploadedFileName] = useState(selectedAnnouncement.uploadedFileName);
+  const [uploadedFileName, setUploadedFileName] = useState(
+    selectedAnnouncement.uploadedFileName
+  );
+  const [fileblob, setFileBlob] = useState(null);
 
   const getfile = async () => {
     try {
@@ -23,19 +27,18 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Extract the Blob data from the response
       let fileBlob = await response.blob();
+      setFileBlob(fileBlob);
 
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result);
-        setUploadedFileName(fileBlob.name);
         setEditedAnnouncement({
           ...editedAnnouncement,
           uploadedFile: fileBlob,
+          uploadedFileName: fileBlob.name,
         });
       };
-      setUploadedFileName(selectedAnnouncement.uploadedFileName)
       reader.readAsDataURL(fileBlob);
     } catch (e) {
       console.log(
@@ -51,7 +54,6 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
   }, [selectedAnnouncement]);
 
   const handleDateChange = (e) => {
-    setIsDateModified(true); // Set isDateModified to true when the user changes the date
     setEditedAnnouncement({
       ...editedAnnouncement,
       scheduleDate: e.target.value,
@@ -60,11 +62,11 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-
+    console.log(file);
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUploadedImage(reader.result);
+        setUploadedImage(file);
         setUploadedFileName(file.name);
         setEditedAnnouncement({
           ...editedAnnouncement,
@@ -74,29 +76,62 @@ const EditAnnouncement = ({ selectedAnnouncement, isEditable }) => {
       };
       reader.readAsDataURL(file);
     }
-    setUploadedFileName(file.name);
     setUploadedImage(file);
   };
 
-  const handleSaveChanges = () => {
-    // onSave(editedAnnouncement);
-    let formData = FormData();
+  const handleSaveChanges = async (e) => {
+    // e.preventDefault();
 
-    formData.append("a_id", editedAnnouncement._id)
-    formData.append("announcementTitle", editedAnnouncement.announcementTitle)
-    formData.append("scheduleDate", editedAnnouncement.scheduleDate)
-    formData.append("uploadedFileName", editedAnnouncement.uploadedFileName)
-    formData.append("uploadedFileName", editedAnnouncement.uploadedImage)
-    formData.append("scheduleTime", editedAnnouncement.scheduleTime)
+    try {
+      let formData = new FormData();
+      formData.append("a_id", editedAnnouncement._id.toString());
+      formData.append(
+        "announcementTitle",
+        editedAnnouncement.announcementTitle
+      );
+      formData.append("scheduleDate", editedAnnouncement.scheduleDate);
 
-    let response = fetch(`http://127.0.0.1:8000/admin/UpdateAnnouncement`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: formData
-    });
-    console.log(response);
+      if (uploadedImage instanceof File) {
+        formData.append("uploadedFileName", uploadedImage);
+      } else {
+        const fileName = uploadedFileName;
+        const lastModified = Date.now();
+        const fileType = fileblob.type;
+
+        const file = new File([fileblob], fileName, {
+          type: fileType,
+          lastModified,
+        });
+
+        console.log(file);
+        setUploadedImage(file);
+        setEditedAnnouncement({
+          ...editedAnnouncement,
+          uploadedFile: file,
+        });
+        formData.append("uploadedFileName", file);
+      }
+
+      formData.append("uploadedFileName", uploadedFileName);
+      formData.append("scheduleTime", editedAnnouncement.scheduleTime);
+
+      let response = await fetch(
+        `http://127.0.0.1:8000/admin/UpdateAnnouncement`,
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        alert("Successfully Updated!");
+        onSave();
+      } else {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const goBack = () => {

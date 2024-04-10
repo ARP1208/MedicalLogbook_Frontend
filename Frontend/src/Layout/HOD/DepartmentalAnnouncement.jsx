@@ -63,6 +63,11 @@ const DepartmentalAnnouncement = () => {
 
   return (
     <section className="left-50 top-33 absolute">
+      <div className="relative flex left-12 top-7 w-auto z-10">
+        <button className="bg-sky-500 rounded-md w-auto text-lg">
+          Announcements
+        </button>
+      </div>
       {showEditDepartmentalAnn ? (
         <EditDepartmentalAnn
           selectedAnnouncement={selectedAnnouncement}
@@ -74,7 +79,7 @@ const DepartmentalAnnouncement = () => {
         />
       ) : (
         <>
-          <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10">
+          <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-5 mx-12">
             <div className="p-10">
               <div className="overflow-hidden block">
                 <div className="flex w-70vw h-50vh mb-4 border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto  border-sky-500 rounded-xl">

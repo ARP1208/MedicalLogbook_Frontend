@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-const Attendancecsvpopup = ({ onClose, children }) => {
+const Internalmarkscsvpopup = ({ onClose, children }) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setOpen(true);
-    }, 200); // Set timeout for 200 milliseconds
+    }, 200);
 
-    return () => clearTimeout(timer); // Clear timeout on unmount
+    return () => clearTimeout(timer);
   }, []);
 
   const handleClose = () => {
@@ -41,4 +41,4 @@ const Attendancecsvpopup = ({ onClose, children }) => {
   );
 };
 
-export default Attendancecsvpopup;
+export default Internalmarkscsvpopup;

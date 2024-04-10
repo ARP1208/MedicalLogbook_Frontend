@@ -810,6 +810,7 @@ const Editstudent = () => {
                 name="applicationNumber"
                 value={studentData.applicationNumber}
                 onChange={handleChange}
+                readOnly
               />
               {errors.applicationNumber && (
                 <div className="text-red-500">{errors.applicationNumber}</div>
@@ -950,6 +951,7 @@ const Editstudent = () => {
                 name="dateOfBirth"
                 value={studentData.dateOfBirth}
                 onChange={handleChange}
+                readOnly
               />
               {errors.dateOfBirth && (
                 <div className="text-red-500">{errors.dateOfBirth}</div>
