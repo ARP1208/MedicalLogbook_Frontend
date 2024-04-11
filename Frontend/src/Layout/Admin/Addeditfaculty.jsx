@@ -11,7 +11,7 @@ const Addeditfaculty = () => {
     motherTongue: "",
     facultyid: "",
     department: "",
-    designation:"HOD",
+    designation: "HOD",
     dateOfJoining: "",
     dateOfBirth: "",
     gender: "Male",
@@ -114,6 +114,7 @@ const Addeditfaculty = () => {
 
   const handlefacultydetails = async (e) => {
     e.preventDefault();
+    console.log("Submitting faculty details");
     const newErrors = {};
     if (!formData.facultyname) {
       newErrors.facultyname = "Name is required";
@@ -215,7 +216,7 @@ const Addeditfaculty = () => {
           motherTongue: "",
           facultyid: "",
           department: "",
-          designation:"",
+          designation: "",
           dateOfJoining: "",
           dateOfBirth: "",
           gender: "",
@@ -411,8 +412,8 @@ const Addeditfaculty = () => {
                   <div className="text-red-500">{errors.dateOfBirth}</div>
                 )}
               </div>
-             
-             
+
+
               <div className="flex flex-col">
                 <label>Present mobile number:</label>
                 <input

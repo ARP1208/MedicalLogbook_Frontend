@@ -9,6 +9,7 @@ const DepartmentalAnnouncement = () => {
   const [adminannoucements, setAnnouncement] = useState([]);
   const [error, setError] = useState(null);
   const [isAnnouncemtEditable, setIsAnnouncementEditable] = useState(null);
+  const [announcementType, setAnnouncementType] = useState("");
 
   const fetchAnnouncements = async () => {
     try {
@@ -55,7 +56,6 @@ const DepartmentalAnnouncement = () => {
   };
 
   const handleShowAnnouncement = (selectedAnnouncement) => {
-    console.log("Show announcement:", selectedAnnouncement);
     setSelectedAnnouncement(selectedAnnouncement);
     setIsAnnouncementEditable(false);
     setShowEditDepartmentalAnn(true);
@@ -63,110 +63,129 @@ const DepartmentalAnnouncement = () => {
 
   return (
     <section className="left-50 top-33 absolute">
-      <div className="relative flex left-12 top-7 w-auto z-10">
+      <div className="relative flex left-12 top-7 w-auto z-10 gap-x-10">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
           Announcements
         </button>
+        <div className="flex flex-col text-start">
+          <select
+            className="border-2 border-black p-2 rounded-md"
+            value={announcementType}
+            onChange={(e) => {
+              setAnnouncementType(e.target.value);
+            }}
+          >
+            <option value="All">All Announcements</option>
+            <option value="Admin">Admin Announcements</option>
+            <option value="Departmental">Departmental Announcements</option>
+          </select>
+        </div>
       </div>
       {showEditDepartmentalAnn ? (
         <EditDepartmentalAnn
           selectedAnnouncement={selectedAnnouncement}
           isEditable={isAnnouncemtEditable}
           onSave={() => {
-            // setIsAnnouncementEditable(null);
             setShowEditDepartmentalAnn(false);
           }}
         />
       ) : (
-        <>
-          <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-5 mx-12">
-            <div className="p-10">
-              <div className="overflow-hidden block">
-                <div className="flex w-70vw h-50vh mb-4 border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto  border-sky-500 rounded-xl">
-                  <table className="w-full h-10 text-center rounded-md border-collapse">
-                    <thead>
+        <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10">
+          <div className="p-10">
+            <div className="overflow-hidden block">
+              <div className="flex w-70vw h-50vh mb-4 border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto  border-sky-500 rounded-xl">
+                <table className="w-full h-10 text-center rounded-md border-collapse">
+                  <thead>
+                    <tr>
+                      <th className="border bg-blue-950 text-white px-4 py-2 w-12">
+                        Sl. No.
+                      </th>
+                      <th className="border col-span-3 bg-blue-950 text-white px-4 py-2">
+                        Events
+                      </th>
+                      <th className="border bg-blue-950 text-white px-4 py-2">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {adminannoucements.length === 0 ? (
                       <tr>
-                        <th className="border bg-blue-950  text-white px-4 py-2 w-12">
-                          Sl. No.
-                        </th>
-                        <th className="border col-span-3 bg-blue-950 text-white px-4 py-2">
-                          Events
-                        </th>
-                        <th className="border bg-blue-950 text-white px-4 py-2">
-                          Actions
-                        </th>
+                        <td
+                          className="border border-black px-4 py-2"
+                          colSpan="6"
+                          style={{
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                          }}
+                        >
+                          No announcements to be viewed
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {adminannoucements.length === 0 ? (
-                        <tr>
-                          <td
-                            className="border border-black px-4 py-2"
-                            colSpan="6"
-                            style={{
-                              textAlign: "center",
-                              verticalAlign: "middle",
-                            }}
-                          >
-                            No announcements to be viewed
-                          </td>
-                        </tr>
-                      ) : (
-                        adminannoucements.map((announcement, index) => {
-                          const isInFilteredAnnouncements =
-                            announcement.department !== undefined;
-                          return (
-                            <tr key={index}>
-                              <td className="border border-black px-4 py-2">
-                                {index + 1}
-                              </td>
-                              <td className="border border-black px-4 py-2">
-                                {announcement.announcementTitle}
-                              </td>
-                              <td className="border border-black px-4 py-2">
-                                {isInFilteredAnnouncements ? (
-                                  <>
-                                    <button
-                                      className="w-20 rounded-md bg-blue-500 text-lg mr-2"
-                                      onClick={() =>
-                                        handleEditDepartmentalAnn(announcement)
-                                      }
-                                    >
-                                      Edit
-                                    </button>
-                                    <button
-                                      className="w-20 rounded-md bg-blue-500 text-lg"
-                                      onClick={() =>
-                                        handleDelete(
-                                          announcement.announcementTitle
-                                        )
-                                      }
-                                    >
-                                      Delete
-                                    </button>
-                                  </>
-                                ) : (
+                    ) : (
+                      adminannoucements.map((announcement, index) => {
+                        const showAnnouncement =
+                          announcementType === "Departmental"
+                            ? announcement.department !== undefined
+                            : announcementType === "Admin"
+                            ? announcement.department === undefined
+                            : true;
+
+                        if (!showAnnouncement) {
+                          return null;
+                        }
+
+                        return (
+                          <tr key={index}>
+                            <td className="border border-black px-4 py-2">
+                              {index + 1}
+                            </td>
+                            <td className="border border-black px-4 py-2">
+                              {announcement.announcementTitle}
+                            </td>
+                            <td className="border border-black px-4 py-2">
+                              {announcement.department !== undefined ? (
+                                <>
                                   <button
-                                    className="w-40 rounded-md bg-blue-500 text-lg"
+                                    className="w-20 rounded-md bg-blue-500 text-lg mr-2"
                                     onClick={() =>
-                                      handleShowAnnouncement(announcement)
+                                      handleEditDepartmentalAnn(announcement)
                                     }
                                   >
-                                    Show
+                                    Edit
                                   </button>
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                                  <button
+                                    className="w-20 rounded-md bg-blue-500 text-lg"
+                                    onClick={() =>
+                                      handleDelete(
+                                        announcement.announcementTitle
+                                      )
+                                    }
+                                  >
+                                    Delete
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  className="w-40 rounded-md bg-blue-500 text-lg"
+                                  onClick={() =>
+                                    handleShowAnnouncement(announcement)
+                                  }
+                                >
+                                  Show
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
     </section>
   );

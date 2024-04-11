@@ -1,35 +1,99 @@
 import React, { useState } from "react";
+import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TextareaAutosize from "react-textarea-autosize";
 
 const CreateTaskPglogbook = () => {
-  const [subjectCount, setSubjectCount] = useState(1); // State to track the number of subjects
-  const [startDate, setStartDate] = React.useState(new Date());
+  const [studentCount, setStudentCount] = useState(1);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
-  const handleSubmit = (e) => {};
+  const [formData, setFormData] = useState({
+    Task_ID: "",
+    Task_Name: "",
+    Task_Description: "",
+    start_Date: new Date(),
+    End_Date: new Date(),
+    Submit_Time: "",
+    Students: [], 
+  });
 
-  const handleAddSubject = () => {
-    setSubjectCount((prevCount) => prevCount + 1); // Increment subject count
+  const handleInputChange = (e, id) => {
+    const { value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };  
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+    setFormData({ ...formData, startDate: date });
   };
 
-  const handleRemoveSubject = () => {
-    if (subjectCount > 1) {
-      setSubjectCount((prevCount) => prevCount - 1); // Decrement subject count only if greater than 1
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+    setFormData({ ...formData, endDate: date });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8000/faculty/saveandemailtask", formData);
+      console.log(response.data);
+      alert("Task created successfully");
+      // Optionally, clear form data or perform other actions upon successful submission
+    } catch (error) {
+      console.error("Error:", error.response); // Log the error response for debugging
+      // alert("Failed to create task. Please try again.");
     }
   };
+  
+  const handleAddStudent = () => {
+    console.log(studentCount);
+    setStudentCount((prevCount) => prevCount + 1);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      students: [...prevFormData.Students, { regno: "", Name: "" }],
+    }));
+  };
+
+  const handleRemoveStudent = () => {
+    if (studentCount > 1) {
+      console.log(studentCount);
+      setStudentCount((prevCount) => prevCount - 1);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        students: prevFormData.Students.slice(0, -1),
+      }));
+    }
+  };
+
+  const handleStudentInputChange = (e, index, field) => {
+    const { value } = e.target;
+    
+    const updatedStudents = [...formData.Students];
+    
+    updatedStudents[index] = {
+      ...updatedStudents[index],
+      [field]: value, 
+    };
+  
+    setFormData({
+      ...formData,
+      Students: updatedStudents,
+    });
+  };
+  
+
 
   return (
     <section className="fixed">
       <div className="fixed flex left-5 top-32 ml-50 w-auto">
-        <button className="bg-sky-500 rounded-md w-auto text-lg">
+        <button className="bg-sky-500 rounded-md w-auto text-lg" onClick={handleSubmit}>
           Create Task
         </button>
       </div>
       <div className="fixed p-4 flex left-5 ml-50 top-45 flex-wrap w-fit border-sky-500 border-3 rounded-md bg-gray-200">
         <form onSubmit={handleSubmit} className="overflow-auto">
-          <div className="flex-col md:flex-row gap-3 justify-center items-center grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 overflow-auto"></div>
-
           <div className="flex mb-1 gap-10">
             <label className="block text-gray-700 font-bold mb-2 text-start">
               Task ID
@@ -37,6 +101,7 @@ const CreateTaskPglogbook = () => {
                 type="text"
                 id="TaskID"
                 className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                onChange={(e) => handleInputChange(e, "Task_ID")}
               />
             </label>
             <label className="block text-start text-gray-700 font-bold mb-2">
@@ -45,6 +110,7 @@ const CreateTaskPglogbook = () => {
                 type="text"
                 id="TaskName"
                 className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                onChange={(e) => {handleInputChange(e, "Task_Name")}}
               />
             </label>
           </div>
@@ -55,6 +121,7 @@ const CreateTaskPglogbook = () => {
                 id="Description"
                 placeholder="Enter Task Description Name"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none min-h-10 focus:shadow-outline"
+                onChange={(e) => {handleInputChange(e, "Task_Description")}}
               />
             </label>
           </div>
@@ -64,9 +131,8 @@ const CreateTaskPglogbook = () => {
               Start Date
               <br />
               <DatePicker
-                id="startDate"
                 selected={startDate}
-                onChange={(date) => setStartDate(date)}
+                onChange={handleStartDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </label>
@@ -74,9 +140,8 @@ const CreateTaskPglogbook = () => {
               End Date
               <br />
               <DatePicker
-                id="startDate"
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
+                selected={endDate}
+                onChange={handleEndDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
             </label>
@@ -88,6 +153,7 @@ const CreateTaskPglogbook = () => {
                 id="submittime"
                 type="time"
                 className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                onChange={(e) => {handleInputChange(e, "Submit_Time")}}
               />
             </label>
           </div>
@@ -95,27 +161,24 @@ const CreateTaskPglogbook = () => {
           <div className=" flex justify-center gap-10 pb-3">
             <button
               type="button"
-              onClick={handleAddSubject}
+              onClick={handleAddStudent}
               className="bg-blue-500 text-base rounded-md w-auto"
             >
               Add Student
             </button>
             <button
               type="button"
-              onClick={handleRemoveSubject}
+              onClick={handleRemoveStudent}
               className="bg-blue-500 text-base  rounded-md w-auto"
             >
               Remove Student
             </button>
           </div>
-          {/* Dynamic Rol number and student name input fields */}
+          {/* Dynamic Roll number and student name input fields */}
           <div className="overflow-auto max-h-40 mb-3">
             <div className=" w-auto">
-              {[...Array(subjectCount)].map((_, index) => (
-                <div
-                  key={index}
-                  className="flex justify-center gap-10  overflow-auto"
-                >
+            {[...Array(studentCount)].map((_, index) => (
+                <div key={index} className="flex justify-center gap-10  overflow-auto">
                   <label
                     htmlFor={`subject${index + 1}`}
                     className="block text-start text-gray-700 font-bold"
@@ -125,6 +188,7 @@ const CreateTaskPglogbook = () => {
                       type="text"
                       id={`subject${index + 1}`}
                       className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      onChange={(e) => handleStudentInputChange(e, index, "regno")}
                     />
                   </label>
                   <label
@@ -136,6 +200,7 @@ const CreateTaskPglogbook = () => {
                       type="text"
                       id={`faculty${index + 1}`}
                       className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      onChange={(e) => handleStudentInputChange(e, index, "Name")}
                     />
                   </label>
                 </div>

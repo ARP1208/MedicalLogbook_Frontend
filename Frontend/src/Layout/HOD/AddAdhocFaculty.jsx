@@ -9,6 +9,7 @@ const AddAdhocFaculty = () => {
     facultyname: "",
     applicationNumber: "",
     motherTongue: "",
+    designation: "Adhoc",
     facultyid: "",
     department: "",
     dateOfJoining: "",
@@ -32,6 +33,7 @@ const AddAdhocFaculty = () => {
         facultyname: facultyData.facultyname,
         applicationNumber: facultyData.applicationNumber,
         motherTongue: facultyData.motherTongue,
+        designation: "Adhoc",
         facultyid: facultyData.facultyid,
         department: facultyData.department,
         dateOfJoining: facultyData.dateOfJoining ? facultyData.dateOfJoining.slice(0, 10) : "",
@@ -349,12 +351,9 @@ const AddAdhocFaculty = () => {
                   type="text"
                   className="border border-black"
                   name="department"
-                  value={formData.department}
-                  onChange={handleChange}
+                  value={"Adhoc"}
+                  readOnly
                 />
-                {errors.department && (
-                  <div className="text-red-500">{errors.department}</div>
-                )}
               </div>
               <div className="flex flex-col">
                 <label>Mother tongue:</label>

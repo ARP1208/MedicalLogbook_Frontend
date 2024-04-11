@@ -826,6 +826,75 @@ const DeleteAssessment = asyncHandler(async (req, res) => {
 
 
 //////////////PG Log Component////////////////////////
+
+const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
+  console.log("Received data for saving task assignment:", req.body);
+  const { Task_ID, Task_Name, Task_Description, start_Date, End_Date, Submit_Time, Students } = req.body;
+  console.log("Task ID: ", Task_ID)
+ 
+  try {
+  // Check if Task_ID already exists
+  const existingTask = await TaskAssign.findOne({ Task_ID });
+  if (existingTask) {
+  console.error("Task_ID already exists:", Task_ID);
+  return res.status(400).json({ error: "Task_ID already exists" });
+  }
+ 
+  // If Task_ID doesn't exist, save the new task assignment
+  const newTask = new TaskAssign({
+  Task_ID,
+  Task_Name,
+  Task_Description,
+  start_Date,
+  End_Date,
+  Submit_Time,
+  Students
+  });
+  const savedTask = await newTask.save();
+  console.log("Saved task assignment:", savedTask);
+ 
+  // Fetch student details based on regno from the StudentDetails schema
+  const studentRegnos = Students.map(student => student.regno);
+  const students = await StudentDetails.find({ regno: { $in: studentRegnos } });
+ 
+  // Create reusable transporter object using the default SMTP transport
+  const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+  user: "shettytejas96@gmail.com",
+  pass: "ndhg gltd onks xuan",
+  },
+  });
+ 
+  // Compose and send email to each student
+  for (const student of students) {
+  const mailOptions = {
+  from: 'shettytejas96@gmail.com',
+  to: student.emailId,
+  subject: 'Task Assignment',
+  html: `<p>You have been assigned the following task:,</p>
+  <p>Task Name: ${Task_Name}</p>
+  <p>Task Description: ${Task_Description}</p>
+  <p>Start Date: ${start_Date}</p>
+  <p>End Date: ${End_Date}</p>
+  
+  <p>Regards,</p>
+  <p>Your Faculty</p>`
+  };
+ 
+  // Send email
+  await transporter.sendMail(mailOptions);
+  console.log("Task assignment email sent to:", student.emailId);
+  }
+ 
+  res.status(201).json({ message: "Task assigned successfully and emails sent to students" });
+  } catch (error) {
+  console.error("Error saving task assignment and sending emails:", error);
+  res.status(500).json({ error: "Internal Server Error" });
+  }
+ });
+ 
+
 // const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
 //   console.log("Received data for saving task assignment:", req.body);
 //   const { Task_ID, Task_Name, Task_Description, start_Date, End_Date, Task_Completed, Students } = req.body;
@@ -999,17 +1068,15 @@ const DeleteAssessment = asyncHandler(async (req, res) => {
 // });
 
 
-
 export {
   Facultylogin,
   faculty,
   facultymail,
   searchfaculty,
   UpdateFacultyDetails,
-  // saveTaskAssignAndSendEmails,
-  // searchTask,
-  // updateTaskAssign,
-  // FacultyfetchAllAnnouncement,
+  saveTaskAssignAndSendEmails,
+  //searchTask,
+  //updateTaskAssign,
   fetchDetails,
   saveAssignMarks,
   updateAssignMarks,
@@ -1017,6 +1084,6 @@ export {
   getFacultyindividualAssessment,
   getAssessmentByQuestionNumber,
   showAssessment,
-  // DeleteTaskAssign,
+  //DeleteTaskAssign,
   DeleteAssessment
-};
+ };

@@ -256,7 +256,7 @@ const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
                   Upload PDF File :{" "}
                 </label>
                 <i
-                  className="fa-solid fa-upload fa-lg pl-2"
+                  class="fa-solid fa-upload fa-lg pl-2"
                   onClick={() => document.getElementById("fileInput").click()}
                   style={{ cursor: "pointer" }}
                 />
