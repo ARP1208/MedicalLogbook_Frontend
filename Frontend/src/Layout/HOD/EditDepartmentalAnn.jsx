@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 
 const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
-  const [editedAnnouncement, setEditedAnnouncement] = useState(selectedAnnouncement);
+  const [editedAnnouncement, setEditedAnnouncement] =
+    useState(selectedAnnouncement);
   const [uploadedImage, setUploadedImage] = useState(null);
-  const [uploadedFileName, setUploadedFileName] = useState(selectedAnnouncement.uploadedFileName);
+  const [uploadedFileName, setUploadedFileName] = useState(
+    selectedAnnouncement.uploadedFileName
+  );
+  const [fileblob, setFileBlob] = useState(null);
 
   const [showsave, setShowsave] = useState(false);
 
@@ -24,13 +28,12 @@ const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Extract the Blob data from the response
       let fileBlob = await response.blob();
+      setFileBlob(fileBlob);
 
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result);
-        setUploadedFileName(fileBlob.name);
         setEditedAnnouncement({
           ...editedAnnouncement,
           uploadedFile: fileBlob,
@@ -71,25 +74,60 @@ const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
     setUploadedImage(file);
   };
 
-  const handleSaveChanges = () => {
-    // onSave(editedAnnouncement);
-    let formData = FormData();
+  const handleSaveChanges = async () => {
+    let formData = new FormData();
 
-    formData.append("a_id", editedAnnouncement._id)
-    formData.append("announcementTitle", editedAnnouncement.announcementTitle)
-    formData.append("scheduleDate", editedAnnouncement.scheduleDate)
-    formData.append("uploadedFileName", editedAnnouncement.uploadedFileName)
-    formData.append("uploadedFileName", editedAnnouncement.uploadedImage)
-    formData.append("scheduleTime", editedAnnouncement.scheduleTime)
+    try {
+      let formData = new FormData();
+      formData.append("a_id", editedAnnouncement._id.toString());
+      formData.append(
+        "announcementTitle",
+        editedAnnouncement.announcementTitle
+      );
+      formData.append("scheduleDate", editedAnnouncement.scheduleDate);
 
-    let response = fetch(`http://127.0.0.1:8000/admin/UpdateAnnouncement`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: formData
-    });
-    console.log(response);
+      if (uploadedImage instanceof File) {
+        formData.append("uploadedFileName", uploadedImage);
+      } else {
+        const fileName = uploadedFileName;
+        const lastModified = Date.now();
+        const fileType = fileblob.type;
+
+        const file = new File([fileblob], fileName, {
+          type: fileType,
+          lastModified,
+        });
+
+        console.log(file);
+        setUploadedImage(file);
+        setEditedAnnouncement({
+          ...editedAnnouncement,
+          uploadedFile: file,
+        });
+        formData.append("uploadedFileName", file);
+      }
+
+      formData.append("uploadedFileName", uploadedFileName);
+      formData.append("scheduleTime", editedAnnouncement.scheduleTime);
+      formData.append("department", editedAnnouncement.department);
+
+      let response = await fetch(
+        `http://127.0.0.1:8000/admin/UpdateAnnouncement`,
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        alert("Successfully Updated!");
+        onSave();
+      } else {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handlePreview = (name) => {
@@ -173,7 +211,7 @@ const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
                   disabled={!isEditable}
                 />
               </label>
-              {editedAnnouncement.department && (
+              {editedAnnouncement.department !== undefined && (
                 <label htmlFor="dept" className="text-lg">
                   Department:{" "}
                   <input
@@ -182,8 +220,13 @@ const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
                     className="border-1 px-4 w-full h-10 rounded-md mt-1"
                     name="department"
                     value={editedAnnouncement.department}
-                     //  validation added
                     disabled={!isEditable}
+                    onChange={(e) =>
+                      setEditedAnnouncement({
+                        ...editedAnnouncement,
+                        department: e.target.value,
+                      })
+                    }
                   />
                 </label>
               )}
@@ -203,7 +246,7 @@ const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
                   className="border-1 px-4 border-black w-full h-10 rounded-md mt-1"
                   name="scheduleTime"
                   placeholder="Enter the Schedule Time"
-                   //  validation added
+                  //  validation added
                   disabled={!isEditable}
                 />
               </label>
@@ -224,7 +267,7 @@ const EditDepartmentalAnn = ({ selectedAnnouncement, isEditable }) => {
                   placeholder="Upload the file"
                   onChange={handleFileChange}
                   style={{ display: "none" }}
-                   //  validation added
+                  //  validation added
                   disabled={!isEditable}
                 />
               </div>

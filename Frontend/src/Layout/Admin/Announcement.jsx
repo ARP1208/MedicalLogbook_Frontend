@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import EditAnnouncement from "./EditAnnouncement";
 import axios from "axios";
 
-const DepartmentalAnnouncement = () => {
+const Announcementhomepage = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [showEditAnnouncement, setShowEditAnnouncement] = useState(false);
@@ -76,8 +76,15 @@ const DepartmentalAnnouncement = () => {
           }}
         />
       ) : (
+        
+
         <>
-          <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10">
+        <div className="relative flex left-10 top-7 w-auto z-10 gap-x-10">
+        <button className="bg-sky-500 rounded-md w-auto text-lg">
+          Announcements
+        </button>
+        </div>
+          <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-10 m-10 -mb-10">
             <div className="p-10">
               <div className="overflow-hidden block">
                 <div className="flex w-70vw h-50vh mb-4 border-3 rounded-tl-3xl rounded-tr-3xl overflow-auto  border-sky-500 rounded-xl">
@@ -170,4 +177,4 @@ const DepartmentalAnnouncement = () => {
   );
 };
 
-export default DepartmentalAnnouncement;
+export default Announcementhomepage;

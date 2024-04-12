@@ -63,13 +63,13 @@ const Gradesheethomepage = () => {
 
           <button onClick={() => handleOptions("Addmarks")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             <i class="fa-solid fa-marker p-2" style={{ color: "#ffffff" }}></i>
-            <span className=" realative w-auto top-2 text-base">Add&nbsp;Marks</span>
+            <span className=" realative w-auto top-2 text-base">Add&Edit&nbsp;Marks</span>
           </button>
 
-          <button onClick={() => handleOptions("Dashboard")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+          {/* <button onClick={() => handleOptions("Dashboard")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             <i class="fa-solid fa-chalkboard p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">Dashboard</p>
-          </button>
+          </button> */}
         </nav>
       </div>
 

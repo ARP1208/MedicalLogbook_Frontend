@@ -55,12 +55,6 @@ const Coursedetails = ({ subjectname, subcode, examination }) => {
                       Subject Name
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
-                      Subject Classification
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
-                      Subject Type
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
                       Semester
                     </th>  
                     <th className="border bg-blue-950 text-white px-4 py-2">
@@ -68,9 +62,6 @@ const Coursedetails = ({ subjectname, subcode, examination }) => {
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
                       Section
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
-                      Batch
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
                       Roll Number
@@ -81,24 +72,18 @@ const Coursedetails = ({ subjectname, subcode, examination }) => {
                   <tr>
                     <td className="border border-black px-4 py-2">SUB123</td>
                     <td className="border border-black px-4 py-2">PHYSICS</td>
-                    <td className="border border-black px-4 py-2">LAB</td>
-                    <td className="border border-black px-4 py-2">Core</td>
                     <td className="border border-black px-4 py-2">3</td>
                     <td className="border border-black px-4 py-2">4.00</td>
                     <td className="border border-black px-4 py-2">A</td>
-                    <td className="border border-black px-4 py-2">Batch-2</td>
                     <td className="border border-black px-4 py-2">062</td>
                    
                   </tr>
                   <tr>
                   <td className="border border-black px-4 py-2">SUB256</td>
                     <td className="border border-black px-4 py-2">MATHS</td>
-                    <td className="border border-black px-4 py-2">THEORY</td>
-                    <td className="border border-black px-4 py-2">Elective</td>
                     <td className="border border-black px-4 py-2">3</td>
                     <td className="border border-black px-4 py-2">2.00</td>
                     <td className="border border-black px-4 py-2">A</td>
-                    <td className="border border-black px-4 py-2">Batch-1</td>
                     <td className="border border-black px-4 py-2">034</td>
                     
                   </tr>

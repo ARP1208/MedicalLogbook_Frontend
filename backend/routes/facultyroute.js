@@ -5,6 +5,7 @@ import {
   facultymail,
   searchfaculty,
   UpdateFacultyDetails,
+  saveTaskAssignAndSendEmails,
 //   saveTaskAssignAndSendEmails,
 //   searchTask,
 //   updateTaskAssign,
@@ -49,7 +50,7 @@ router.route("/showfacultyAssessment").post(showAssessment);
 router.route("/DeleteAssessment").delete(DeleteAssessment);
 
 //////////////PG Log Component////////////////////////
-// router.route("/saveandemailtask").post(saveTaskAssignAndSendEmails);
+router.route("/saveandemailtask").post(saveTaskAssignAndSendEmails);
 // router.route("/searchTask").post(searchTask);
 // router.route("/updateTask").patch(updateTaskAssign);
 // router.route("/DeleteTaskAssign").delete(DeleteTaskAssign);

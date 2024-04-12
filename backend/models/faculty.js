@@ -6,6 +6,7 @@ const facultyDetailsSchema = new mongoose.Schema({
   facultyname: { type: String },
   applicationNumber: { type: String },
   motherTongue: { type: String },
+  designation:{type:String},
   dateOfJoining: { type: Date },
   facultyid: { type: Number },
   department: { type: String },
@@ -39,8 +40,9 @@ const TaskAssignschema = new mongoose.Schema({
   start_Date: { type: Date },
   End_Date: { type: Date },
   Task_Completed: { type: String},
+  Submit_Time: { type: String },
   Students: [{
-    regno: { type: Number },
+    regno: { type: String },
     Name: { type: String },
   }]
 });

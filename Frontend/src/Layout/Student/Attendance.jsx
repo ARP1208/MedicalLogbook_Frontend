@@ -54,9 +54,6 @@ const Attendance = ({ subjectname, subcode, examination }) => {
                       SL. No.
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
-                      Subject Code
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
                       Subject Name
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
@@ -79,7 +76,6 @@ const Attendance = ({ subjectname, subcode, examination }) => {
                 <tbody>
                   <tr>
                     <td className="border border-black px-4 py-2">1</td>
-                    <td className="border border-black px-4 py-2">SUB123</td>
                     <td className="border border-black px-4 py-2">PHYSICS</td>
                     <td className="border border-black px-4 py-2">3</td>
                     <td className="border border-black px-4 py-2">10</td>

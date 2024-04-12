@@ -55,24 +55,24 @@ const DepartmentalAnnHome = () => {
 
           <button onClick={toggleSidebarCollapse} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             {isSidebarCollapsed ? (
-              <i class="fa-solid fa-angles-right p-2" style={{ color: "#ffffff" }} /> // Expand icon
+              <i className="fa-solid fa-angles-right p-2" style={{ color: "#ffffff" }} /> // Expand icon
             ) : (
-              <i class="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
+              <i className="fa-solid fa-angles-left p-2" style={{ color: "#ffffff" }} /> // Collapse icon
             )}
             <p className="relative top-2 text-base">Collapse</p>
           </button>
 
             <button onClick={() => handleOptions("Home")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
-              <i class="fa-solid fa-house pr-2" style={{ color: "#ffffff" }} />
+              <i className="fa-solid fa-house pr-2" style={{ color: "#ffffff" }} />
               <p className="relative top-2 text-base">Home</p>
             </button>
             <button onClick={() => handleOptions("Announcement")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
-              <i class="fa-solid fa-bullhorn p-2" style={{ color: "#ffffff" }} />
+              <i className="fa-solid fa-bullhorn p-2" style={{ color: "#ffffff" }} />
               <p className="relative top-2 text-base">Announcements</p>
             </button>
 
             <button onClick={() => handleOptions("Createannouncement")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
-              <i class="fa-solid fa-scroll p-2" style={{ color: "#ffffff" }} />
+              <i className="fa-solid fa-scroll p-2" style={{ color: "#ffffff" }} />
               <p className="relative top-3 text-base mr-2">Create <span className="w-40 relative -top-2 break-words">Announcement</span></p>
             </button>
           </nav>

@@ -111,8 +111,10 @@ const AssignSubject = () => {
         const faculty = document.getElementById(`faculty${i + 1}`).value;
         const subjectCode = document.getElementById(`subjectcode${i + 1}`).value;
         const credit = document.getElementById(`credit${i + 1}`).value;
-        subjectsData.push({ subjectName: subject, facultyName: faculty, subjectCode: subjectCode });
+        subjectsData.push({ subjectName: subject, facultyName: faculty, subjectCode: subjectCode, credit: credit });
       }
+
+      console.log(subjectsData);
 
       // Update formData with subjectsData
       setFormData(prevData => ({
@@ -140,7 +142,8 @@ const AssignSubject = () => {
                           subjects: subjectsData.map(subject => ({
                             subjectName: subject.subjectName,
                             facultyname: subject.facultyName,
-                            subjectcode: subject.subjectCode
+                            subjectcode: subject.subjectCode,
+                            credit: subject.credit
                           }))
                         }
                       ]
@@ -152,6 +155,8 @@ const AssignSubject = () => {
           ]
         }
       };
+
+      console.log("Submitting data: ", formDataWithSubjects);
 
       // Make API call to save formDataWithSubjects to MongoDB
       const response = await axios.post(
@@ -260,19 +265,22 @@ const AssignSubject = () => {
         // Split the subject detail by " - " to extract subject name, faculty name, and subject code
         const detailParts = subjectDetail.split(' - ');
 
-        if (detailParts.length === 3) {
+        if (detailParts.length == 4) {
           const subjectName = detailParts[0].trim();
           const facultyName = detailParts[1].trim();
           const subjectCode = detailParts[2].trim();
+          const credits = detailParts[3].trim();
 
           console.log("Parsed Subject Name:", subjectName);
           console.log("Parsed Faculty Name:", facultyName);
           console.log("Parsed Subject Code:", subjectCode);
+          console.log("Parsed Credits:", credits);
 
           subjectDetails.push({
             subjectName: subjectName,
             facultyname: facultyName, // Adjusted to match schema field name
-            subjectcode: subjectCode   // Adjusted to match schema field name
+            subjectcode: subjectCode,   // Adjusted to match schema field name
+            credit: credits
           });
         } else {
           console.error("Invalid subject detail format:", subjectDetail);
@@ -322,7 +330,8 @@ const AssignSubject = () => {
         {
           subjectName: "",
           facultyName: "",
-          subjectCode: ""
+          subjectCode: "",
+          credit: ""
         }
       ]
     }));
@@ -366,199 +375,199 @@ const AssignSubject = () => {
 
 
   return (
-    <div style={{position:"relative", zIndex: openCsvPopup || openPreviewPopup ? 9999 : "auto"}}>
-    <section className="fixed">
-      <div className="fixed flex left-5 top-32 ml-50 w-auto">
-        <button className="bg-sky-500 rounded-md w-auto text-lg">
-          Assign Subject
-        </button>
-      </div>
-      <div className="fixed p-4 flex left-5 ml-50 top-45 flex-wrap w-80vw border-sky-500 border-3 rounded-md bg-gray-200">
-        <form onSubmit={handleSubmit}>
-          <div className="flex-col md:flex-row gap-3 justify-center items-center grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 pb-4">
-            <Select
-              value={formData.academicYear}
-              name="academicYear"
-              placeholder="select Academic year"
-              onChange={(selectedOption) => handleselectedChange(selectedOption, "academicYear")}
-              options={generateYearOptions()}
-              readOnly
-              className="appearance-none border rounded w-full py-1 px-4 text-gray-700"
-            />
+    <div style={{ position: "relative", zIndex: openCsvPopup || openPreviewPopup ? 9999 : "auto" }}>
+      <section className="fixed">
+        <div className="fixed flex left-5 top-32 ml-50 w-auto">
+          <button className="bg-sky-500 rounded-md w-auto text-lg">
+            Assign Subject
+          </button>
+        </div>
+        <div className="fixed p-4 flex left-5 ml-50 top-45 flex-wrap w-80vw border-sky-500 border-3 rounded-md bg-gray-200">
+          <form onSubmit={handleSubmit}>
+            <div className="flex-col md:flex-row gap-3 justify-center items-center grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 pb-4">
+              <Select
+                value={formData.academicYear}
+                name="academicYear"
+                placeholder="select Academic year"
+                onChange={(selectedOption) => handleselectedChange(selectedOption, "academicYear")}
+                options={generateYearOptions()}
+                readOnly
+                className="appearance-none border rounded w-full py-1 px-4 text-gray-700"
+              />
 
-            <Select
-              value={formData.selectedProgram}
-              name="selectedProgram"
-              placeholder="select Program"
-              onChange={(selectedOption) => handleselectedChange(selectedOption, "selectedProgram")}
+              <Select
+                value={formData.selectedProgram}
+                name="selectedProgram"
+                placeholder="select Program"
+                onChange={(selectedOption) => handleselectedChange(selectedOption, "selectedProgram")}
 
-              options={GenerateProgram()}
-              className="appearance-none border rounded w-full py-1 px-4 text-gray-700"
-            />
+                options={GenerateProgram()}
+                className="appearance-none border rounded w-full py-1 px-4 text-gray-700"
+              />
 
-            <Select
-              value={formData.selectedSemester}
-              name="selectedSemester"
-              placeholder="select semester"
-              onChange={(selectedOption) => handleselectedChange(selectedOption, "selectedSemester")}
-              options={GenerateSemester()}
-              className="appearance-none border rounded w-full py-1 px-4 text-gray-700"
-            />
+              <Select
+                value={formData.selectedSemester}
+                name="selectedSemester"
+                placeholder="select semester"
+                onChange={(selectedOption) => handleselectedChange(selectedOption, "selectedSemester")}
+                options={GenerateSemester()}
+                className="appearance-none border rounded w-full py-1 px-4 text-gray-700"
+              />
 
-            <Select
-              value={formData.selectedSection}
-              name="selectedSection"
-              placeholder="select Section"
-              onChange={(selectedOption) => handleselectedChange(selectedOption, "selectedSection")}
-              options={GenerateSection()}
-              className="appearance-none border rounded w-full py-1 px-4 text-gray-700"
-            />
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-3">
-            <div className="mb-4 flex-grow">
-              {/* Form inputs for roll number and name */}
-              <label
-                htmlFor="rollno"
-                className="block text-start text-gray-700 font-bold mb-2"
-              >
-                Roll No
-                <input
-                  type="text"
-                  id="rollno"
-                  required
-                  placeholder="Enter student`s Roll No"
-                  className="shadow appearance-none border rounded w-full py-2 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  value={formData.rollNo}
-                  onChange={handleChange}
-                  name="rollNo"
-
-                />
-              </label>
+              <Select
+                value={formData.selectedSection}
+                name="selectedSection"
+                placeholder="select Section"
+                onChange={(selectedOption) => handleselectedChange(selectedOption, "selectedSection")}
+                options={GenerateSection()}
+                className="appearance-none border rounded w-full py-1 px-4 text-gray-700"
+              />
             </div>
-            <div className="mb-4 flex-grow justify-center items-center">
-              {/* Form inputs for roll number and name */}
-              <label
-                htmlFor="name"
-                className="block text-start text-gray-700 font-bold mb-2"
-              >
-                Name
-                <input
-                  id="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  name="name"
-                  required
-                  placeholder="separate by comma if multiple students "
-                  className="shadow appearance-none border rounded w-full py-2 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </label>
-            </div>
-          </div>
 
-          <div className=" flex justify-center gap-10 pb-3">
-            <button
-              type="button"
-              onClick={handleAddSubject}
-              className="bg-blue-500 text-base rounded-md w-auto"
-            >
-              Add Subject
-            </button>
-            <button
-              type="button"
-              onClick={handleRemoveSubject}
-              className="bg-blue-500 text-base  rounded-md w-auto"
-            >
-              Remove Subject
-            </button>
-          </div>
-          {/* Dynamic subject and faculty input fields */}
-          <div className="overflow-auto max-h-40 mb-3">
-            <div className=" w-auto">
-              {[...Array(subjectCount)].map((_, index) => (
-                <div
-                  key={index}
-                  className="flex justify-center gap-10  overflow-auto"
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="mb-4 flex-grow">
+                {/* Form inputs for roll number and name */}
+                <label
+                  htmlFor="rollno"
+                  className="block text-start text-gray-700 font-bold mb-2"
                 >
-                  <label
-                    htmlFor={`subject${index + 1}`}
-                    className="block text-start text-gray-700 font-bold"
-                  >
-                    Subject {index + 1}
-                    <input
-                      type="text"
-                      id={`subject${index + 1}`}
-                      className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      value={formData.subjects[index]?.subjectName || ''}
-                      onChange={(e) => handleSubjectChange(e, index, 'subjectName')}
-                    />
-                  </label>
-                  <label
-                    htmlFor={`faculty${index + 1}`}
-                    className="block text-start text-gray-700 font-bold"
-                  >
-                    Faculty {index + 1}
-                    <input
-                      type="text"
-                      id={`faculty${index + 1}`}
-                      className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      value={formData.subjects[index]?.facultyName || ''}
-                      onChange={(e) => handleSubjectChange(e, index, 'facultyName')}
-                    />
-                  </label>
-                  <label
-                    htmlFor={`subjectcode${index + 1}`}
-                    className="block text-start text-gray-700 font-bold"
-                  >
-                    Subject code {index + 1}
-                    <input
-                      type="text"
-                      id={`subjectcode${index + 1}`}
-                      className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      value={formData.subjects[index]?.subjectCode || ''}
-                      onChange={(e) => handleSubjectChange(e, index, 'subjectCode')}
-                    />
-                  </label>
-                  <label
-                    htmlFor={`credit${index + 1}`}
-                    className="block text-start text-gray-700 font-bold"
-                  >
-                    Credit {index + 1}
-                    <input
-                      type="number"
-                      id={`credit${index + 1}`}
-                      className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      value={formData.subjects[index]?.credit || ''}
-                      onChange={(e) => handleSubjectChange(e, index, 'credit')}
-                    />
-                  </label>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="flex gap-2 justify-center items-center">
-            <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              className="hidden"
-              id="csv-upload"
+                  Roll No
+                  <input
+                    type="text"
+                    id="rollno"
+                    required
+                    placeholder="Enter student`s Roll No"
+                    className="shadow appearance-none border rounded w-full py-2 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    value={formData.rollNo}
+                    onChange={handleChange}
+                    name="rollNo"
 
-            />
-            <button
-              type="button"
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline cursor-pointer"
-              onClick={() => document.getElementById("csv-upload").click()}
-            >
-              Upload CSV
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
-            >
-              Create
-            </button>
-            {/* {csvData.length > 0 && (
+                  />
+                </label>
+              </div>
+              <div className="mb-4 flex-grow justify-center items-center">
+                {/* Form inputs for roll number and name */}
+                <label
+                  htmlFor="name"
+                  className="block text-start text-gray-700 font-bold mb-2"
+                >
+                  Name
+                  <input
+                    id="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    name="name"
+                    required
+                    placeholder="separate by comma if multiple students "
+                    className="shadow appearance-none border rounded w-full py-2 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className=" flex justify-center gap-10 pb-3">
+              <button
+                type="button"
+                onClick={handleAddSubject}
+                className="bg-blue-500 text-base rounded-md w-auto"
+              >
+                Add Subject
+              </button>
+              <button
+                type="button"
+                onClick={handleRemoveSubject}
+                className="bg-blue-500 text-base  rounded-md w-auto"
+              >
+                Remove Subject
+              </button>
+            </div>
+            {/* Dynamic subject and faculty input fields */}
+            <div className="overflow-auto max-h-40 mb-3">
+              <div className=" w-auto">
+                {[...Array(subjectCount)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-center gap-10  overflow-auto"
+                  >
+                    <label
+                      htmlFor={`subject${index + 1}`}
+                      className="block text-start text-gray-700 font-bold"
+                    >
+                      Subject {index + 1}
+                      <input
+                        type="text"
+                        id={`subject${index + 1}`}
+                        className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        value={formData.subjects[index]?.subjectName || ''}
+                        onChange={(e) => handleSubjectChange(e, index, 'subjectName')}
+                      />
+                    </label>
+                    <label
+                      htmlFor={`faculty${index + 1}`}
+                      className="block text-start text-gray-700 font-bold"
+                    >
+                      Faculty {index + 1}
+                      <input
+                        type="text"
+                        id={`faculty${index + 1}`}
+                        className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        value={formData.subjects[index]?.facultyName || ''}
+                        onChange={(e) => handleSubjectChange(e, index, 'facultyName')}
+                      />
+                    </label>
+                    <label
+                      htmlFor={`subjectcode${index + 1}`}
+                      className="block text-start text-gray-700 font-bold"
+                    >
+                      Subject code {index + 1}
+                      <input
+                        type="text"
+                        id={`subjectcode${index + 1}`}
+                        className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        value={formData.subjects[index]?.subjectCode || ''}
+                        onChange={(e) => handleSubjectChange(e, index, 'subjectCode')}
+                      />
+                    </label>
+                    <label
+                      htmlFor={`credit${index + 1}`}
+                      className="block text-start text-gray-700 font-bold"
+                    >
+                      Credit {index + 1}
+                      <input
+                        type="number"
+                        id={`credit${index + 1}`}
+                        className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        value={formData.subjects[index]?.credit || ''}
+                        onChange={(e) => handleSubjectChange(e, index, 'credit')}
+                      />
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex gap-2 justify-center items-center">
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileChange}
+                className="hidden"
+                id="csv-upload"
+
+              />
+              <button
+                type="button"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline cursor-pointer"
+                onClick={() => document.getElementById("csv-upload").click()}
+              >
+                Upload CSV
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
+              >
+                Create
+              </button>
+              {/* {csvData.length > 0 && (
               <button
                 type="button"
                 className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
@@ -567,50 +576,50 @@ const AssignSubject = () => {
                 Preview
               </button>
             )} */}
-          </div>
-        </form>
-      </div>
-      {openCsvPopup && (
-        <Assignsubjectcsvpopup
-          open={openCsvPopup}
-          onClose={() => setOpenCsvPopup(false)}
-        >
-          <div className="lg:w-50vw md:w-30vw sm:20vw lg:h-45vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg overflow-auto">
-            <div className="text-2xl font-black text-blue-950 justify-self-center m-20">
-              Your csv has been Uploaded !!!
             </div>
-            <h5>To view the more details, Please Click on preview</h5>
-            <div className="flex gap-3 justify-center items-center py-2">
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
-                onClick={() => setOpenPreviewPopup(true)}
-              >
-                Preview
-              </button>
-              <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
-                onClick={handleSaveButtonClick}
-              >
-                Save
-              </button>
+          </form>
+        </div>
+        {openCsvPopup && (
+          <Assignsubjectcsvpopup
+            open={openCsvPopup}
+            onClose={() => setOpenCsvPopup(false)}
+          >
+            <div className="lg:w-50vw md:w-30vw sm:20vw lg:h-45vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg overflow-auto">
+              <div className="text-2xl font-black text-blue-950 justify-self-center m-20">
+                Your csv has been Uploaded !!!
+              </div>
+              <h5>To view the more details, Please Click on preview</h5>
+              <div className="flex gap-3 justify-center items-center py-2">
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
+                  onClick={() => setOpenPreviewPopup(true)}
+                >
+                  Preview
+                </button>
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 w-auto rounded focus:outline-none focus:shadow-outline"
+                  onClick={handleSaveButtonClick}
+                >
+                  Save
+                </button>
+              </div>
             </div>
-          </div>
-        </Assignsubjectcsvpopup>
-      )}
+          </Assignsubjectcsvpopup>
+        )}
 
-      {openPreviewPopup && (
-        <Assignsubjectpreview
-          open={openPreviewPopup}
-          onClose={() => setOpenPreviewPopup(false)}
-          csvData={csvData} // Pass the csvData prop here
-        >
-          {/* Content for the preview popup */}
+        {openPreviewPopup && (
+          <Assignsubjectpreview
+            open={openPreviewPopup}
+            onClose={() => setOpenPreviewPopup(false)}
+            csvData={csvData} // Pass the csvData prop here
+          >
+            {/* Content for the preview popup */}
 
-        </Assignsubjectpreview>
-      )}
-    </section>
+          </Assignsubjectpreview>
+        )}
+      </section>
     </div>
   );
 };
