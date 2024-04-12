@@ -128,11 +128,57 @@ const addassessment = new mongoose.Schema({
   },
 });
 
+//////////saving attendance of student /////////////
+const Attendance = new mongoose.Schema({
+  AcademicYear: {
+    year: String,
+    program: [
+      {
+        programname: String,
+        semesters: [
+          {
+            semesterNumber: String,
+            sections: [
+              {
+                sectionName: String,
+                students: [
+                  {
+                    regno: Number,
+                    name: String,
+                    subjects: [
+                      {
+                        subjectName: String,
+                        Totalclasses: { type: Number, default: 0 },
+                        Daypresent: { type: Number, default: 0 },
+                        DayAbsent: { type: Number, default: 0 },
+
+                        attendance: [
+                          {
+                            date: Date,
+                            day: String,
+                            // Ensure these are defined as Number fields with default value 0
+                            status: Number
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+});
+
 
 const FacultyDetails = mongoose.model('FacultyDetails', facultyDetailsSchema);
 const FacultyLogin = mongoose.model('FacultyLogin', facultyLoginSchema);
 const TaskAssign = mongoose.model("TaskAssign", TaskAssignschema);
 const AssignMarks = mongoose.model("AssignMarks", assignmarks);
 const AddAssessment = mongoose.model("AddAssessment", addassessment)
+const attendance = mongoose.model("Attendacedata", Attendance)
 
-export { FacultyDetails, FacultyLogin, TaskAssign, AssignMarks,AddAssessment };
+export { FacultyDetails, FacultyLogin, TaskAssign, AssignMarks,AddAssessment, attendance };

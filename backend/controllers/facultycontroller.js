@@ -4,6 +4,8 @@ import {
   TaskAssign,
   AssignMarks,
   AddAssessment,
+  attendance
+
 } from "../models/faculty.js";
 import { StudentDetails } from "../models/student.js";
 import { hodlogin} from '../models/hod.js';
@@ -504,6 +506,300 @@ const updateAssignMarks = asyncHandler(async (req, res) => {
     throw error;
   }
 });
+
+const saveAttendance = async (req, res) => {
+  console.log("Received data:", req.body);
+
+  try {
+    await connectDB();
+
+    const { AcademicYear } = req.body;
+
+    // Check if a document with the given AcademicYear already exists
+    let existingDocument = await attendance.findOne({ 'AcademicYear.year': AcademicYear.year });
+
+    if (existingDocument) {
+      console.log("Document found, updating...");
+
+      const existingProgram = existingDocument.AcademicYear.program.find(program => program.programname === AcademicYear.program[0].programname);
+      if (existingProgram) {
+        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === AcademicYear.program[0].semesters[0].semesterNumber);
+        if (semesterIndex !== -1) {
+          const sectionIndex = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === AcademicYear.program[0].semesters[0].sections[0].sectionName);
+          if (sectionIndex !== -1) {
+            const existingStudentIndex = existingProgram.semesters[semesterIndex].sections[sectionIndex].students.findIndex(student => student.regno === AcademicYear.program[0].semesters[0].sections[0].students[0].regno);
+            if (existingStudentIndex !== -1) {
+              for (const subject of AcademicYear.program[0].semesters[0].sections[0].students[0].subjects) {
+                const subjectIndex = existingProgram.semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects.findIndex(sub => sub.subjectName === subject.subjectName);
+                if (subjectIndex !== -1) {
+                  // Subject already exists, update its attendance and Totalclasses
+                  for (const attendanceEntry of subject.attendance) {
+                    if (attendanceEntry && attendanceEntry._id) { // Check if attendanceEntry is not undefined and has _id property
+                      const existingAttendanceIndex = existingProgram.semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects[subjectIndex].attendance.findIndex(att => att._id && att._id.toString() === attendanceEntry._id.toString());
+                      if (existingAttendanceIndex !== -1) {
+                        existingProgram.semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects[subjectIndex].attendance[existingAttendanceIndex].date = attendanceEntry.date;
+                        existingProgram.semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects[subjectIndex].attendance[existingAttendanceIndex].status = attendanceEntry.status;
+                      } else {
+                        existingProgram.semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects[subjectIndex].attendance.push(attendanceEntry);
+                      }
+                    }
+                  }
+
+                  // Calculate and update Totalclasses for the subject
+                  let totalDaysPresent = 0;
+                  let totalDaysAbsent = 0;
+                  for (const attendanceEntry of existingProgram.semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects[subjectIndex].attendance) {
+                    if (attendanceEntry.status === 1) {
+                      totalDaysPresent++;
+                    } else {
+                      totalDaysAbsent++;
+                    }
+                  }
+                  existingProgram.semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects[subjectIndex].Totalclasses = totalDaysPresent + totalDaysAbsent;
+                } else {
+                  // New subject added, calculate its attendance and Totalclasses
+                  const newSubjectAttendance = subject.attendance.map(att => ({ ...att }));
+                  let totalDaysPresent = newSubjectAttendance.filter(att => att.status === 1).length;
+                  let totalDaysAbsent = newSubjectAttendance.filter(att => att.status === 0).length;
+
+                  const newSubject = {
+                    ...subject,
+                    attendance: newSubjectAttendance,
+                    Daypresent: totalDaysPresent,
+                    DayAbsent: totalDaysAbsent,
+                    Totalclasses: totalDaysPresent + totalDaysAbsent
+                  };
+
+                  existingProgram.semesters[semesterIndex].sections[sectionIndex].students[existingStudentIndex].subjects.push(newSubject);
+                }
+              }
+
+              // Calculate total days present and absent for the entire attendance
+              let totalDaysPresent = 0;
+              let totalDaysAbsent = 0;
+              for (const student of existingProgram.semesters[semesterIndex].sections[sectionIndex].students) {
+                for (const subject of student.subjects) {
+                  totalDaysPresent += subject.Daypresent;
+                  totalDaysAbsent += subject.DayAbsent;
+                }
+              }
+
+              existingDocument.DaysPresent = totalDaysPresent;
+              existingDocument.DaysAbsent = totalDaysAbsent;
+
+              const result = await existingDocument.save();
+              console.log("Saved data is:", result);
+
+              res.status(200).json({ success: true, message: 'Attendance updated successfully' });
+            } else {
+              res.status(404).json({ error: 'Student not found' });
+            }
+          } else {
+            // Section doesn't exist, add a new section with students
+            const newSection = {
+              sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
+              students: [
+                {
+                  regno: AcademicYear.program[0].semesters[0].sections[0].students[0].regno,
+                  name: AcademicYear.program[0].semesters[0].sections[0].students[0].name,
+                  subjects: AcademicYear.program[0].semesters[0].sections[0].students[0].subjects.map(subject => {
+                    const newSubjectAttendance = subject.attendance.map(att => ({ ...att }));
+                    const totalDaysPresent = newSubjectAttendance.filter(att => att.status === 1).length;
+                    const totalDaysAbsent = newSubjectAttendance.filter(att => att.status === 0).length;
+
+                    return {
+                      ...subject,
+                      attendance: newSubjectAttendance,
+                      Daypresent: totalDaysPresent,
+                      DayAbsent: totalDaysAbsent,
+                      Totalclasses: totalDaysPresent + totalDaysAbsent
+                    };
+                  }),
+                }
+              ]
+            };
+
+            const programIndex = existingDocument.AcademicYear.program.findIndex(prog => prog.programname === AcademicYear.program[0].programname);
+            if (programIndex !== -1) {
+              existingDocument.AcademicYear.program[programIndex].semesters[semesterIndex].sections.push(newSection);
+
+              const result = await existingDocument.save();
+              console.log("Saved data is:", result);
+
+              res.status(200).json({ success: true, message: 'Attendance updated successfully' });
+            } else {
+              res.status(404).json({ error: 'Program not found' });
+            }
+          }
+        } else {
+          // Semester doesn't exist, add a new semester with sections and students
+          const newSemester = {
+            semesterNumber: AcademicYear.program[0].semesters[0].semesterNumber,
+            sections: [
+              {
+                sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
+                students: [
+                  {
+                    regno: AcademicYear.program[0].semesters[0].sections[0].students[0].regno,
+                    name: AcademicYear.program[0].semesters[0].sections[0].students[0].name,
+                    subjects: AcademicYear.program[0].semesters[0].sections[0].students[0].subjects.map(subject => {
+                      const newSubjectAttendance = subject.attendance.map(att => ({ ...att }));
+                      const totalDaysPresent = newSubjectAttendance.filter(att => att.status === 1).length;
+                      const totalDaysAbsent = newSubjectAttendance.filter(att => att.status === 0).length;
+
+                      return {
+                        ...subject,
+                        attendance: newSubjectAttendance,
+                        Daypresent: totalDaysPresent,
+                        DayAbsent: totalDaysAbsent,
+                        Totalclasses: totalDaysPresent + totalDaysAbsent
+                      };
+                    }),
+                  }
+                ]
+              }
+            ]
+          };
+
+          const programIndex = existingDocument.AcademicYear.program.findIndex(prog => prog.programname === AcademicYear.program[0].programname);
+          if (programIndex !== -1) {
+            existingDocument.AcademicYear.program[programIndex].semesters.push(newSemester);
+
+            const result = await existingDocument.save();
+            console.log("Saved data is:", result);
+
+            res.status(200).json({ success: true, message: 'Attendance updated successfully' });
+          } else {
+            res.status(404).json({ error: 'Program not found' });
+          }
+        }
+      } else {
+        // Program doesn't exist, add new program with semesters, sections, and students
+        const newProgram = {
+          programname: AcademicYear.program[0].programname,
+          semesters: [
+            {
+              semesterNumber: AcademicYear.program[0].semesters[0].semesterNumber,
+              sections: [
+                {
+                  sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
+                  students: [
+                    {
+                      regno: AcademicYear.program[0].semesters[0].sections[0].students[0].regno,
+                      name: AcademicYear.program[0].semesters[0].sections[0].students[0].name,
+                      subjects: AcademicYear.program[0].semesters[0].sections[0].students[0].subjects.map(subject => {
+                        const newSubjectAttendance = subject.attendance.map(att => ({ ...att }));
+                        const totalDaysPresent = newSubjectAttendance.filter(att => att.status === 1).length;
+                        const totalDaysAbsent = newSubjectAttendance.filter(att => att.status === 0).length;
+
+                        return {
+                          ...subject,
+                          attendance: newSubjectAttendance,
+                          Daypresent: totalDaysPresent,
+                          DayAbsent: totalDaysAbsent,
+                          Totalclasses: totalDaysPresent + totalDaysAbsent
+                        };
+                      }),
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        };
+
+        existingDocument.AcademicYear.program.push(newProgram);
+
+        // Calculate total days present and absent for the new attendance
+        let totalDaysPresent = 0;
+        let totalDaysAbsent = 0;
+        for (const subject of newProgram.semesters[0].sections[0].students[0].subjects) {
+          totalDaysPresent += subject.Daypresent;
+          totalDaysAbsent += subject.DayAbsent;
+        }
+
+        existingDocument.DaysPresent += totalDaysPresent;
+        existingDocument.DaysAbsent += totalDaysAbsent;
+
+        const result = await existingDocument.save();
+        console.log("Saved data is:", result);
+
+        res.status(200).json({ success: true, message: 'Attendance updated successfully' });
+      }
+    } else {
+      console.log("Document not found, creating a new one.");
+
+      // Calculate total days present and absent for the new attendance
+      let totalDaysPresent = 0;
+      let totalDaysAbsent = 0;
+      for (const subject of AcademicYear.program[0].semesters[0].sections[0].students[0].subjects) {
+        let subjectTotalDaysPresent = 0;
+        let subjectTotalDaysAbsent = 0;
+
+        for (const attendanceEntry of subject.attendance) {
+          if (attendanceEntry.status === 1) {
+            subjectTotalDaysPresent++;
+          } else {
+            subjectTotalDaysAbsent++;
+          }
+        }
+
+        totalDaysPresent += subjectTotalDaysPresent;
+        totalDaysAbsent += subjectTotalDaysAbsent;
+
+        // Update day present and day absent for each attendance entry in the subject
+        for (const attendanceEntry of subject.attendance) {
+          attendanceEntry.Daypresent = subjectTotalDaysPresent;
+          attendanceEntry.DayAbsent = subjectTotalDaysAbsent;
+        }
+
+        // Update Daypresent and DayAbsent for the subject itself
+        subject.Daypresent = subjectTotalDaysPresent;
+        subject.DayAbsent = subjectTotalDaysAbsent;
+
+        // Calculate and set Totalclasses for the subject
+        subject.Totalclasses = subjectTotalDaysPresent + subjectTotalDaysAbsent;
+      }
+
+      const newAttendance = new attendance({
+        AcademicYear,
+        program: [
+          {
+            programname: AcademicYear.program[0].programname,
+            semesters: [
+              {
+                semesterNumber: AcademicYear.program[0].semesters[0].semesterNumber,
+                sections: [
+                  {
+                    sectionName: AcademicYear.program[0].semesters[0].sections[0].sectionName,
+                    students: [
+                      {
+                        regno: AcademicYear.program[0].semesters[0].sections[0].students[0].regno,
+                        name: AcademicYear.program[0].semesters[0].sections[0].students[0].name,
+                        subjects: AcademicYear.program[0].semesters[0].sections[0].students[0].subjects.map(subject => ({
+                          ...subject,
+                          Totalclasses: subject.Daypresent + subject.DayAbsent, // Calculate Totalclasses
+                        })),
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });
+
+      const savedAttendance = await newAttendance.save();
+      console.log("Saved data is:", savedAttendance);
+
+      res.status(201).json({ message: 'Attendance saved successfully' });
+    }
+  } catch (error) {
+    console.error('Error saving attendance document:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
 
@@ -1018,5 +1314,6 @@ export {
   getAssessmentByQuestionNumber,
   showAssessment,
   // DeleteTaskAssign,
-  DeleteAssessment
+  DeleteAssessment,
+  saveAttendance
 };

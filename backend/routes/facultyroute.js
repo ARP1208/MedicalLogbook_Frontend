@@ -18,6 +18,7 @@ import {
   showAssessment,
 //   DeleteTaskAssign,
   DeleteAssessment,
+  saveAttendance
 } from "../controllers/facultycontroller.js";
 
 const router = express.Router();
@@ -36,6 +37,7 @@ router.route("/updatefaculty").patch(UpdateFacultyDetails);
 router.route("/fetchprosemsub").post(fetchDetails);
 router.route("/saveassignmarks").post(saveAssignMarks);
 router.route("/updateAssignMarks").patch(updateAssignMarks);
+router.route("/SaveAttendancesheet").post(saveAttendance);
 
 /////////Assessment Component////////////////////////////
 router.route("/saveAddAssessment").post(saveAddAssessment);

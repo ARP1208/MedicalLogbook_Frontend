@@ -91,9 +91,12 @@ const AssessmentMarkSchema = new mongoose.Schema({
 
 
 
+
+
 const StudentDetails = mongoose.model('StudentDetails', studentDetailsSchema);
 const StudentLogin = mongoose.model('StudentLogin', studentLoginSchema);
 const TaskAssignStudent = mongoose.model("TaskAssignStudent", TaskAssignStudentschema);
 const StudentAssessmentMark = mongoose.model("StudentAssessmentMark", AssessmentMarkSchema);
+
 
 export { StudentDetails, StudentLogin, TaskAssignStudent, StudentAssessmentMark};

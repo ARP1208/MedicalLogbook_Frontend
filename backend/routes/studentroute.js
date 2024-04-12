@@ -1,5 +1,5 @@
 import express from 'express';
-import { Studentlogin, student, studentmail, searchStudent, UpdateStudentDetails, saveTaskAssignStudent, onclickCheckInUpdateTaskAssign, fetchStudentAssessment, saveAssessmentStudent, fetchStudentGradeSheet, fetchStudentTestMarks, fetchStudentCourseDetails} from '../controllers/studentcontroller.js';
+import { Studentlogin, student, studentmail, searchStudent, UpdateStudentDetails, saveTaskAssignStudent, onclickCheckInUpdateTaskAssign, fetchStudentAssessment, saveAssessmentStudent, fetchStudentGradeSheet, fetchStudentTestMarks, fetchStudentCourseDetails, fetchAttendance, fetchdialyAttendance} from '../controllers/studentcontroller.js';
 
 const router = express.Router();
 
@@ -20,6 +20,8 @@ router.route("/saveAssessmentStudent").post(saveAssessmentStudent)
 router.route("/fetchStudentGradeSheet").get(fetchStudentGradeSheet);
 router.route("/fetchStudentTestMarks").get(fetchStudentTestMarks);
 router.route("/fetchStudentCourseDetails").get(fetchStudentCourseDetails);
+router.route("/fetchAttendance").get(fetchAttendance);
+router.route("/fetchAttendancedialy").get(fetchdialyAttendance);
 
 
 

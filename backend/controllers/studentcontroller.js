@@ -3,9 +3,10 @@ import {
   StudentLogin,
   TaskAssignStudent,
   StudentAssessmentMark,
+  
 } from "../models/student.js";
 import { Assignedsubject } from "../models/admin.js";
-import { TaskAssign, AddAssessment, AssignMarks } from "../models/faculty.js";
+import { TaskAssign, AddAssessment, AssignMarks, attendance } from "../models/faculty.js";
 import { connectDB, closeDB } from "../config/db.js";
 import nodemailer from "nodemailer";
 import Parent from "../models/parentdetails.js";
@@ -568,6 +569,16 @@ const fetchStudentGradeSheet = async (req, res) => {
       return res.status(404).json({ error: 'Semester does not exist' });
     }
 
+     // Find the student by regno and name inside the found semester
+     const studentsemester = result.AcademicYear.program.flatMap(program => 
+      program.semesters.map(sem => ({
+        semesterNumber: sem.semesterNumber
+      }))
+    ).filter(Boolean)[0];
+    
+    console.log("studentsemester data: ", studentsemester);
+
+
     // Find the student by regno and name inside the found semester
     const student = result.AcademicYear.program.flatMap(program => 
       program.semesters.flatMap(sem => 
@@ -585,10 +596,11 @@ const fetchStudentGradeSheet = async (req, res) => {
     }
 
     // Get the subjects array of the student
+    const semester = studentsemester
     const subjects = student.subjects;
 
     // Return the subjects array
-    res.json(subjects);
+    res.json({ semester, subjects});
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -750,6 +762,117 @@ const fetchStudentCourseDetails = async (req, res) => {
   }
 };
 
+const fetchAttendance = async (req, res) => {
+  const { regno, name, semesters } = req.body;
+
+  console.log("data is: ", regno, name, semesters);
+
+  try {
+    // Find the semester from the database Assignedsubject
+    const result = await attendance.findOne({
+      'AcademicYear.program.semesters.semesterNumber': semesters
+    });
+
+    console.log("semester data is: ", result);
+    
+    // If semester does not exist, show error
+    if (!result) {
+      return res.status(404).json({ error: 'Semester does not exist' });
+    }
+
+     // Find the student by regno and name inside the found semester
+     const studentsemester = result.AcademicYear.program.flatMap(program => 
+      program.semesters.map(sem => ({
+        semesterNumber: sem.semesterNumber
+      }))
+    ).filter(Boolean)[0];
+    
+    console.log("studentsemester data: ", studentsemester);
+
+   // Find the student by regno and name inside the found semester
+   const student = result.AcademicYear.program.flatMap(program => 
+    program.semesters.flatMap(sem => 
+      sem.sections.flatMap(section => 
+        section.students.find(student => student.regno === regno && student.name === name)
+      )
+    )
+  ).filter(Boolean)[0];
+
+    console.log("student data is: ", student);
+
+    // If student does not exist, show error
+    if (!student) {
+      return res.status(404).json({ error: 'Student does not exist' });
+    }
+
+    // Get the subjects array of the student
+    const semester = studentsemester
+    const subjects = student.subjects;
+
+    // Return the subjects array
+    res.json({semester, subjects});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const fetchdialyAttendance = async (req, res) => {
+  const { regno, name, semesters, date, subjectName } = req.body;
+
+  console.log("Request data: ", regno, name, semesters, date, subjectName);
+
+  try {
+    // Find the semester from the database Assignedsubject
+    const result = await attendance.findOne({
+      'AcademicYear.program.semesters.semesterNumber': semesters
+    });
+
+    console.log("Semester data: ", result);
+
+    // If semester does not exist, show error
+    if (!result) {
+      return res.status(404).json({ error: 'Semester does not exist' });
+    }
+
+    // Find the student by regno and name inside the found semester
+    const student = result.AcademicYear.program.flatMap(program =>
+      program.semesters.flatMap(sem =>
+        sem.sections.flatMap(section =>
+          section.students.find(student => student.regno === regno && student.name === name)
+        )
+      )
+    ).filter(Boolean)[0];
+
+    console.log("Student data: ", student);
+
+    // If student does not exist, show error
+    if (!student) {
+      return res.status(404).json({ error: 'Student does not exist' });
+    }
+
+    // Get the subjects array of the student
+    const subjects = student.subjects;
+
+    // Find the subject by name and get its attendance for the specified date
+    const subject = subjects.find(sub => sub.subjectName === subjectName);
+    if (!subject) {
+      return res.status(404).json({ error: 'Subject not found' });
+    }
+
+    const attendanceEntry = subject.attendance.find(att => att.date.toISOString().split('T')[0] === date);
+    if (!attendanceEntry) {
+      return res.status(404).json({ error: 'Attendance entry not found for the specified date' });
+    }
+
+    // Return the attendance entry for the subject on the specified date
+    res.json({ semester: semesters[0], subjectName, attendance: attendanceEntry });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 
 
@@ -774,5 +897,7 @@ export {
   saveAssessmentStudent,
   fetchStudentGradeSheet,
   fetchStudentTestMarks,
-  fetchStudentCourseDetails
+  fetchStudentCourseDetails,
+  fetchAttendance,
+  fetchdialyAttendance
 };
