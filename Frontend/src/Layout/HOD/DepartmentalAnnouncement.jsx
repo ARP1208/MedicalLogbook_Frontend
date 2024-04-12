@@ -63,7 +63,18 @@ const DepartmentalAnnouncement = () => {
 
   return (
     <section className="left-50 top-33 absolute">
-      <div className="relative flex left-12 top-7 w-auto z-10 gap-x-10">
+     
+      {showEditDepartmentalAnn ? (
+        <EditDepartmentalAnn
+          selectedAnnouncement={selectedAnnouncement}
+          isEditable={isAnnouncemtEditable}
+          onSave={() => {
+            setShowEditDepartmentalAnn(false);
+          }}
+        />
+      ) : (
+        <div>
+        <div className="relative flex left-12 top-7 w-auto z-10 gap-x-10">
         <button className="bg-sky-500 rounded-md w-auto text-lg">
           Announcements
         </button>
@@ -81,15 +92,6 @@ const DepartmentalAnnouncement = () => {
           </select>
         </div>
       </div>
-      {showEditDepartmentalAnn ? (
-        <EditDepartmentalAnn
-          selectedAnnouncement={selectedAnnouncement}
-          isEditable={isAnnouncemtEditable}
-          onSave={() => {
-            setShowEditDepartmentalAnn(false);
-          }}
-        />
-      ) : (
         <div className="border-1 h-auto rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10">
           <div className="p-10">
             <div className="overflow-hidden block">
@@ -185,6 +187,7 @@ const DepartmentalAnnouncement = () => {
               </div>
             </div>
           </div>
+        </div>
         </div>
       )}
     </section>

@@ -57,7 +57,7 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
 
       <div className="border-1 px-10 py-4 h-auto w-auto overflow-hidden rounded-md border-black flex flex-col justify-center items-center mx-10 mt-18">
         <div className="overflow-hidden block">
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-x-10 gap-y-5 text-balance">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 text-balance">
             <div className="flex flex-row gap-x-7 justify-center items-center">
             Semester
             <Select
@@ -77,15 +77,15 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
             />
             </div>
             <div className="flex flex-row gap-x-5 justify-center items-center">
-              From Date
+              Select Date
             <DatePicker
               id="startDate"
               selected={startDate}
               onChange={(date) => setStartDate(date)}
-              className="border rounded w-20vw py-2 px-3 text-gray-700 leading-tight"
+              className="border rounded py-2 px-3 text-gray-700 leading-tight"
             />
             </div>
-           <div className="flex flex-row gap-x-5 justify-center items-center">
+           {/* <div className="flex flex-row gap-x-5 justify-center items-center">
             To Date
             <DatePicker
               id="EndDate"
@@ -93,7 +93,7 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
               onChange={(date) => setEndDate(date)}
               className="border rounded w-20vw py-2 px-3 text-gray-700 leading-tight"
             />
-            </div>
+            </div> */}
           </div>
           <div className=" grid grid-cols-3 mt-5">
           <h6>Name: ABC</h6>
@@ -101,7 +101,7 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
             <h6>Semester: 3 </h6>
           </div>
           <form>
-            <div className="flex w-70vw h-40vh border-1 mt-2 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
+            <div className="flex w-auto h-40vh border-1 mt-2 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
               <table className="w-full h-10 text-center rounded-md border-collapse">
                 <thead>
                   <tr>
@@ -110,9 +110,6 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
                       Day
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
-                      Subject Code
                     </th>
                     <th className="border bg-blue-950 text-white px-4 py-2">
                       Subject Name
@@ -128,7 +125,6 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
                       10/03/2024
                     </td>
                     <td className="border border-black px-4 py-2">MONDAY</td>
-                    <td className="border border-black px-4 py-2">SUB123</td>
                     <td className="border border-black px-4 py-2">PHYSICS</td>
                     <td className="border border-black px-4 py-2">
                       <span style={{ color: "red" }}>ABSENT</span>
@@ -139,7 +135,6 @@ const Dailyattendance = ({ subjectname, subcode, examination }) => {
                       11/03/2024
                     </td>
                     <td className="border border-black px-4 py-2">TUESDAY</td>
-                    <td className="border border-black px-4 py-2">SUB123</td>
                     <td className="border border-black px-4 py-2">PHYSICS</td>
                     <td className="border border-black px-4 py-2">
                       <span style={{ color: "green" }}>PRESENT</span>

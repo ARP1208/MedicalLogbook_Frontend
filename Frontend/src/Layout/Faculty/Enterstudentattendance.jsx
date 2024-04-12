@@ -154,6 +154,14 @@ const EnterStudentAttendance = () => {
     };
     reader.readAsText(file);
   };
+
+  // Function to handle date change
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    const date = new Date(selectedDate);
+    const day = date.toLocaleDateString('en-US', { weekday: 'long' }); // Get the day
+    console.log("Selected Day:", day);
+  };
   
   const handlesaveclose = () => {
     setOpenCsvPopup(false);
@@ -239,6 +247,7 @@ const EnterStudentAttendance = () => {
                 type="date"
                 className="border-2 px-4 w-15vw h-10 rounded-md mt-1"
                 required
+                onChange={handleDateChange} // Call handleDateChange on change event
               />
             </div>
           </div>
