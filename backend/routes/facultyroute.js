@@ -6,10 +6,10 @@ import {
   searchfaculty,
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
-//   saveTaskAssignAndSendEmails,
-//   searchTask,
-//   updateTaskAssign,
-  // FacultyfetchAllAnnouncement,
+  searchTask,
+  fetchAllTasks,
+  updateTask,
+  //updateTaskAssign,
   fetchDetails,
   saveAssignMarks,
   updateAssignMarks,
@@ -17,7 +17,7 @@ import {
   getFacultyindividualAssessment,
   getAssessmentByQuestionNumber,
   showAssessment,
-//   DeleteTaskAssign,
+  //DeleteTaskAssign,
   DeleteAssessment,
   saveAttendance
 } from "../controllers/facultycontroller.js";
@@ -51,8 +51,10 @@ router.route("/DeleteAssessment").delete(DeleteAssessment);
 
 //////////////PG Log Component////////////////////////
 router.route("/saveandemailtask").post(saveTaskAssignAndSendEmails);
-// router.route("/searchTask").post(searchTask);
-// router.route("/updateTask").patch(updateTaskAssign);
+router.route("/searchTask").post(searchTask);
+router.route('/updateTask').patch(updateTask);
+//router.route("/updateTask").patch(updateTaskAssign);
+router.route('/fetchalltasks').get(fetchAllTasks);
 // router.route("/DeleteTaskAssign").delete(DeleteTaskAssign);
 
 export default router;
