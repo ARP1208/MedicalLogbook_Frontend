@@ -18,6 +18,8 @@ const Dashboardpglog = () => {
   const [open, setOpen] = useState(false);
   const searchInputRef = useRef(null);
   const [allTasks, setAllTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
+
 
   const handleDropdownChange = (selectedOption) => {
     console.log("Selected option: ", selectedOption);
@@ -93,37 +95,31 @@ const Dashboardpglog = () => {
     }
   };
 
-  const searchTask = async () => {
-    const query = searchInputRef.current.value;
+  const searchTask = () => {
+    const query = searchInputRef.current.value.toLowerCase(); // Convert query to lowercase for case-insensitive search
+
     if (query) {
       console.log("Searching for: ", query);
-      const url = "http://127.0.0.1:8000/faculty/searchTask";
 
-      try {
-        let response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", // Set content type to JSON
-          },
-          body: JSON.stringify({ "searchTerm": query }), // Stringify the body object
-        });
+      // Filter allTasks based on the search query
+      const filteredTasks = allTasks.filter((task) => {
+        const taskName = task.Task_Name.toLowerCase();
+        const taskNumber = task.Task_ID.toLowerCase();
+        const studentNames = task.Students ? task.Students.map(student => student.Name.toLowerCase()).join(", ") : "";
 
-        if (response.ok) {
-          let data = await response.json();
-          console.log(data.taskData);
-          setTableData(data.taskData);
-        } else {
-          console.log("Error fetching tasks ", response);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    else {
-      setTableData(allTasks);
+        return taskName.includes(query) || taskNumber.includes(query) || studentNames.includes(query);
+      });
+
+      setTableData(filteredTasks);
+    } else {
+      setTableData(allTasks); // If query is empty, display all tasks
     }
   };
 
+  // Use the searchTask function on input change
+  const handleInputChange = () => {
+    searchTask();
+  };
 
   useEffect(() => {
     fetchData();
@@ -146,11 +142,12 @@ const Dashboardpglog = () => {
               type="text"
               placeholder="Search Task name, Task number, Student name"
               className="placeholder:text-sky-500 px-2 py-1 border-2 w-2/3 text-4 text-black rounded-md border-sky-950"
+              onChange={searchTask}
             />
-            <button className="px-2 py-1 bg-sky-500 text-white w-fit rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 text-lg"
+            {/* <button className="px-2 py-1 bg-sky-500 text-white w-fit rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 text-lg"
               onClick={searchTask}>
               Search
-            </button>
+            </button> */}
             <div className="w-1/3 pl-2">
               <select
                 className="border-2 border-black p-2 rounded-md"
@@ -213,7 +210,10 @@ const Dashboardpglog = () => {
                           <td className="w-20 border border-black px-4 py-1 text-center">
                             <button
                               className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1"
-                              onClick={() => setOpen(true)}
+                              onClick={() => {
+                                setOpen(true);
+                                setSelectedTask(row); // Pass the selected task data to the state
+                              }}
                             >
                               View
                             </button>
@@ -243,7 +243,10 @@ const Dashboardpglog = () => {
                           <td className="w-20 border border-black px-4 py-1 text-center">
                             <button
                               className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1"
-                              onClick={() => setOpen(true)}
+                              onClick={() => {
+                                setOpen(true);
+                                setSelectedTask(row); // Pass the selected task data to the state
+                              }}
                             >
                               View
                             </button>
@@ -276,7 +279,10 @@ const Dashboardpglog = () => {
                           <td className="w-20 border border-black px-4 py-1 text-center">
                             <button
                               className="w-20 h-10 rounded-xl bg-blue-500 text-lg p-1"
-                              onClick={() => setOpen(true)}
+                              onClick={() => {
+                                setOpen(true);
+                                setSelectedTask(row); // Pass the selected task data to the state
+                              }}
                             >
                               View
                             </button>
@@ -295,14 +301,116 @@ const Dashboardpglog = () => {
       <Viewtaskfacultypopup
         open={open}
         onClose={() => setOpen(false)}
+        task={selectedTask} // Pass the selected task data as a prop
       >
         <div className="lg:w-60vw md:w-30vw sm:20vw lg:h-60vh md:60vh sm:70vh border-3 border-blue-500 rounded-lg overflow-auto">
           <div className="text-2xl font-black text-blue-950 justify-self-center mt-4">
             View Task
           </div>
+          {selectedTask && ( // Check if selectedTask is not null
+            <section className="relative">
+
+
+              <div className="flex justify-center items-center mb-1 gap-10">
+                <label className="block text-gray-700 font-bold mb-2 text-start">
+                  Task ID
+                  <input
+                    type="text"
+                    id="TaskID"
+                    className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    value={selectedTask.Task_ID}
+                    readOnly
+                  />
+                </label>
+                <label className="block text-start text-gray-700 font-bold mb-2">
+                  Task Name
+                  <input
+                    type="text"
+                    id="TaskName"
+                    className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    value={selectedTask.Task_Name}
+                    readOnly
+                  />
+                </label>
+              </div>
+              <div className="mb-4 px-5">
+                <label className="block text-start text-gray-700 font-bold mb-2">
+                  Task Description
+                  <textarea
+                    id="Description"
+                    placeholder="Enter Task Description Name"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none min-h-10 focus:shadow-outline"
+                    value={selectedTask.Task_Description}
+                    readOnly
+                  />
+                </label>
+              </div>
+
+              <div className="flex justify-center gap-10 mb-4">
+                <label className="block text-start text-gray-700 font-bold mb-2">
+                  Start Date
+                  <br />
+                  <input
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    value={selectedTask.start_Date}
+                    readOnly
+                  />
+                </label>
+                <label className="block text-start text-gray-700 font-bold mb-2">
+                  End Date
+                  <br />
+                  <input
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    value={selectedTask.End_Date}
+                    readOnly
+                  />
+                </label>
+
+                <label className="block text-start text-gray-700 font-bold mb-2">
+                  Submit Before
+                  <br />
+                  <input
+                    id="submittime"
+                    type="time"
+                    className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    value={selectedTask.Submit_Time}
+                    readOnly
+                  />
+                </label>
+              </div>
+              <div className="flex flex-col px-5 gap-4">
+                {selectedTask.Students && selectedTask.Students.map((student, index) => (
+                  <div key={index} className="flex justify-center items-center gap-10">
+                    <label className="block text-gray-700 font-bold mb-2 text-start">
+                      Registration No.
+                      <input
+                        type="text"
+                        id={`TaskID-${index}`}
+                        className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        value={student.regno}
+                        readOnly
+                      />
+                    </label>
+                    <label className="block text-start text-gray-700 font-bold mb-2">
+                      Student Name
+                      <input
+                        type="text"
+                        id={`StudentName-${index}`}
+                        className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        value={student.Name}
+                        readOnly
+                      />
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+            </section>
+          )}
         </div>
       </Viewtaskfacultypopup>
-    </section>
+
+    </section >
   );
 };
 

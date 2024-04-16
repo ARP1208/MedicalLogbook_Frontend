@@ -44,7 +44,7 @@ const Coursedetails = ({ subjectname, subcode, examination }) => {
             />
           </div>
           <form>
-            <div className="flex w-80vw h-50vh border-1 mt-3 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
+            <div className="flex w-70vw h-50vh border-1 mt-3 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
               <table className="w-full h-10 text-center rounded-md border-collapse">
                 <thead>
                   <tr>

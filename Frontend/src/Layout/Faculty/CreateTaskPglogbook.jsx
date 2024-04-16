@@ -6,15 +6,15 @@ import TextareaAutosize from "react-textarea-autosize";
 
 const CreateTaskPglogbook = () => {
   const [studentCount, setStudentCount] = useState(1);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const [formData, setFormData] = useState({
     Task_ID: "",
     Task_Name: "",
     Task_Description: "",
-    start_Date: new Date(),
-    End_Date: new Date(),
+    start_Date: "",
+    End_Date: "",
     Submit_Time: "",
     Students: [],
   });
@@ -25,14 +25,20 @@ const CreateTaskPglogbook = () => {
   };
 
   const handleStartDateChange = (date) => {
-    setStartDate(date);
-    setFormData({ ...formData, startDate: date });
+    const formattedDate = date.toLocaleDateString();
+    //console.log(formattedDate)
+    setStartDate(formattedDate);
+    setFormData({ ...formData, start_Date: formattedDate });
   };
 
   const handleEndDateChange = (date) => {
-    setEndDate(date);
-    setFormData({ ...formData, endDate: date });
+    // const formattedDate = date.toLocaleDateString();
+    const formattedDate = date.toLocaleDateString();
+    console.log(formattedDate)
+    setEndDate(formattedDate);
+    setFormData({ ...formData, End_Date: formattedDate });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,8 +50,8 @@ const CreateTaskPglogbook = () => {
         Task_ID: "",
         Task_Name: "",
         Task_Description: "",
-        start_Date: new Date(),
-        End_Date: new Date(),
+        start_Date: "",
+        End_Date: "",
         Submit_Time: "",
         Students: [],
       });
@@ -61,7 +67,7 @@ const CreateTaskPglogbook = () => {
     setStudentCount((prevCount) => prevCount + 1);
     setFormData((prevFormData) => ({
       ...prevFormData,
-      students: [...prevFormData.Students, { regno: "", Name: "" }],
+      students: [...prevFormData.Students, { Regno: "", Name: "" }],
     }));
   };
 
@@ -142,7 +148,7 @@ const CreateTaskPglogbook = () => {
               Start Date
               <br />
               <DatePicker
-                selected={startDate}
+                value={startDate}
                 onChange={handleStartDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
@@ -151,7 +157,7 @@ const CreateTaskPglogbook = () => {
               End Date
               <br />
               <DatePicker
-                selected={endDate}
+                value={endDate}
                 onChange={handleEndDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />

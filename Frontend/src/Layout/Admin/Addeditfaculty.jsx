@@ -61,7 +61,7 @@ const Addeditfaculty = () => {
         dateObject.toISOString().split("T")[0];
     }
 
-    setFormData({ ...formData, [name]: formattedValue });
+    setFormData({ ...formData, [name]: value });
     setErrors({ ...errors, [name]: "" });
 
     if (name === "dateOfBirth" || name === "dateOfJoining") {

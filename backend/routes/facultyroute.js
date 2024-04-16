@@ -4,11 +4,10 @@ import {
   faculty,
   facultymail,
   searchfaculty,
+  facultyGetDetails,
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
-  searchTask,
-  fetchAllTasks,
-  updateTask,
+  //searchTask,
   //updateTaskAssign,
   fetchDetails,
   saveAssignMarks,
@@ -29,6 +28,7 @@ router.route("/faculty-login").post(Facultylogin);
 router.route("/faculty-details").post(faculty);
 router.route("/send-mail").post(facultymail);
 router.route("/faculty-search").post(searchfaculty);
+router.route("/getFacultyDetails").post(facultyGetDetails);
 router.route("/updatefaculty").patch(UpdateFacultyDetails);
 
 // ////////////Announcement///////////////////////
@@ -51,10 +51,8 @@ router.route("/DeleteAssessment").delete(DeleteAssessment);
 
 //////////////PG Log Component////////////////////////
 router.route("/saveandemailtask").post(saveTaskAssignAndSendEmails);
-router.route("/searchTask").post(searchTask);
-router.route('/updateTask').patch(updateTask);
-//router.route("/updateTask").patch(updateTaskAssign);
-router.route('/fetchalltasks').get(fetchAllTasks);
+// router.route("/searchTask").post(searchTask);
+// router.route("/updateTask").patch(updateTaskAssign);
 // router.route("/DeleteTaskAssign").delete(DeleteTaskAssign);
 
 export default router;

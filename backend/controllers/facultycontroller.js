@@ -37,10 +37,9 @@ const Facultylogin = asyncHandler(async (req, res) => {
       const facultyDetails = await FacultyDetails.findOne({ emailId });
 
       if (facultyDetails.designation === 'HOD') {
-        // User is an HOD, save their credentials to the hodschema
-        const newHod = new hodlogin({ emailId, password });
-        const savedHod = await newHod.save();
-        console.log("HOD credentials saved:", savedHod);
+        console.log("HOD Logging in...")
+        res.status(200).json({ "message": "HOD", "email":  emailId});
+        return
       }
 
       // Send success message to the client
@@ -199,6 +198,23 @@ const searchfaculty = asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+
+const facultyGetDetails = asyncHandler(async (req, res) => {
+  const { email, designation } = req.body;
+  console.log("Looking for: ", req.body)
+  try {
+    await connectDB();
+    const faculty = await FacultyDetails.findOne({ emailId: email, designation: designation });
+    console.log(faculty);
+    if(faculty) {
+      res.send(faculty);
+    } else {
+      res.status(404);
+    }
+  } catch (e) {
+    console.log(e)
+  } 
+})
 
 const UpdateFacultyDetails = asyncHandler(async (req, res) => {
   console.log("Received data for update:", req.body);
@@ -1191,38 +1207,6 @@ const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
  });
  
 
- const fetchAllTasks = asyncHandler(async (req, res) => {
-  try {
-    await connectDB();
-    const tasks = await TaskAssign.find();
-    res.status(200).json({ tasks });
-  } catch (error) {
-    console.error("Error fetching tasks:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-const updateTask = asyncHandler(async (req, res) => {
-  console.log(req.body)
-  const { Task_ID } = req.body;
-  try {
-    await connectDB();
-    const tid = Task_ID;
-    console.log("Task ID recieved: ", tid);
-    const newUpdatedTask = { ...req.body };
-
-    const UpdatedTask = await TaskAssign.findOneAndUpdate({ Task_ID: tid }, newUpdatedTask);
-
-    console.log("Updated task: ", UpdatedTask);
-
-    res.status(201).json({ message: "Task updated successfully" });
-  } catch (e) {
-    console.log(e);
-  } finally {
-    await closeDB();
-  }
-});
-
 // const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
 //   console.log("Received data for saving task assignment:", req.body);
 //   const { Task_ID, Task_Name, Task_Description, start_Date, End_Date, Task_Completed, Students } = req.body;
@@ -1317,59 +1301,59 @@ const updateTask = asyncHandler(async (req, res) => {
 //   }
 // });
 
-const searchTask = asyncHandler(async (req, res) => {
-  const { searchTerm } = req.body;
-  console.log("Received credentials:", { searchTerm });
+// const searchTask = asyncHandler(async (req, res) => {
+//   const { searchTerm } = req.body;
+//   console.log("Received credentials:", { searchTerm });
 
-  // Check if searchTerm is empty
-  if (!searchTerm) {
-    return res.status(400).json({
-      success: false,
-      message: "Please provide a non-empty search parameter",
-    });
-  }
+//   // Check if searchTerm is empty
+//   if (!searchTerm) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "Please provide a non-empty search parameter",
+//     });
+//   }
 
-  try {
-    await connectDB();
+//   try {
+//     await connectDB();
 
-    // Split the searchTerm string into an array of individual terms
-    const searchTermsArray = searchTerm.split(",").map((term) => term.trim());
+//     // Split the searchTerm string into an array of individual terms
+//     const searchTermsArray = searchTerm.split(",").map((term) => term.trim());
 
-    // Build the $or array dynamically for each search term
-    const orConditions = [];
+//     // Build the $or array dynamically for each search term
+//     const orConditions = [];
 
-    searchTermsArray.forEach((term) => {
-      orConditions.push({ "Students.Name": { $regex: term, $options: "i" } });
-      orConditions.push({ Task_Name: { $regex: term, $options: "i" } });
-      orConditions.push({ Task_ID: { $regex: term, $options: "i" } });
-    });
+//     searchTermsArray.forEach((term) => {
+//       orConditions.push({ "Students.Name": { $regex: term, $options: "i" } });
+//       orConditions.push({ Task_Name: { $regex: term, $options: "i" } });
+//       orConditions.push({ Task_ID: { $regex: term, $options: "i" } });
+//     });
 
-    // Use the dynamically built $or array in the query
-    const query = { $or: orConditions };
-    console.log("Query:", query);
+//     // Use the dynamically built $or array in the query
+//     const query = { $or: orConditions };
+//     console.log("Query:", query);
 
-    // Find tasks that match any of the specified conditions
-    const srhTask = await TaskAssign.find(query);
-    console.log("Data to be sent to frontend:", srhTask);
+//     // Find tasks that match any of the specified conditions
+//     const srhTask = await TaskAssign.find(query);
+//     console.log("Data to be sent to frontend:", srhTask);
 
-    if (!srhTask || srhTask.length === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Record not found" });
-    }
+//     if (!srhTask || srhTask.length === 0) {
+//       return res
+//         .status(404)
+//         .json({ success: false, message: "Record not found" });
+//     }
 
-    res.status(200).json({
-      success: true,
-      message: "Records found",
-      taskData: srhTask,
-    });
-  } catch (error) {
-    console.error("Error searching records:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  } finally {
-    await closeDB();
-  }
-});
+//     res.status(200).json({
+//       success: true,
+//       message: "Records found",
+//       taskData: srhTask,
+//     });
+//   } catch (error) {
+//     console.error("Error searching records:", error);
+//     res.status(500).json({ success: false, message: "Internal Server Error" });
+//   } finally {
+//     await closeDB();
+//   }
+// });
 
 // //updatation code for Task Assignments
 
@@ -1401,11 +1385,10 @@ export {
   faculty,
   facultymail,
   searchfaculty,
+  facultyGetDetails,
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
-  searchTask,
-  fetchAllTasks,
-  updateTask,
+  //searchTask,
   //updateTaskAssign,
   fetchDetails,
   saveAssignMarks,

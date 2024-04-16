@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import Image from '../../Components/Assets/photo/login.mp4';
+import { setLoginResponse } from '../Login/Logged_user';
 
 const Loginform = () => {
   const [formData, setFormData] = useState({
@@ -152,13 +153,22 @@ const Loginform = () => {
         },
         body: JSON.stringify(formData),
       });
+
+      const responseData = await response.json();
+      console.log(responseData.message);
   
       if (response.ok) {
         console.log('Login successful');
         if (endpoint === 'http://localhost:8000/admin/login') {
           navigate('/Adminhomepage');
         } else {
-          navigate('/Facultyhomepage');
+          
+          if (responseData.message !== "HOD") {
+            navigate('/Facultyhomepage');
+          } else {
+            setLoginResponse(responseData);
+            navigate('/HODhomePage');
+          }
         }
       } else {
         const responseData = await response.json();
@@ -173,6 +183,11 @@ const Loginform = () => {
   
 
   const isForgotPasswordVisible = !['admin123@gmail.com', 'john@example.com'].includes(formData.emailId.toLowerCase());
+
+  const profile = (mail, desig) => {
+    let email = mail;
+    let designation = desig;
+  }
 
   return (
     <section className="bg-blue-500 min-h-screen flex items-center justify-center p-5">

@@ -6,12 +6,12 @@ const facultyDetailsSchema = new mongoose.Schema({
   facultyname: { type: String },
   applicationNumber: { type: String },
   motherTongue: { type: String },
-  designation:{type:String},
-  dateOfJoining: { type: Date },
+  designation: { type: String },
+  dateOfJoining: { type: String },
   facultyid: { type: Number },
   department: { type: String },
   designation: { type: String },
-  dateOfBirth: { type: Date },
+  dateOfBirth: { type: String },
   gender: { type: String },
   presentMobileNumber: { type: String },
   previousMobileNumber: { type: String },
@@ -37,9 +37,9 @@ const TaskAssignschema = new mongoose.Schema({
   Task_Name: { type: String },
   Task_ID: { type: String },
   Task_Description: { type: String },
-  start_Date: { type: Date },
-  End_Date: { type: Date },
-  Task_Completed: { type: String},
+  start_Date: { type: String },
+  End_Date: { type: String },
+  Task_Completed: { type: String },
   Submit_Time: { type: String },
   Students: [{
     regno: { type: String },
@@ -63,23 +63,23 @@ const assignmarks = new mongoose.Schema({
               {
                 sectionName: String,
                 subjects: [
-                 {
-                  subjectcode: String,
-                  subjectName: String,
-                  students: [
-                    {
-                      regno: Number,
-                      name: String,
-                      Test: [
-                        {
-                          testname : String,
-                          marks : String
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
+                  {
+                    subjectcode: String,
+                    subjectName: String,
+                    students: [
+                      {
+                        regno: Number,
+                        name: String,
+                        Test: [
+                          {
+                            testname: String,
+                            marks: String
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
               },
             ],
           },
@@ -102,21 +102,21 @@ const addassessment = new mongoose.Schema({
             sections: [
               {
                 sectionName: String,
-                assessment : [
+                assessment: [
                   {
-                    assessmentId : String,
-                    assessmentName : String,
-                    Duration : Number,
-                    totalMark : Number,
-                    assessmentquestion : [
+                    assessmentId: String,
+                    assessmentName: String,
+                    Duration: Number,
+                    totalMark: Number,
+                    assessmentquestion: [
                       {
-                        questionno : Number,
-                        question : String,
-                        optionA : String,
+                        questionno: Number,
+                        question: String,
+                        optionA: String,
                         optionB: String,
-                        optionC : String,
-                        optionD : String,
-                        answer : String
+                        optionC: String,
+                        optionD: String,
+                        answer: String
                       }
                     ]
                   }
@@ -183,4 +183,4 @@ const AssignMarks = mongoose.model("AssignMarks", assignmarks);
 const AddAssessment = mongoose.model("AddAssessment", addassessment)
 const attendance = mongoose.model("Attendacedata", Attendance)
 
-export { FacultyDetails, FacultyLogin, TaskAssign, AssignMarks,AddAssessment, attendance };
+export { FacultyDetails, FacultyLogin, TaskAssign, AssignMarks, AddAssessment, attendance };

@@ -410,7 +410,7 @@ const Profilefaculty = () => {
 
   return (
     <section>
-      <div className="fixed left-5 top-30 ml-40">
+      <div className="fixed left-8 top-30 ml-40">
         <button className="bg-blue-500 w-48 h-10 rounded-lg ml-8 pl-1 pt-1 text-lg mt-7 focus:outline-none ">
          Profile Details
         </button>

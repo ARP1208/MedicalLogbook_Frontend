@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import LogoNav from '../../Components/Admin/LogoNav'
 import FacultyNavbar from '../../Components/Faculty/FacultyNavbar'
+import Facultydashboard from './Facultydashboard';
 
 
 const Dashboardhomepage = () => {
@@ -11,6 +12,7 @@ const Dashboardhomepage = () => {
   });
 
     const [showprofile, setshowprofile] = useState(false);
+    const [showdashboard,setshowdashboard]=useState(false);
 
     useEffect(() => {
       // Save collapsed state changes to sessionStorage
@@ -24,18 +26,18 @@ const Dashboardhomepage = () => {
   
     const handleOptions = (component) => {
       if(component === "Home"){
-        setshowprofile(false);
+        setshowdashboard(false);
       }
-    //   else if (component === "Profile") {
-    //     setshowprofile(true);
-    //   }
+      else if (component === "Facultydashboard") {
+        setshowdashboard(true);
+      }
     };
 
   return (
     <section>
       <LogoNav/>
       <FacultyNavbar/>
-     
+     {showdashboard && <Facultydashboard/>}
       <div className="fixed h-full">
         <nav className={`sideb h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
         <button onClick={toggleSidebarCollapse} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
@@ -53,7 +55,7 @@ const Dashboardhomepage = () => {
           </button>
           
 
-          <button onClick={() => handleOptions("Profile")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+          <button onClick={() => handleOptions("Facultydashboard")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-solid fa-chalkboard p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;Dashboard</p>
           </button>
