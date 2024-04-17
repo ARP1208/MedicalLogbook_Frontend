@@ -1,6 +1,5 @@
 import {
   StudentDetails,
-  StudentLogin,
   TaskAssignStudent,
   StudentAssessmentMark,
   
@@ -13,109 +12,6 @@ import Parent from "../models/parentdetails.js";
 import express from "express";
 import asyncHandler from "express-async-handler";
 
-/////////Student login and fetching the data to display in Student profile./////////////
-// const Studentlogin = asyncHandler(async (req, res) => {
-//   const { emailId, password } = req.body;
-
-//   console.log("Received credentials:", { emailId, password });
-
-//   try {
-//     // Find the admin with the provided email
-//     const studentlog = await StudentLogin.findOne({ emailId, password });
-
-//     console.log(studentlog);
-
-//     if (!studentlog) {
-//       console.log("Invalid credentials:", { emailId, password });
-//       res.status(401).json({ error: "Invalid credentials" });
-//     } else {
-//       // Passwords match, send a success message
-//       console.log("Student successfully logged in");
-
-//       // Fetch student details data
-//       const studentDetails = await StudentDetails.findOne({ emailId });
-
-//       if (studentDetails) {
-//         // student details found, send the details to the client
-//         console.log("Student details fetched:", studentDetails);
-
-//         // // Fetch all the academic years from the indican database
-//         // const academicYears = await Assignedsubject.find().distinct(
-//         //   "AcademicYear.year"
-//         // );
-
-//         // Send the academic years to the frontend
-//         res.json({
-//           message: "Successfully logged in!",
-//           studentDetails,
-//           // academicYears,
-//         });
-//       } else {
-//         // Student details not found
-//         console.log("Student details not found for email:", emailId);
-//         res.status(404).json({ error: "Student details not found" });
-//       }
-//     }
-//   } catch (error) {
-//     console.error("Error during login:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-const Studentlogin = asyncHandler(async (req, res) => {
-  const { emailId, password } = req.body;
-
-  console.log("Received credentials:", { emailId, password });
-
-  try {
-    // Find the student with the provided email and password
-    const studentLog = await StudentLogin.findOne({ emailId, password });
-
-    console.log(studentLog);
-
-    if (!studentLog) {
-      console.log("Invalid credentials:", { emailId, password });
-      return res.status(401).json({ error: "Invalid credentials" });
-    }
-
-    // Fetch student details data
-    const studentDetails = await StudentDetails.findOne({ emailId });
-
-    if (!studentDetails) {
-      console.log("Student details not found for email:", emailId);
-      return res.status(404).json({ error: "Student details not found" });
-    }
-
-    // Extract regno from studentDetails
-    const regno = studentDetails.regno;
-
-    // Fetch data from Assignedsubject using regno
-    const assignedSubjects = await Assignedsubject.findOne({
-      "AcademicYear.program.semesters.sections.students.regno": regno,
-    });
-
-    if (!assignedSubjects) {
-      // Data not found in Assignedsubject
-      console.log("Assigned subject details not found for regno:", regno);
-      return res
-        .status(404)
-        .json({ error: "Assigned subject details not found" });
-    }
-
-    // Data found, extract necessary information
-    console.log("Assigned subject details fetched:", assignedSubjects);
-
-    res.json({
-      message: "Successfully logged in!",
-      studentDetails,
-      regno,
-      assignedSubjects,
-    });
-  } catch (error) {
-    console.error("Error during login:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
 const student = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
@@ -133,6 +29,8 @@ const student = asyncHandler(async (req, res) => {
     await closeDB();
   }
 });
+
+
 
 // Nodemailer transporter setup
 const transporter = nodemailer.createTransport({
@@ -288,6 +186,8 @@ const UpdateStudentDetails = asyncHandler(async (req, res) => {
     await closeDB();
   }
 });
+
+
 
 ///////////PG log Component///////////////////////////////////////
 const saveTaskAssignStudent = asyncHandler(async (req, res) => {
@@ -876,16 +776,7 @@ const fetchdialyAttendance = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
 export {
-  Studentlogin,
   student,
   parent,
   studentmail,

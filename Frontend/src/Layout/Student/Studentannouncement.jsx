@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+
 
 const Studentannouncement = () => {
   const [announcements, setAnnouncements] = useState([]);
@@ -12,6 +15,59 @@ const Studentannouncement = () => {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [uploadedFileName, setUploadedFileName] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
+
+  const getfile = async (title) => {
+    console.log("Fetching file for announcement with title: ", title);
+    try {
+      let url = "http://127.0.0.1:8000/admin/fetchFile";
+      let response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          announcementTitle: title
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Extract the Blob data from the response
+      let fileBlob = await response.blob();
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // console.log(reader.result)
+        setUploadedImage(reader.result);
+        setUploadedFileName(fileBlob.name);
+      };
+      reader.readAsDataURL(fileBlob);
+    } catch (e) {
+      console.log("Error fetching the announcement's previously uploaded file: ", e);
+    }
+  }
+
+  const fetchAnnouncements = async () => {
+    try {
+      const customHeaders = new Headers();
+      customHeaders.append('Content-Type', 'application/json');
+      customHeaders.append('Accept-Encoding', 'gzip, deflate, br');
+
+      const response = await axios.get('http://localhost:8000/admin/fetchAllAnnouncements', { headers: customHeaders });
+
+      console.log(response.data)
+      console.log(response.headers)
+      setAnnouncement(response.data);
+    } catch (error) {
+      console.error("Error fetching announcements:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
 
  
 
@@ -50,7 +106,7 @@ const Studentannouncement = () => {
           Announcements
         </button>
         &nbsp;&nbsp;
-        <button className="bg-sky-500 rounded-md w-auto text-lg" >
+        <button className="bg-sky-500 rounded-md w-auto text-lg" onClick={fetchAnnouncements}>
           <i class="fa-solid fa-arrows-rotate" />
         </button>
       </div>

@@ -1,10 +1,10 @@
 import express from 'express';
-import { Studentlogin, student, studentmail, searchStudent, UpdateStudentDetails, saveTaskAssignStudent, onclickCheckInUpdateTaskAssign, fetchStudentAssessment, saveAssessmentStudent, fetchStudentGradeSheet, fetchStudentTestMarks, fetchStudentCourseDetails, fetchAttendance, fetchdialyAttendance} from '../controllers/studentcontroller.js';
+import {  student, studentmail, searchStudent, UpdateStudentDetails, saveTaskAssignStudent, onclickCheckInUpdateTaskAssign, fetchStudentAssessment, saveAssessmentStudent, fetchStudentGradeSheet, fetchStudentTestMarks, fetchStudentCourseDetails, fetchAttendance, fetchdialyAttendance} from '../controllers/studentcontroller.js';
 
 const router = express.Router();
 
 ////////////Admin Registration Component/////////////
-router.route("/Studentlogin").post(Studentlogin);
+// router.route("/Student-login").post(Studentlogin);
 router.route("/student-details").post(student);
 router.route("/send-mail").post(studentmail)
 router.route("/search-student").post(searchStudent)

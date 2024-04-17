@@ -1,5 +1,5 @@
 // adminController.js
-import { Admin, AdminAnnoucement, Assignedsubject } from '../models/admin.js';
+import { AdminAnnoucement, Assignedsubject } from '../models/admin.js';
 import { connectDB, closeDB } from "../config/db.js";
 import asyncHandler from "express-async-handler";
 import path from 'path';
@@ -7,29 +7,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-const login = asyncHandler(async (req, res) => {
-  const { emailId, password } = req.body;
-  console.log('Received credentials:', { emailId, password });
 
-  try {
-    // Find the admin with the provided email
-    const admin = await Admin.findOne({ emailId, password });
-    console.log(admin);
-
-    if (admin) {
-      // Passwords match, send a success message
-      console.log('Admin successfully logged in');
-      res.json({ message: 'Successfully logged in!' });
-    } else {
-      // Invalid credentials
-      console.log('Invalid credentials:', { emailId, password });
-      res.status(401).json({ error: 'Invalid credentials' });
-    }
-  } catch (error) {
-    console.error('Error during login:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 
 ////////////Registration Component ////////////////////////
@@ -389,7 +367,6 @@ const filter_students = asyncHandler(async (req, res) => {
   }
 });
 
-
 const setMarks = asyncHandler(async (req, res) => {
   console.log("Received data:", req.body);
   const { AcademicYear, programName, semesterNumber, sectionName, regno, marks } = req.body;
@@ -747,4 +724,4 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
   }
 });
 
-export { login, announcement, fetchAllAnnouncement, getFilebyAnnouncement, deleteFile, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, setMarks, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject,saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 
+export { announcement, fetchAllAnnouncement, getFilebyAnnouncement, deleteFile, fetchAnnouncementByTitle, UpdateAnnouncement, DeleteAnnouncement, filter_students, setMarks, saveAdminGradesheet, updateAdminGradesheet, saveAssignSubject,saveCSVAssignSubject, getAdminGradesheet, getAdminindividualGradesheet }; 

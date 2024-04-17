@@ -31,95 +31,9 @@ const Loginform = () => {
     }
   };
 
-  // const handleSubmit = async (e) => {
-
-  //   e.preventDefault();
-
-  //   // Basic validation
-  //   const newErrors = {};
-  //   if (!formData.emailId.trim()) {
-  //     newErrors.emailId = 'Email is required';
-  //   } else if (!/\S+@\S+\.\S+/.test(formData.emailId)) {
-  //     newErrors.emailId = 'Invalid email format';
-  //   }
-  //   if (!formData.password.trim()) {
-  //     newErrors.password = "Password is required";
-  //   }
-
-  //   if (Object.keys(newErrors).length > 0) {
-  //     setErrors(newErrors);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch('http://localhost:8000/admin/login', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(formData),
-  //     });
-
-  //     if (response.ok) {
-  //       console.log('Login successful');
-  //       navigate('/Adminhomepage');
-  //     } else {
-  //       const responseData = await response.json();
-  //       setErrors(responseData.errors || {});
-  //     }
-  //   } catch (error) {
-  //     console.error('Error during login:', error);
-  //   }
-
-  //   console.log("Login data submitted:", formData);
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   // Basic validation
-  //   const newErrors = {};
-  //   if (!formData.emailId.trim()) {
-  //     newErrors.emailId = 'Email is required';
-  //   } else if (!/\S+@\S+\.\S+/.test(formData.emailId)) {
-  //     newErrors.emailId = 'Invalid email format';
-  //   }
-  //   if (!formData.password.trim()) {
-  //     newErrors.password = "Password is required";
-  //   }
-
-  //   if (Object.keys(newErrors).length > 0) {
-  //     setErrors(newErrors);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await fetch('http://localhost:8000/faculty/faculty-login', { // Assuming '/faculty/login' is your backend endpoint for faculty login
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(formData),
-  //     });
-
-  //     if (response.ok) {
-  //       console.log('Login successful');
-  //       navigate('/Facultyhomepage'); // Redirect to faculty homepage upon successful login
-  //     } else {
-  //       const responseData = await response.json();
-  //       setErrors(responseData.errors || {});
-  //     }
-  //   } catch (error) {
-  //     console.error('Error during login:', error);
-  //   }
-
-  //   console.log("Login data submitted:", formData);
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    const adminEmails = ['admin123@gmail.com', 'john@example.com'];
   
     // Basic validation
     const newErrors = {};
@@ -138,38 +52,45 @@ const Loginform = () => {
     }
   
     try {
-      let endpoint;
-      if (adminEmails.includes(formData.emailId.trim())) {
-        endpoint = 'http://localhost:8000/admin/login';
-      } else {
-        endpoint = 'http://localhost:8000/faculty/faculty-login';
-      }
+      const loginresponse = await fetch(
+        "http://localhost:8000/main-login/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
   
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-  
-      if (response.ok) {
-        console.log('Login successful');
-        if (endpoint === 'http://localhost:8000/admin/login') {
+      if (loginresponse.ok) {
+        const responseData = await loginresponse.json();
+        
+        // Determine the type of user logged in and redirect accordingly
+        if (responseData.message === 'Admin successfully logged in!') {
+          // Redirect to admin home page
           navigate('/Adminhomepage');
-        } else {
+        } else if (responseData.message === 'Faculty successfully logged in!'){
           navigate('/Facultyhomepage');
+        } else if ( responseData.message === 'HOD successfully logged in!') {
+          // Redirect to faculty or HOD home page
+          navigate('/HODhomePage');
+        } else if (responseData.message === 'Student successfully logged in!') {
+          // Redirect to student home page
+          navigate('/Studenthomepage')
         }
       } else {
-        const responseData = await response.json();
+        // Handle errors from the backend
+        const responseData = await loginresponse.json();
         setErrors(responseData.errors || {});
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error("Error during login:", error);
     }
   
     console.log("Login data submitted:", formData);
   };
+  
   
 
   const isForgotPasswordVisible = !['admin123@gmail.com', 'john@example.com'].includes(formData.emailId.toLowerCase());

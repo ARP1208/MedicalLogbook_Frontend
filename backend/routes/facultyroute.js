@@ -1,13 +1,12 @@
 import express from "express";
 import {
-  Facultylogin,
   faculty,
   facultymail,
   searchfaculty,
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
 //   saveTaskAssignAndSendEmails,
-//   searchTask,
+  searchTask,
 //   updateTaskAssign,
   // FacultyfetchAllAnnouncement,
   fetchDetails,
@@ -24,8 +23,7 @@ import {
 
 const router = express.Router();
 
-////////////Admin Registration Component/////////////
-router.route("/faculty-login").post(Facultylogin);
+// ////////////Admin Registration Component/////////////
 router.route("/faculty-details").post(faculty);
 router.route("/send-mail").post(facultymail);
 router.route("/faculty-search").post(searchfaculty);
@@ -51,7 +49,7 @@ router.route("/DeleteAssessment").delete(DeleteAssessment);
 
 //////////////PG Log Component////////////////////////
 router.route("/saveandemailtask").post(saveTaskAssignAndSendEmails);
-// router.route("/searchTask").post(searchTask);
+router.route("/searchTask").post(searchTask);
 // router.route("/updateTask").patch(updateTaskAssign);
 // router.route("/DeleteTaskAssign").delete(DeleteTaskAssign);
 

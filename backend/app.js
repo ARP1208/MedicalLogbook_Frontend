@@ -1,6 +1,7 @@
 import express from "express"
 import mongoose from "mongoose";
 import adminRoutes from './routes/adminroute.js';
+import loginRoutes from './routes/loginroute.js';
 import studentdetails from './routes/studentroute.js'
 import { connectDB, closeDB } from './config/db.js';
 import bodyParser from 'body-parser';
@@ -17,6 +18,7 @@ app.use(cors());
 
 connectDB();
 app.use(bodyParser.json());
+app.use('/main-login', loginRoutes);
 app.use('/admin', adminRoutes);
 app.use('/student', studentdetails);
 app.use('/parent', parent);
