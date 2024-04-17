@@ -26,15 +26,12 @@ const CreateTaskPglogbook = () => {
 
   const handleStartDateChange = (date) => {
     const formattedDate = date.toLocaleDateString();
-    //console.log(formattedDate)
     setStartDate(formattedDate);
     setFormData({ ...formData, start_Date: formattedDate });
   };
 
   const handleEndDateChange = (date) => {
-    // const formattedDate = date.toLocaleDateString();
     const formattedDate = date.toLocaleDateString();
-    console.log(formattedDate)
     setEndDate(formattedDate);
     setFormData({ ...formData, End_Date: formattedDate });
   };
@@ -148,7 +145,7 @@ const CreateTaskPglogbook = () => {
               Start Date
               <br />
               <DatePicker
-                value={startDate}
+                selected={startDate}
                 onChange={handleStartDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
@@ -157,7 +154,7 @@ const CreateTaskPglogbook = () => {
               End Date
               <br />
               <DatePicker
-                value={endDate}
+                selected={endDate}
                 onChange={handleEndDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />

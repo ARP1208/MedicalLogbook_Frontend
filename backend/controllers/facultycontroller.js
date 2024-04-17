@@ -172,14 +172,14 @@ const facultyGetDetails = asyncHandler(async (req, res) => {
     await connectDB();
     const faculty = await FacultyDetails.findOne({ emailId: email, designation: designation });
     console.log(faculty);
-    if(faculty) {
+    if (faculty) {
       res.send(faculty);
     } else {
       res.status(404);
     }
   } catch (e) {
     console.log(e)
-  } 
+  }
 })
 
 const UpdateFacultyDetails = asyncHandler(async (req, res) => {
@@ -813,29 +813,29 @@ const saveAddAssessment = asyncHandler(async (req, res) => {
 
           if (existingSectionIndex !== -1) {
             const existingAssessmentIndex = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.findIndex(existingAssessment => existingAssessment.assessmentId === sections[0].assessment[0].assessmentId);
-            
+
             if (existingAssessmentIndex !== -1) {
               // Assessment exists
               if (existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment[existingAssessmentIndex].assessmentName !== sections[0].assessment[0].assessmentName) {
-                  // If assessment ID exists but assessment name is new, display error
-                  return res.status(400).json({ error: 'Assessment ID already exists with a different name.' });
+                // If assessment ID exists but assessment name is new, display error
+                return res.status(400).json({ error: 'Assessment ID already exists with a different name.' });
               } else {
-                  // Assessment ID and name both exist, append new assessment questions
-                  const newQuestions = sections[0].assessment[0].assessmentquestion;
-                  existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment[existingAssessmentIndex].assessmentquestion.push(...newQuestions);
+                // Assessment ID and name both exist, append new assessment questions
+                const newQuestions = sections[0].assessment[0].assessmentquestion;
+                existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment[existingAssessmentIndex].assessmentquestion.push(...newQuestions);
               }
-          } else {
+            } else {
               // ID is new, check if Name exists
               const nameExists = existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.some(existingAssessment => existingAssessment.assessmentName === sections[0].assessment[0].assessmentName);
               if (nameExists) {
-                  // Name exists, display error
-                  return res.status(400).json({ error: 'Assessment Name already exists.' });
+                // Name exists, display error
+                return res.status(400).json({ error: 'Assessment Name already exists.' });
               } else {
-                  // Both ID and Name are new, save in the new array
-                  existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.push(sections[0].assessment[0]);
+                // Both ID and Name are new, save in the new array
+                existingDocument.AcademicYear.program[existingProgramIndex].semesters[existingSemesterIndex].sections[existingSectionIndex].assessment.push(sections[0].assessment[0]);
               }
-          }
-          
+            }
+
           } else {
             // Section doesn't exist, add new section with assessments
             const newSection = {
@@ -867,9 +867,9 @@ const saveAddAssessment = asyncHandler(async (req, res) => {
             }]
           }]
         };
-        
+
         existingDocument.AcademicYear.program.push(newProgram);
-        
+
       }
 
       const result = await existingDocument.save();
@@ -1035,7 +1035,7 @@ const showAssessment = asyncHandler(async (req, res) => {
     });
 
     if (!data) {
-      return res.status(404).json({ error: `Assessment with Academic year '${academicYear}', program '${program}', semester '${semester}', section '${section}', assessment ID '${assessmentId}', and assessment name '${assessmentName}' not found `});
+      return res.status(404).json({ error: `Assessment with Academic year '${academicYear}', program '${program}', semester '${semester}', section '${section}', assessment ID '${assessmentId}', and assessment name '${assessmentName}' not found ` });
     }
 
     const assessment = data.AcademicYear.program[0].semesters[0].sections[0].assessment[0]; // Assuming only one assessment matches the query
@@ -1108,48 +1108,48 @@ const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
   console.log("Received data for saving task assignment:", req.body);
   const { Task_ID, Task_Name, Task_Description, start_Date, End_Date, Submit_Time, Students } = req.body;
   console.log("Task ID: ", Task_ID)
- 
+
   try {
-  // Check if Task_ID already exists
-  const existingTask = await TaskAssign.findOne({ Task_ID });
-  if (existingTask) {
-  console.error("Task_ID already exists:", Task_ID);
-  return res.status(400).json({ error: "Task_ID already exists" });
-  }
- 
-  // If Task_ID doesn't exist, save the new task assignment
-  const newTask = new TaskAssign({
-  Task_ID,
-  Task_Name,
-  Task_Description,
-  start_Date,
-  End_Date,
-  Submit_Time,
-  Students
-  });
-  const savedTask = await newTask.save();
-  console.log("Saved task assignment:", savedTask);
- 
-  // Fetch student details based on regno from the StudentDetails schema
-  const studentRegnos = Students.map(student => student.regno);
-  const students = await StudentDetails.find({ regno: { $in: studentRegnos } });
- 
-  // Create reusable transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-  user: "shettytejas96@gmail.com",
-  pass: "ndhg gltd onks xuan",
-  },
-  });
- 
-  // Compose and send email to each student
-  for (const student of students) {
-  const mailOptions = {
-  from: 'shettytejas96@gmail.com',
-  to: student.emailId,
-  subject: 'Task Assignment',
-  html: `<p>You have been assigned the following task:,</p>
+    // Check if Task_ID already exists
+    const existingTask = await TaskAssign.findOne({ Task_ID });
+    if (existingTask) {
+      console.error("Task_ID already exists:", Task_ID);
+      return res.status(400).json({ error: "Task_ID already exists" });
+    }
+
+    // If Task_ID doesn't exist, save the new task assignment
+    const newTask = new TaskAssign({
+      Task_ID,
+      Task_Name,
+      Task_Description,
+      start_Date,
+      End_Date,
+      Submit_Time,
+      Students
+    });
+    const savedTask = await newTask.save();
+    console.log("Saved task assignment:", savedTask);
+
+    // Fetch student details based on regno from the StudentDetails schema
+    const studentRegnos = Students.map(student => student.regno);
+    const students = await StudentDetails.find({ regno: { $in: studentRegnos } });
+
+    // Create reusable transporter object using the default SMTP transport
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "shettytejas96@gmail.com",
+        pass: "ndhg gltd onks xuan",
+      },
+    });
+
+    // Compose and send email to each student
+    for (const student of students) {
+      const mailOptions = {
+        from: 'shettytejas96@gmail.com',
+        to: student.emailId,
+        subject: 'Task Assignment',
+        html: `<p>You have been assigned the following task:,</p>
   <p>Task Name: ${Task_Name}</p>
   <p>Task Description: ${Task_Description}</p>
   <p>Start Date: ${start_Date}</p>
@@ -1157,27 +1157,36 @@ const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
   
   <p>Regards,</p>
   <p>Your Faculty</p>`
-  };
- 
-  // Send email
-  await transporter.sendMail(mailOptions);
-  console.log("Task assignment email sent to:", student.emailId);
-  }
- 
-  res.status(201).json({ message: "Task assigned successfully and emails sent to students" });
-  } catch (error) {
-  console.error("Error saving task assignment and sending emails:", error);
-  res.status(500).json({ error: "Internal Server Error" });
-  }
- });
- 
+      };
 
+      // Send email
+      await transporter.sendMail(mailOptions);
+      console.log("Task assignment email sent to:", student.emailId);
+    }
+
+    res.status(201).json({ message: "Task assigned successfully and emails sent to students" });
+  } catch (error) {
+    console.error("Error saving task assignment and sending emails:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+const fetchAllTasks = asyncHandler(async (req, res) => {
+  try {
+    await connectDB();
+    const tasks = await TaskAssign.find();
+    res.status(200).json({ tasks });
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 // const DeleteTaskAssign = asyncHandler(async (req, res) => {
 //   console.log("Received data for deletion:", req.body);
 //   const { Task_ID } = req.body;
-  
+
 //   try {
 //     await connectDB();
 //     const taskId = Task_ID;
@@ -1185,7 +1194,7 @@ const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
 
 //     // Assuming TaskAssign is your Mongoose model
 //     const deletedtask = await TaskAssign.deleteOne({ Task_ID: taskId });
-    
+
 //     // Check if the document was deleted successfully
 //     if (deletedtask.deletedCount === 1) {
 //       console.log("Deleted task:", taskId);
@@ -1288,6 +1297,7 @@ export {
   facultyGetDetails,
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
+  fetchAllTasks,
   searchTask,
   //updateTaskAssign,
   fetchDetails,
@@ -1300,4 +1310,4 @@ export {
   //DeleteTaskAssign,
   DeleteAssessment,
   saveAttendance
- };
+};
