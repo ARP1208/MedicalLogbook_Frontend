@@ -7,7 +7,6 @@ import {
 
 } from "../models/faculty.js";
 import { StudentDetails } from "../models/student.js";
-import { hodlogin} from '../models/hod.js';
 import { Assignedsubject, AdminAnnoucement } from "../models/admin.js";
 import { connectDB, closeDB } from "../config/db.js";
 import nodemailer from "nodemailer";
@@ -165,6 +164,23 @@ const searchfaculty = asyncHandler(async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+
+const facultyGetDetails = asyncHandler(async (req, res) => {
+  const { email, designation } = req.body;
+  console.log("Looking for: ", req.body)
+  try {
+    await connectDB();
+    const faculty = await FacultyDetails.findOne({ emailId: email, designation: designation });
+    console.log(faculty);
+    if(faculty) {
+      res.send(faculty);
+    } else {
+      res.status(404);
+    }
+  } catch (e) {
+    console.log(e)
+  } 
+})
 
 const UpdateFacultyDetails = asyncHandler(async (req, res) => {
   console.log("Received data for update:", req.body);
@@ -1269,6 +1285,7 @@ export {
   faculty,
   facultymail,
   searchfaculty,
+  facultyGetDetails,
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
   searchTask,

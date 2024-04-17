@@ -3,12 +3,11 @@ import {
   faculty,
   facultymail,
   searchfaculty,
+  facultyGetDetails,
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
-//   saveTaskAssignAndSendEmails,
   searchTask,
-//   updateTaskAssign,
-  // FacultyfetchAllAnnouncement,
+  //updateTaskAssign,
   fetchDetails,
   saveAssignMarks,
   updateAssignMarks,
@@ -16,7 +15,7 @@ import {
   getFacultyindividualAssessment,
   getAssessmentByQuestionNumber,
   showAssessment,
-//   DeleteTaskAssign,
+  //DeleteTaskAssign,
   DeleteAssessment,
   saveAttendance
 } from "../controllers/facultycontroller.js";
@@ -27,6 +26,7 @@ const router = express.Router();
 router.route("/faculty-details").post(faculty);
 router.route("/send-mail").post(facultymail);
 router.route("/faculty-search").post(searchfaculty);
+router.route("/getFacultyDetails").post(facultyGetDetails);
 router.route("/updatefaculty").patch(UpdateFacultyDetails);
 
 // ////////////Announcement///////////////////////

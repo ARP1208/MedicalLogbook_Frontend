@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
+import { getLoginResponse } from '../Login/Logged_user'
 
 //import axios from "axios";
 
@@ -23,6 +24,7 @@ const ProfileHOD = () => {
   });
   const [errors, setErrors] = useState({});
   const location = useLocation();
+  const responseData = getLoginResponse();
 
   useEffect(() => {
     if (location.state && location.state.facultyData) {
@@ -50,6 +52,39 @@ const ProfileHOD = () => {
       });
     }
   }, [location]);
+
+  const getDetails = async () => {
+    const url = "http://localhost:8000/faculty/getFacultyDetails";
+    console.log("Fetching details for: ", responseData.email, responseData.message);
+    let data = {
+      "email": responseData.email,
+      "designation": responseData.message
+    };
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (response.ok) {
+        const facultyDetails = await response.json();
+        setFormData(facultyDetails);
+      } else {
+        console.error("Failed to fetch faculty details:", response.status);
+      }
+    } catch (error) {
+      console.error("Error while fetching faculty details:", error);
+    }
+  };
+  
+
+  useEffect(() => {
+    getDetails();
+  }, [])
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -412,7 +447,7 @@ const ProfileHOD = () => {
     <section>
       <div className="fixed left-5 top-30 ml-40">
         <button className="bg-blue-500 w-48 h-10 rounded-lg ml-8 pl-1 pt-1 text-lg mt-7 focus:outline-none ">
-         Profile Details
+          Faculty Details
         </button>
       </div>
       <div className="flex justify-center item-center">
@@ -485,8 +520,8 @@ const ProfileHOD = () => {
                 <input
                   type="text"
                   className="border border-black"
-                  name="facultyname"
-                  value={formData.facultyname}
+                  name="designation"
+                  value={formData.designation}
                   onChange={handleChange}
                   readOnly
                 />

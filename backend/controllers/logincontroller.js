@@ -27,7 +27,8 @@ const unifiedLogin = asyncHandler(async (req, res) => {
       if (facultyDetails && facultyDetails.designation === "HOD") {
         console.log("HOD logged in");
         return res.json({
-          message: "HOD successfully logged in!",
+          message: "HOD",
+          email : emailId,
           designation: "HOD",
         });
       }

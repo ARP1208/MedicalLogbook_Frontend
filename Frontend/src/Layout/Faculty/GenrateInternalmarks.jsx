@@ -149,14 +149,10 @@ const GenrateInternalMarks = ({ subjectname, subcode, examination }) => {
                       <td className="border border-black px-4 py-2">Student Name {studentIndex + 1}</td>
                       <td className="border border-black">
                         <input
-                          type="text"
+                          type="number"
                           max="100"
                           placeholder="marks"
                           className="h-full w-full placeholder:text-center text-center"
-                          value={subject.marks}
-                          onChange={(e) =>
-                            handleSubjectChange(0, studentIndex, e.target.value)
-                          }
                         />
                       </td>
                     </tr>

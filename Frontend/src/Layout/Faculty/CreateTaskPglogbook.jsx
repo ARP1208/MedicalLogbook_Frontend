@@ -6,33 +6,39 @@ import TextareaAutosize from "react-textarea-autosize";
 
 const CreateTaskPglogbook = () => {
   const [studentCount, setStudentCount] = useState(1);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const [formData, setFormData] = useState({
     Task_ID: "",
     Task_Name: "",
     Task_Description: "",
-    start_Date: new Date(),
-    End_Date: new Date(),
+    start_Date: "",
+    End_Date: "",
     Submit_Time: "",
-    Students: [], 
+    Students: [],
   });
 
   const handleInputChange = (e, id) => {
     const { value } = e.target;
     setFormData({ ...formData, [id]: value });
-  };  
+  };
 
   const handleStartDateChange = (date) => {
-    setStartDate(date);
-    setFormData({ ...formData, startDate: date });
+    const formattedDate = date.toLocaleDateString();
+    //console.log(formattedDate)
+    setStartDate(formattedDate);
+    setFormData({ ...formData, start_Date: formattedDate });
   };
 
   const handleEndDateChange = (date) => {
-    setEndDate(date);
-    setFormData({ ...formData, endDate: date });
+    // const formattedDate = date.toLocaleDateString();
+    const formattedDate = date.toLocaleDateString();
+    console.log(formattedDate)
+    setEndDate(formattedDate);
+    setFormData({ ...formData, End_Date: formattedDate });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,25 +46,33 @@ const CreateTaskPglogbook = () => {
       const response = await axios.post("http://localhost:8000/faculty/saveandemailtask", formData);
       console.log(response.data);
       alert("Task created successfully");
+      setFormData({
+        Task_ID: "",
+        Task_Name: "",
+        Task_Description: "",
+        start_Date: "",
+        End_Date: "",
+        Submit_Time: "",
+        Students: [],
+      });
+      setStudentCount(1);
       // Optionally, clear form data or perform other actions upon successful submission
     } catch (error) {
       console.error("Error:", error.response); // Log the error response for debugging
       // alert("Failed to create task. Please try again.");
     }
   };
-  
+
   const handleAddStudent = () => {
-    console.log(studentCount);
     setStudentCount((prevCount) => prevCount + 1);
     setFormData((prevFormData) => ({
       ...prevFormData,
-      students: [...prevFormData.Students, { regno: "", Name: "" }],
+      students: [...prevFormData.Students, { Regno: "", Name: "" }],
     }));
   };
 
   const handleRemoveStudent = () => {
     if (studentCount > 1) {
-      console.log(studentCount);
       setStudentCount((prevCount) => prevCount - 1);
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -69,20 +83,20 @@ const CreateTaskPglogbook = () => {
 
   const handleStudentInputChange = (e, index, field) => {
     const { value } = e.target;
-    
+
     const updatedStudents = [...formData.Students];
-    
+
     updatedStudents[index] = {
       ...updatedStudents[index],
-      [field]: value, 
+      [field]: value,
     };
-  
+
     setFormData({
       ...formData,
       Students: updatedStudents,
     });
   };
-  
+
 
 
   return (
@@ -102,6 +116,7 @@ const CreateTaskPglogbook = () => {
                 id="TaskID"
                 className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 onChange={(e) => handleInputChange(e, "Task_ID")}
+                value={formData.Task_ID}
               />
             </label>
             <label className="block text-start text-gray-700 font-bold mb-2">
@@ -110,7 +125,8 @@ const CreateTaskPglogbook = () => {
                 type="text"
                 id="TaskName"
                 className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                onChange={(e) => {handleInputChange(e, "Task_Name")}}
+                value={formData.Task_Name}
+                onChange={(e) => { handleInputChange(e, "Task_Name") }}
               />
             </label>
           </div>
@@ -121,7 +137,8 @@ const CreateTaskPglogbook = () => {
                 id="Description"
                 placeholder="Enter Task Description Name"
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none min-h-10 focus:shadow-outline"
-                onChange={(e) => {handleInputChange(e, "Task_Description")}}
+                value={formData.Task_Description}
+                onChange={(e) => { handleInputChange(e, "Task_Description") }}
               />
             </label>
           </div>
@@ -131,7 +148,7 @@ const CreateTaskPglogbook = () => {
               Start Date
               <br />
               <DatePicker
-                selected={startDate}
+                value={startDate}
                 onChange={handleStartDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
@@ -140,7 +157,7 @@ const CreateTaskPglogbook = () => {
               End Date
               <br />
               <DatePicker
-                selected={endDate}
+                value={endDate}
                 onChange={handleEndDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
@@ -153,7 +170,8 @@ const CreateTaskPglogbook = () => {
                 id="submittime"
                 type="time"
                 className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                onChange={(e) => {handleInputChange(e, "Submit_Time")}}
+                value={formData.Submit_Time}
+                onChange={(e) => { handleInputChange(e, "Submit_Time") }}
               />
             </label>
           </div>
@@ -177,7 +195,7 @@ const CreateTaskPglogbook = () => {
           {/* Dynamic Roll number and student name input fields */}
           <div className="overflow-auto max-h-40 mb-3">
             <div className=" w-auto">
-            {[...Array(studentCount)].map((_, index) => (
+              {[...Array(studentCount)].map((_, index) => (
                 <div key={index} className="flex justify-center gap-10  overflow-auto">
                   <label
                     htmlFor={`subject${index + 1}`}
@@ -189,6 +207,7 @@ const CreateTaskPglogbook = () => {
                       id={`subject${index + 1}`}
                       className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       onChange={(e) => handleStudentInputChange(e, index, "regno")}
+                      value={formData.Students[index]?.regno || ""}
                     />
                   </label>
                   <label
@@ -200,6 +219,7 @@ const CreateTaskPglogbook = () => {
                       type="text"
                       id={`faculty${index + 1}`}
                       className="shadow appearance-none border rounded w-full py-1 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      value={formData.Students[index]?.Name || ""}
                       onChange={(e) => handleStudentInputChange(e, index, "Name")}
                     />
                   </label>

@@ -112,7 +112,7 @@ const initializeSelectedSubjects = (count, subjectCount) => {
                       {subjectOptions.map((_, subjectIndex) => (
                         <td key={subjectIndex} className="border border-black ">
                           <input
-                            type="text"
+                            type="number"
                             max="100"
                             placeholder='marks'
                             className='h-full w-full placeholder:text-center text-center'

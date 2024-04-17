@@ -176,7 +176,7 @@ const EnterStudentAttendance = () => {
         </button>
       </div>
 
-      <div className="border-1 px-10 py-3 h-auto w-auto overflow-hidden rounded-md border-black flex flex-col justify-center items-center mx-10 mt-18">
+      <div className="border-1 px-10 py-3 h-auto w-75vw overflow-hidden rounded-md border-black flex flex-col justify-center items-center mx-10 mt-18">
         <div className="overflow-hidden block">
           <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 text-balance">
             <div className="flex flex-row gap-x-5 justify-center items-center">
@@ -253,7 +253,7 @@ const EnterStudentAttendance = () => {
           </div>
         </div>
         <form>
-          <div className="flex w-75vw h-40vh border-1 mt-4 mb-4 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
+          <div className="flex w-70vw h-40vh border-1 mt-3 mb-3 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
             <table className="w-full h-10 text-center rounded-md border-collapse">
               <thead>
                 <tr>
