@@ -450,161 +450,172 @@ const saveAssessmentStudent = async (req, res) => {
 
 
 // ///////////////Academic /////////////////////////////////
-
 const fetchStudentGradeSheet = async (req, res) => {
-  const { regno, name, semesters } = req.body;
+  const { regno, name, AcademicYear, programName } = req.body;
 
-  console.log("data is: ", regno, name, semesters);
+  console.log("data is: ", regno, name, AcademicYear, programName);
 
   try {
-    // Find the semester from the database Assignedsubject
-    const result = await Assignedsubject.findOne({
-      'AcademicYear.program.semesters.semesterNumber': semesters
+    let year = await Assignedsubject.findOne({
+      'AcademicYear.year': AcademicYear
     });
 
-    console.log("semester data is: ", result);
-    
-    // If semester does not exist, show error
-    if (!result) {
-      return res.status(404).json({ error: 'Semester does not exist' });
+    if (!year) {
+      return "No document with such Academic Year found!";
     }
 
-     // Find the student by regno and name inside the found semester
-     const studentsemester = result.AcademicYear.program.flatMap(program => 
-      program.semesters.map(sem => ({
-        semesterNumber: sem.semesterNumber
-      }))
-    ).filter(Boolean)[0];
-    
-    console.log("studentsemester data: ", studentsemester);
+    const prog = year.AcademicYear.program.find(program => program.programname === programName);
 
-
-    // Find the student by regno and name inside the found semester
-    const student = result.AcademicYear.program.flatMap(program => 
-      program.semesters.flatMap(sem => 
-        sem.sections.flatMap(section => 
-          section.students.find(student => student.regno === regno && student.name === name)
-        )
-      )
-    ).filter(Boolean)[0];
-
-    console.log("student data is: ", student);
-
-    // If student does not exist, show error
-    if (!student) {
-      return res.status(404).json({ error: 'Student does not exist' });
+    if (!prog) {
+      return { "Error": "No such program in this Year" };
     }
 
-    // Get the subjects array of the student
-    const semester = studentsemester
-    const subjects = student.subjects;
+    const subjectsBySemester = prog.semesters.map(semester => {
+      const student = semester.sections.flatMap(section =>
+        section.students.find(student => student.regno === regno && student.name === name)
+      ).filter(Boolean)[0];
 
-    // Return the subjects array
-    res.json({ semester, subjects});
+      if (!student) {
+        return {
+          semesterNumber: semester.semesterNumber
+        };
+      }
+
+      const subjects = student.subjects.reduce((acc, subject) => {
+        acc[subject.subjectName] = {
+          facultyname: subject.facultyname,
+          subjectcode: subject.subjectcode,
+          credit: subject.credit,
+          marks: subject.marks,
+          _id: subject._id
+        };
+        return acc;
+      }, {});
+
+      return {
+        semesterNumber: semester.semesterNumber,
+        subjects: subjects
+      };
+    }).filter(Boolean);
+
+    // Return the formatted response
+    return res.json(subjectsBySemester);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching student grade sheet:", error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 const fetchStudentTestMarks = async (req, res) => {
-  const { regno, name, semesters } = req.body;
-
-  console.log("Data received: ", regno, name, semesters);
+  const { regno, name } = req.body;
+  const semesterDataAll = [];
 
   try {
-    // Find the semester from the database AssignMarks
-    const result = await AssignMarks.findOne({
-      'AcademicYear.program.semesters.semesterNumber': semesters
+    const result = await AssignMarks.find({
+      'AcademicYear.program.semesters': { $exists: true, $not: { $size: 0 } }
     });
 
-    console.log("Semester data: ", result);
+    const semesters = [...new Set(result.flatMap(item => item.AcademicYear.program.flatMap(p => p.semesters.map(s => s.semesterNumber))))];
 
-    // If semester does not exist, show error
-    if (!result) {
-      return res.status(404).json({ error: 'Semester does not exist' });
-    }
+    for (const sem of semesters) {
+      const resultForSemester = result.find(item => item.AcademicYear.program.some(p => p.semesters.some(s => s.semesterNumber === sem)));
 
-    // Find the student by regno and name inside the found semester
-    const studentsubject = result.AcademicYear.program.flatMap(program => 
-      program.semesters.flatMap(sem => 
-        sem.sections.flatMap(section => 
-          section.subjects.map(subject => ({
-            subjectName: subject.subjectName,
-            subjectcode: subject.subjectcode
-          }))
-        )
-      )
-    ).filter(Boolean)[0];
-
-    console.log("studentsubject data: ", studentsubject);
-
-    // Find the student by regno and name inside the found semester
-    const studenttest = result.AcademicYear.program.flatMap(program => 
-      program.semesters.flatMap(sem => 
-        sem.sections.flatMap(section => 
-          section.subjects.flatMap(subject => 
-            subject.students.find(student => student.regno === regno && student.name === name)
+      const hasTestForSemester = resultForSemester.AcademicYear.program.flatMap(program =>
+        program.semesters.filter(semData => semData.semesterNumber === sem).flatMap(filteredSemData =>
+          filteredSemData.sections.flatMap(section =>
+            section.subjects.some(subject =>
+              // console.log(subject)
+              subject.students.some(student => student.regno === regno && student.name === name && student.Test && student.Test.length > 0)
+            )
           )
         )
-      )
-    ).filter(Boolean)[0];
+      ).some(Boolean);
 
-    console.log("Student data: ", studenttest);
+      if (resultForSemester && hasTestForSemester) {
+        const studentTestData = resultForSemester.AcademicYear.program.flatMap(program =>
+          program.semesters.flatMap(semData =>
+            semData.sections.flatMap(section =>
+              section.subjects.flatMap(subject => {
+                const studentData = subject.students.find(student => student.regno === regno && student.name === name && student.Test && student.Test.length > 0);
 
-    // If student does not exist, show error
-    if (!studenttest) {
-      return res.status(404).json({ error: 'Student does not exist' });
+                if (studentData) {
+                  const testForSubject = studentData.Test[0];
+                  return {
+                    subjectName: subject.subjectName,
+                    subjectcode: subject.subjectcode,
+                    Test: testForSubject
+                  };
+                }
+
+                return null;
+              })
+            )
+          )
+        ).filter(Boolean);
+
+        const subjectsForSemester = resultForSemester.AcademicYear.program.flatMap(program =>
+          program.semesters.flatMap(semData =>
+            semData.sections.flatMap(section =>
+              section.subjects.flatMap(subject => {
+                const studentData = subject.students.find(student => student.regno === regno && student.name === name && student.Test && student.Test.length > 0);
+
+                if (studentData) {
+                  const testForSubject = studentData.Test[0];
+                  return {
+                    subjectName: subject.subjectName,
+                    subjectcode: subject.subjectcode,
+                    Test: testForSubject
+                  };
+                }
+
+                return null;
+              })
+            )
+          )
+        ).filter(Boolean);
+
+        const updatedStudentTestData = studentTestData.map(data => data.Test).flat().filter(Boolean);
+
+        const combinedData = subjectsForSemester.map((subject, index) => ({
+          ...subject,
+          Test: updatedStudentTestData[index] || null
+        }));
+
+        const resultMark = await StudentAssessmentMark.findOne({
+          'AcademicYear.program.semesters.semesterNumber': sem
+        });
+
+        let assessments = null;
+        if (resultMark) {
+          const student = resultMark.AcademicYear.program.flatMap(program =>
+            program.semesters.flatMap(semData =>
+              semData.sections.flatMap(section =>
+                section.Students.find(student => student.regno === regno)
+              )
+            )
+          ).filter(Boolean)[0];
+
+          if (student) {
+            assessments = student.assessments;
+          }
+        }
+
+        const semesterData = {
+          semester: sem,
+          combinedData,
+          assessments
+        };
+
+        semesterDataAll.push(semesterData);
+      }
     }
-
-    // Get the subject array of the section if exists
-    const subjects = studentsubject;
-    console.log("subjects data: ", subjects);
-
-    // Get the test array of the student
-    const tests = studenttest.Test;
-
-    // Find the semester from the database StudentAssessmentMark
-    const resultMark = await StudentAssessmentMark.findOne({
-      'AcademicYear.program.semesters.semesterNumber': semesters
-    });
-
-    console.log("Semester data: ", resultMark);
-
-    // If semester does not exist, show error
-    if (!resultMark) {
-      return res.status(404).json({ error: 'Semester does not exist' });
-    }
-
-    
-
-    // Find the student by regno inside the found semester
-    const student = resultMark.AcademicYear.program.flatMap(program => 
-      program.semesters.flatMap(sem => 
-        sem.sections.flatMap(section => 
-          section.Students.find(student => student.regno === regno)
-        )
-      )
-    ).filter(Boolean)[0];
-
-    console.log("Student data: ", student);
-
-    // If student does not exist, show error
-    if (!student) {
-      return res.status(404).json({ error: 'Student does not exist' });
-    }
-
-    // Get the assessments array of the student
-    const assessments = student.assessments;
-
-    // Return the subject, test, and assessments array
-    res.json({ subjects, tests, assessments });
+    console.log(semesterDataAll);
+    res.json(semesterDataAll);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 const fetchStudentCourseDetails = async (req, res) => {
   const { regno, name, semesters } = req.body;
 

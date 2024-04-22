@@ -65,6 +65,13 @@ import StudentAnnouncementhome from "./Layout/Student/StudentAnnouncementhome.js
 import ProfileHodHome from "./Layout/HOD/ProfileHodHome.jsx";
 import HODhomePage from "./Layout/HOD/HODhomePage.jsx";
 import DepartmentalAnnHome from "./Layout/HOD/DepartmentalAnnHome.jsx";
+import Studentdashboard from "./Layout/Student/Studentdashboard.jsx";
+import Attendancedetails from "./Layout/Charts/Attendancedetails.jsx";
+import Taskdetails from "./Layout/Charts/Taskdetails.jsx";
+import Assessmentdetails from "./Layout/Charts/Assessmentdetails.jsx";
+import Academicsdetails from "./Layout/Charts/Academicsdetails.jsx";
+import AllCharts from "./Layout/Charts/AllCharts.jsx";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -281,6 +288,37 @@ const router = createBrowserRouter(
         path="/DepartmentalAnnHome"
         element={<DepartmentalAnnHome />}
       ></Route>
+      <Route
+        index={true}
+        path="/Studentdashboard"
+        element={<Studentdashboard />}
+      ></Route>
+       <Route
+        index={true}
+        path="/Attendancedetails"
+        element={<Attendancedetails />}
+      ></Route>
+      <Route
+        index={true}
+        path="/Taskdetails"
+        element={<Taskdetails />}
+      ></Route>
+      <Route
+        index={true}
+        path="/Assessmentdetails"
+        element={<Assessmentdetails />}
+      ></Route>
+      <Route
+        index={true}
+        path="/Academicsdetails"
+        element={<Academicsdetails />}
+      ></Route>
+       <Route
+        index={true}
+        path="/Allcharts"
+        element={<AllCharts />}
+      ></Route>
+
     </Route>
     
   )

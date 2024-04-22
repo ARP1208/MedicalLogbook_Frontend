@@ -75,7 +75,7 @@ const Studentnavbar = () => {
         {/* Dashboard Navbar */}
         <nav className="text-lg font-semibold ">
           <NavLink
-            to="/Dashboardhomepage"
+            to="/Studentdashboard"
             className={({ isActive }) =>
               isActive
                 ? "text-white bg-blue-500  p-3 no-underline"

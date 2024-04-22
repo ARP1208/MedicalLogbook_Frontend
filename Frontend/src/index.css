@@ -471,7 +471,9 @@ height: 52px;
 .w-15vw{
   width: 15vw;
 }
-
+.ml-70{
+  margin-left: 280px;
+}
 }
 
 .glassmorphism {

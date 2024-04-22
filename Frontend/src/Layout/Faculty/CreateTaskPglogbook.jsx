@@ -145,7 +145,7 @@ const CreateTaskPglogbook = () => {
               Start Date
               <br />
               <DatePicker
-                selected={startDate}
+                value={startDate}
                 onChange={handleStartDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
@@ -154,7 +154,7 @@ const CreateTaskPglogbook = () => {
               End Date
               <br />
               <DatePicker
-                selected={endDate}
+                value={endDate}
                 onChange={handleEndDateChange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
