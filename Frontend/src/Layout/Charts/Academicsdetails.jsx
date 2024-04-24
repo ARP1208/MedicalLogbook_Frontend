@@ -13,7 +13,7 @@ const Academicsdetails = () => {
         <Academicschart />
         
       </section>
-      <div className="text-center relative" style={{top:"65vh"}}>
+      <div className="text-center relative py-3" style={{top:"60vh"}}>
         <h3 >Academics details</h3>
           <p>the form of a circular chart or pie where the slices of the pie show the size of the data</p>
           <p>the form of a circular chart or pie where the slices of the pie show the size of the data </p>

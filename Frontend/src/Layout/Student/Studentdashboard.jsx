@@ -63,7 +63,7 @@ const Studentdashboard = () => {
   };
 
   return (
-    <section> 
+    <section>
       <LogoNav/>
       <Studentnavbar/>
 
@@ -93,7 +93,7 @@ const Studentdashboard = () => {
           </button>
           <button onClick={() => handleOptions("Attendance")}  className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
           <i className="fa-solid fa-user-check p-2" style={{ color: "#ffffff" }} />
-            <p className="relative top-2 text-base">Attendance</p>
+            <p className="relative top-2 text-base">&nbsp;Attendance</p>
           </button>
           <button  onClick={() => handleOptions("Academics")}   className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             <i class="fa-solid fa-book-open-reader" style={{ color: "#ffffff" }} />
@@ -105,7 +105,6 @@ const Studentdashboard = () => {
           </button>
         </nav>
       </div>
-
       {showattendancechart && <Attendancedetails/>}
       {showtaskchart && <Taskdetails/>}
       {showassessmentchart && <Assessmentdetails/>}

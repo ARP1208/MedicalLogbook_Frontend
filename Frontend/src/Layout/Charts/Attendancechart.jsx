@@ -25,8 +25,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 export default class Example extends PureComponent {
   render() {
     return (
-      <div style={{ width: '500px', height: '500px', position: 'relative',top:"25%",  left: '75%', transform: 'translate(-60%, -55%)' }}>        
-      <ResponsiveContainer width="100%" height="100%">
+      <div style={{ width: '500px', height: '500px', position: 'relative',top:"21%",  left: '75%', transform: 'translate(-60%, -55%)' }}>        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={data}
@@ -38,7 +37,6 @@ export default class Example extends PureComponent {
               fill="#8884d8"
               dataKey="value"
             >
-              
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}

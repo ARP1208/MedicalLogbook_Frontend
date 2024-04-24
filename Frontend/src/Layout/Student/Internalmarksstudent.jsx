@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
 const GenerateSemester = () => {
@@ -21,6 +21,56 @@ const Internalmarksstudent = () => {
     value: "select Semester",
     label: "select Semester",
   });
+  const [marks, setMarks] = useState([]);
+  const [visibleMarks, setVisibleMarks] = useState([]);
+
+  const name = "Tejas";
+  const regno = 220970062;
+
+  const get_marks = async () => {
+    const url = "http://localhost:8000/student/fetchStudentTestMarks";
+
+    if (!name || !regno) {
+      console.log("Name or regno is not initialized.");
+      return;
+    }
+
+    const data = {
+      "name": "Tejas",
+      "regno": 220970062
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      setMarks(responseData);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  };
+
+  useEffect(() => {
+    get_marks();
+  }, []);
+
+  useEffect(() => {
+    if (selectedSemester.value !== "select Semester") {
+      const filteredMarks = marks.filter(mark => mark.semester == parseInt(selectedSemester.value));
+      setVisibleMarks(filteredMarks);
+      console.log(filteredMarks[0] ? filteredMarks[0].assessments[0] : null);
+    }
+  }, [selectedSemester]);
 
   return (
     <section className="left-50 absolute">
@@ -34,128 +84,99 @@ const Internalmarksstudent = () => {
       <div className="border-1 h-70vh rounded-md border-black flex justify-center items-center mt-20 m-10 -mb-10 -pb-5">
         <div className="p-10 ">
           <div className="grid grid-cols-3 gap-3 mb-3 text-lg">
-            <label>Name : Abc</label>
-            <label>Registration no : 220970000</label>
+            <label>Name : {name}</label>
+            <label>Registration no : {regno}</label>
             <Select
               value={selectedSemester}
               onChange={setSelectedSemester}
               options={GenerateSemester()}
               required
+              readonly
             />
           </div>
           <div className="overflow-hidden block text-4">
-            <div className="flex w-70vw h-50vh border-1 mb-3 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
-              <table className="w-70vw h-10 text-center rounded-md border-collapse">
-                <thead>
-                  <tr>
-                    <th className="border bg-blue-950 text-white px-1 py-2">
-                      Subject Code
-                    </th>
-                    <th className="border col-span-4 bg-blue-950 text-white px-4 py-2">
-                      Subject Name
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
-                      Marks Obtained
-                    </th>
-                    <th className="border bg-blue-950 text-white px-4 py-2">
-                      Max Marks
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr></tr>
-                </tbody>
-                <tbody>
-                  <tr>
-                    <td colSpan={6}>
-                      <div className="flex w-70vw h-20vh border border-black">
-                        <table className="w-70vw text-center rounded-md border-collapse">
-                          <thead>
-                            <tr>
-                              <th className="border bg-blue-400 text-white px-1 py-2">
-                                Internals
-                              </th>
-                              <th className="border bg-blue-400 text-white px-1 py-2">
-                                Maximum marks
-                              </th>
-                              <th className="border bg-blue-400 text-white px-1 py-2">
-                                Marks obtained
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
+            <div className="flex w-70vw h-50vh border-2 mb-3 rounded-tl-3xl rounded-tr-3xl overflow-auto border-blue-500 rounded-xl">
+              {visibleMarks.length > 0 ? (
+                <div>
+                  <table className="w-70vw h-10 text-center rounded-md border-collapse mb-3">
+                    <thead>
+                      <tr>
+                        <th className="border bg-blue-950 text-white px-4 py-2">
+                          Internals
+                        </th>
+                        <th className="border bg-blue-950 text-white px-4 py-2">
+                          Maximum marks
+                        </th>
+                        <th className="border bg-blue-950 text-white px-4 py-2">
+                          Marks obtained
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visibleMarks[0].combinedData.map((row, index) => (
+                        <>
+                          <tr key={`subject-${index}`}>
+                            <td className="border bg-blue-400 text-white px-1 py-2" colSpan={3}>
+                              {row.subjectName}
+                            </td>
+                          </tr>
+                          <tr key={`marks-${index}`}>
+                            <td className="w-20 border border-black px-1 py-1">{row.Test.testname}</td>
+                            <td className="w-20 border border-black px-1 py-1">150</td>
+                            <td className="w-20 border border-black px-1 py-1">{row.Test.marks}</td>
+                          </tr>
+                        </>
+                      ))}
+                    </tbody>
+                  </table>
+                  <br />
+                  {visibleMarks[0].assessments ? (
+                    <table className="w-70vw h-10 text-center rounded-md border-collapse mb-3">
+                      <thead>
+                        <tr>
+                          <th className="border bg-blue-950 text-white px-4 py-2">
+                            Assessment ID
+                          </th>
+                          <th className="border bg-blue-950 text-white px-4 py-2">
+                            Assessment Name
+                          </th>
+                          <th className="border bg-blue-950 text-white px-4 py-2">
+                            Maximum marks
+                          </th>
+                          <th className="border bg-blue-950 text-white px-4 py-2">
+                            Marks obtained
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {visibleMarks[0].assessments.map((assessment, index) => {
+                          return (
+                            <tr key={index}>
                               <td className="w-20 border border-black px-1 py-1">
-                                MISAC-1
+                                {assessment.assessmentId}
                               </td>
                               <td className="w-20 border border-black px-1 py-1">
-                                15
+                                {assessment.assessmentName}
                               </td>
                               <td className="w-20 border border-black px-1 py-1">
-                                12
-                              </td>
-                            </tr>
-                            <tr>
-                              <td className="w-20 border border-black px-1 py-1">
-                                MISAC-2
+                                {assessment.totalMarks}
                               </td>
                               <td className="w-20 border border-black px-1 py-1">
-                                15
-                              </td>
-                              <td className="w-20 border border-black px-1 py-1">
-                                10
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div className="flex w-70vw h-20vh border border-black mt-3">
-                        <table className="w-70vw text-center rounded-md border-collapse">
-                          <thead>
-                            <tr>
-                              <th className="border bg-blue-400 text-white px-1 py-2">
-                                Assessments
-                              </th>
-                              <th className="border bg-blue-400 text-white px-1 py-2">
-                                Maximum marks
-                              </th>
-                              <th className="border bg-blue-400 text-white px-1 py-2">
-                                Marks obtained
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td className="w-20 border border-black px-1 py-1">
-                                Assessment-1
-                              </td>
-                              <td className="w-20 border border-black px-1 py-1">
-                                10
-                              </td>
-                              <td className="w-20 border border-black px-1 py-1">
-                                5
+                                {assessment.markObtain}
                               </td>
                             </tr>
-                            <tr>
-                              <td className="w-20 border border-black px-1 py-1">
-                                Assessment-2
-                              </td>
-                              <td className="w-20 border border-black px-1 py-1">
-                                5
-                              </td>
-                              <td className="w-20 border border-black px-1 py-1">
-                                3
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  ) : null}
+
+                </div>
+              ) : <div className="flex justify-center items-center text-center w-full"><span className="text-center text-m text-black" >Nothing to show</span></div>
+              }
             </div>
           </div>
+
         </div>
       </div>
     </section>

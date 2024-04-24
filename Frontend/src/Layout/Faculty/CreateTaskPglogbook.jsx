@@ -26,15 +26,12 @@ const CreateTaskPglogbook = () => {
 
   const handleStartDateChange = (date) => {
     const formattedDate = date.toLocaleDateString();
-    //console.log(formattedDate)
     setStartDate(formattedDate);
     setFormData({ ...formData, start_Date: formattedDate });
   };
 
   const handleEndDateChange = (date) => {
-    // const formattedDate = date.toLocaleDateString();
     const formattedDate = date.toLocaleDateString();
-    console.log(formattedDate)
     setEndDate(formattedDate);
     setFormData({ ...formData, End_Date: formattedDate });
   };

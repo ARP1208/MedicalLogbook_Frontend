@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const data = [
   { name: 'Group A', value: 400 },
@@ -27,7 +27,9 @@ export default class Example extends PureComponent {
   render() {
     return (
       <div style={{ width: '500px', height: '500px', position: 'relative', top: '40%', left: '75%', transform: 'translate(-60%, -55%)'}}>
+     
         <ResponsiveContainer width="100%" height="100%">
+      
           <PieChart>
             <Pie
               data={data}
@@ -43,8 +45,10 @@ export default class Example extends PureComponent {
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
+            
           </PieChart>
         </ResponsiveContainer>
+        
       </div>
     );
   }

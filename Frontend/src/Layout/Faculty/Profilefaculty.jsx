@@ -522,7 +522,7 @@ const Profilefaculty = () => {
               <div className="flex flex-col">
                 <label>Gender</label>
                 <select
-                  className="py-1 px-10"
+                  className="py-1 px-10 border border-black"
                   name="gender"
                   value={formData.gender}
                   onChange={handleChange}

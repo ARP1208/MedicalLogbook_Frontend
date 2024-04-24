@@ -74,8 +74,9 @@ export default function Academicschart() {
       <Tooltip />
       <Legend />
       <Bar dataKey="pv" fill="#8884d8" />
-      <Bar dataKey="uv" name="Academic details" fill="#82ca9d" />
+      <Bar dataKey="uv" fill="#82ca9d" />
     </BarChart>
+    
     </div>
   );
 }

@@ -8,10 +8,10 @@ const Assessmentdetails = () => {
     
     <Dashboardfilter/>
     
-      <section className="mt-10 scale-125 absolute  left-40 ml-40 flex items-center">
+      <section className="mt-10 scale-125 absolute left-40 ml-40 flex items-center">
         <Assessmentchart />
       </section>
-      <div className="text-center relative" style={{top:"60vh"}}>
+      <div className="text-center relative py-3" style={{top:"56vh"}}>
         <h3 >Assessment details</h3>
           <p>the form of a circular chart or pie where the slices of the pie show the size of the data</p>
           <p>the form of a circular chart or pie where the slices of the pie show the size of the data </p>

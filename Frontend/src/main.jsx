@@ -71,7 +71,7 @@ import Taskdetails from "./Layout/Charts/Taskdetails.jsx";
 import Assessmentdetails from "./Layout/Charts/Assessmentdetails.jsx";
 import Academicsdetails from "./Layout/Charts/Academicsdetails.jsx";
 import AllCharts from "./Layout/Charts/AllCharts.jsx";
-import Admissionhomepage from "./Layout/Student/Admissionhomepage.jsx";
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -318,11 +318,12 @@ const router = createBrowserRouter(
         path="/Academicsdetails"
         element={<Academicsdetails />}
       ></Route>
-      <Route
+       <Route
         index={true}
-        path="/Admissionhomepage"
-        element={<Admissionhomepage />}
+        path="/Allcharts"
+        element={<AllCharts />}
       ></Route>
+
     </Route>
     
   )
