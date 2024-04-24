@@ -60,7 +60,7 @@ const Studentnavbar = () => {
          {/* Admission Navbar */}
         <nav className="text-lg font-semibold ">
           <NavLink
-            to="/Profilehomepage"
+            to="/Admissionhomepage"
             className={({ isActive }) =>
               isActive
                 ? "text-white bg-blue-500  p-3 no-underline"
@@ -75,7 +75,7 @@ const Studentnavbar = () => {
         {/* Dashboard Navbar */}
         <nav className="text-lg font-semibold ">
           <NavLink
-            to="/Dashboardhomepage"
+            to="/Studentdashboard"
             className={({ isActive }) =>
               isActive
                 ? "text-white bg-blue-500  p-3 no-underline"
