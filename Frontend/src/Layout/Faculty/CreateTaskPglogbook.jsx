@@ -16,6 +16,7 @@ const CreateTaskPglogbook = () => {
     start_Date: "",
     End_Date: "",
     Submit_Time: "",
+    Status: 0,
     Students: [],
   });
 

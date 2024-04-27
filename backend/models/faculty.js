@@ -39,7 +39,7 @@ const TaskAssignschema = new mongoose.Schema({
   Task_Description: { type: String },
   start_Date: { type: String },
   End_Date: { type: String },
-  Task_Completed: { type: String },
+  Status: { type: Number },  // 0 - Task Assigned, 1 - Task accepted by Student, 2 - Task Completed by Student, 3 - Task completion approved by
   Submit_Time: { type: String },
   Students: [{
     regno: { type: String },

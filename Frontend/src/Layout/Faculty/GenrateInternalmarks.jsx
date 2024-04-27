@@ -4,7 +4,7 @@ import Internalmarkscsvpopup from './Internalmarkscsvpopup';
 import Internalpreviewcsvpopup from './Internalpreviewcsvpopup';
 import csvtojson from "csvtojson"; 
 
-const GenrateInternalMarks = ({ subjectname, subcode, examination }) => {
+const GenrateInternalMarks = ({ subjectname, subcode, examination, max_marks }) => {
     const subjectOptions = [
       { value: "examination", label: "examination" },
       // Add more options if needed
@@ -129,6 +129,7 @@ const GenrateInternalMarks = ({ subjectname, subcode, examination }) => {
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-x-10 text-balance">
             <h4>Subject: {subjectname}</h4>
             <h4>Subject code: {subcode}</h4>
+            <h4>Max Marks: {max_marks}</h4>
           </div>
           <form action="#">
             <div className="flex w-60vw h-40vh border-1 mt-2 rounded-tl-3xl rounded-tr-3xl overflow-auto border-black rounded-xl">
