@@ -22,7 +22,6 @@ const Assessmentdetails = () => {
       });
       const data = await response.json();
       setAssessmentMarks(data.marks);
-      // console.log("Assessment Marks: ",data.marks);
 
       if (!response.ok) {
         console.log("Response is not ok");
@@ -46,7 +45,6 @@ const Assessmentdetails = () => {
       const filteredMarks = assessmentMarks.filter(
         (item) => item.semester === semester
       );
-      console.log("Filtered Marks: ", filteredMarks);
       setVisibleAssessmentMarks(
         filteredMarks.length > 0 ? filteredMarks : null
       );
@@ -60,29 +58,31 @@ const Assessmentdetails = () => {
       <Dashboardfilter onSemesterChange={setSemester} />
 
       <section className="mt-10 scale-125 absolute left-40 ml-40 flex items-center">
-        <Assessmentchart array={visibleAssessmentMarks} ma/>
+        <Assessmentchart array={visibleAssessmentMarks} />
       </section>
       <div className="text-center relative py-3" style={{ top: "56vh" }}>
         <h3>Assessment details</h3>
         {visibleAssessmentMarks ? (
-          <ul style={{ listStyleType: "disc" }}>
-            {visibleAssessmentMarks.map((sem) => (
-              <li key={sem.semester}>
-                <strong>Semester:</strong> {sem.semester}
-                <ul style={{ listStyleType: "circle" }}>
-                  {sem.assessments.map((assessment) => (
-                    <li key={assessment.assessmentName}>
-                      <strong>Assessment Name:</strong>{" "}
-                      {assessment.assessmentName}
-                      <br />
-                      <strong>Score:</strong> {assessment.markObtain} /{" "}
-                      {assessment.totalMarks}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
+          <table className="border-collapse border border-black mx-auto">
+            <thead>
+              <tr>
+                <th className="border bg-blue-950 text-white px-4 py-2">Semester</th>
+                <th className="border bg-blue-950 text-white px-4 py-2">Assessment Name</th>
+                <th className="border bg-blue-950 text-white px-4 py-2">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visibleAssessmentMarks.map((sem) => (
+                sem.assessments.map((assessment) => (
+                  <tr key={assessment.assessmentName}>
+                    <td className="border border-black px-4 py-2">{sem.semester}</td>
+                    <td className="border border-black px-4 py-2">{assessment.assessmentName}</td>
+                    <td className="border border-black px-4 py-2">{assessment.markObtain} / {assessment.totalMarks}</td>
+                  </tr>
+                ))
+              ))}
+            </tbody>
+          </table>
         ) : (
           <p>Select a semester</p>
         )}
@@ -92,3 +92,100 @@ const Assessmentdetails = () => {
 };
 
 export default Assessmentdetails;
+
+
+
+// import React, { useState, useEffect } from "react";
+// import Assessmentchart from "../Charts/Assessmentchart";
+// import Dashboardfilter from "./Dashboardfilter";
+
+// const Assessmentdetails = () => {
+//   const [semester, setSemester] = useState(null);
+//   const [assessmentMarks, setAssessmentMarks] = useState(null);
+//   const [visibleAssessmentMarks, setVisibleAssessmentMarks] = useState(null);
+//   const regno = 220970062;
+
+//   const getAssessments = async () => {
+//     const url = "http://localhost:8000/student/fetchStudentAssessmentMarks";
+//     try {
+//       const response = await fetch(url, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           regno: regno,
+//         }),
+//       });
+//       const data = await response.json();
+//       setAssessmentMarks(data.marks);
+//       // console.log("Assessment Marks: ",data.marks);
+
+//       if (!response.ok) {
+//         console.log("Response is not ok");
+//       }
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getAssessments();
+//   }, []);
+
+//   useEffect(() => {
+//     if (
+//       semester !== null &&
+//       assessmentMarks !== null &&
+//       assessmentMarks.length > 0
+//     ) {
+//       // Filtering out assessment marks
+//       const filteredMarks = assessmentMarks.filter(
+//         (item) => item.semester === semester
+//       );
+//       console.log("Filtered Marks: ", filteredMarks);
+//       setVisibleAssessmentMarks(
+//         filteredMarks.length > 0 ? filteredMarks : null
+//       );
+//     } else {
+//       setVisibleAssessmentMarks(null);
+//     }
+//   }, [semester, assessmentMarks]);
+
+//   return (
+//     <>
+//       <Dashboardfilter onSemesterChange={setSemester} />
+
+//       <section className="mt-10 scale-125 absolute left-40 ml-40 flex items-center">
+//         <Assessmentchart array={visibleAssessmentMarks} ma/>
+//       </section>
+//       <div className="text-center relative py-3" style={{ top: "56vh" }}>
+//         <h3>Assessment details</h3>
+//         {visibleAssessmentMarks ? (
+//           <ul style={{ listStyleType: "disc" }}>
+//             {visibleAssessmentMarks.map((sem) => (
+//               <li key={sem.semester}>
+//                 <strong>Semester:</strong> {sem.semester}
+//                 <ul style={{ listStyleType: "circle" }}>
+//                   {sem.assessments.map((assessment) => (
+//                     <li key={assessment.assessmentName}>
+//                       <strong>Assessment Name:</strong>{" "}
+//                       {assessment.assessmentName}
+//                       <br />
+//                       <strong>Score:</strong> {assessment.markObtain} /{" "}
+//                       {assessment.totalMarks}
+//                     </li>
+//                   ))}
+//                 </ul>
+//               </li>
+//             ))}
+//           </ul>
+//         ) : (
+//           <p>Select a semester</p>
+//         )}
+//       </div>
+//     </>
+//   );
+// };
+
+// export default Assessmentdetails;

@@ -156,7 +156,7 @@ const FacultyStudentDash = () => {
           Student Dashboard
         </button>
       </div>
-      <div className="border-1 px-10 py-3 h-auto w-75vw overflow-hidden rounded-md border-black flex flex-col justify-center items-center mx-10 mt-18">
+      <div className="px-10 py-3 h-auto w-75vw overflow-hidden rounded-md  flex flex-col justify-center items-center mx-10 mt-18">
         {showTableAndDropdowns && (
           <div className="overflow-hidden block">
             <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5 text-balance">
@@ -262,6 +262,7 @@ const FacultyStudentDash = () => {
           </div>
         )}
       </div>
+      
       {showCharts && <AllCharts 
           name={selectedStudent.name}
           regno={selectedStudent.regno}
