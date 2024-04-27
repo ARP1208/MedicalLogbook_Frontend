@@ -93,6 +93,7 @@ const Internalmarks = () => {
   const [subjectname, setSubjectname] = useState("");
   const [subcode, setSubcode] = useState("");
   const [errors, setErrors] = useState({});
+  const [maxMarks, setMaxMarks] = useState(null);
 
   const handleGenerate = () => {
     const newErrors = {};
@@ -142,7 +143,7 @@ const Internalmarks = () => {
   function handleCancel() {
     let year = document.getElementById("academicYear");
     console.log(year.values);
-  };
+  }
 
   return (
     <>
@@ -155,142 +156,162 @@ const Internalmarks = () => {
           selectedProgram={selectedProgram.value}
           selectedSemester={selectedSemester.value}
           selectedSection={selectedSection.value}
-        
+          max_marks={maxMarks}
         />
-      )
-        : (
-          <section className="absolute top-18 left-38 m-10">
-            <div className="flex relative left-7 top-7 w-auto mb-10">
-              <button className="bg-sky-500 rounded-md w-auto text-lg">
-               Internal Marks
+      ) : (
+        <section className="absolute top-18 left-38 m-10">
+          <div className="flex relative left-7 top-7 w-auto mb-10">
+            <button className="bg-sky-500 rounded-md w-auto text-lg">
+              Internal Marks
+            </button>
+          </div>
+          <div className=" overflow-auto border-2 p-5 lg:h-60vh md:h-60vh sm:h-70vh w-60vw rounded-md border-sky-500 flex flex-col justify-center items-center ml-7">
+            <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 text-start w-50vw mt-12">
+              <div>
+                <div className="flex">
+                  {errors.academicYear && (
+                    <div className="text-red-500 text-start">
+                      {errors.academicYear}
+                    </div>
+                  )}
+                </div>
+                <Select
+                  value={academicYear}
+                  onChange={(newValue) => {
+                    setAcademicYear(newValue);
+                    handleCancel(); // Call handleCancel when onChange event occurs
+                  }}
+                  options={generateYearOptions()}
+                  readOnly
+                  required
+                  id="academicYear"
+                />
+              </div>
+              <div>
+                <div className="flex">
+                  {errors.selectedProgram && (
+                    <div className="text-red-500 text-start">
+                      {errors.selectedProgram}
+                    </div>
+                  )}
+                </div>
+                <Select
+                  value={selectedProgram}
+                  onChange={setSelectedProgram}
+                  options={GenerateProgram()}
+                  required
+                />
+              </div>
+              <div>
+                <div className="flex">
+                  {errors.selectedSemester && (
+                    <div className="text-red-500 text-start">
+                      {errors.selectedSemester}
+                    </div>
+                  )}
+                </div>
+                <Select
+                  value={selectedSemester}
+                  onChange={setSelectedSemester}
+                  options={GenerateSemester()}
+                  required
+                />
+              </div>
+              <div>
+                <div className="flex">
+                  {errors.selectedSection && (
+                    <div className="text-red-500 text-start">
+                      {errors.selectedSection}
+                    </div>
+                  )}
+                </div>
+                <Select
+                  value={selectedSection}
+                  onChange={setSelectedSection}
+                  options={GenerateSection()}
+                  required
+                />
+              </div>
+
+              <div>
+                <div className="flex">
+                  {errors.subcode && (
+                    <div className="text-red-500 text-start">
+                      {errors.subcode}
+                    </div>
+                  )}
+                </div>
+                <div className=" overflow-y-visible">
+                  <input
+                    type="text"
+                    maxLength={15}
+                    className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md"
+                    placeholder="&nbsp;Subject code&nbsp;&nbsp;&nbsp;&nbsp;eg. SUB701"
+                    value={subcode}
+                    onChange={(e) => setSubcode(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              {/* Input for Subject name */}
+              <div>
+                <div className="flex">
+                  {errors.subjectname && (
+                    <div className="text-red-500 text-start">
+                      {errors.subjectname}
+                    </div>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  maxLength={30}
+                  className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md border-blue-500"
+                  placeholder="&nbsp;Subject name&nbsp;&nbsp;&nbsp;&nbsp;eg. MATHEMATICS"
+                  value={subjectname}
+                  onChange={(e) => setSubjectname(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <div className="flex">
+                  {errors.examination && (
+                    <div className="text-red-500 text-start">
+                      {errors.examination}
+                    </div>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  maxLength={10}
+                  className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md"
+                  placeholder="&nbsp;Examination&nbsp;&nbsp;&nbsp;&nbsp;eg. MISAC-1"
+                  value={examination}
+                  onChange={(e) => setExamination(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  maxLength={10}
+                  className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md"
+                  placeholder="Max Marks"
+                  value={maxMarks}
+                  onChange={(e) => setMaxMarks(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="relative flex justify-center items-center pb-5">
+              <button
+                className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg mt-4"
+                onClick={handleGenerate}
+              >
+                Generate
               </button>
             </div>
-            <div className=" overflow-auto border-2 p-5 lg:h-60vh md:h-60vh sm:h-70vh w-60vw rounded-md border-sky-500 flex flex-col justify-center items-center ml-7">
-              <div className="grid grid-cols-2 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 text-start w-50vw mt-12">
-                <div>
-                  <div className="flex">
-                    {errors.academicYear && (
-                      <div className="text-red-500 text-start">{errors.academicYear}</div>
-                    )}
-                  </div>
-                  <Select
-                    value={academicYear}
-                    onChange={(newValue) => {
-                      setAcademicYear(newValue);
-                      handleCancel(); // Call handleCancel when onChange event occurs
-                    }}
-                    options={generateYearOptions()}
-                    readOnly
-                    required
-                    id='academicYear'
-                  />
-                </div>
-                <div>
-                  <div className="flex">
-                    {errors.selectedProgram && (
-                      <div className="text-red-500 text-start">{errors.selectedProgram}</div>
-                    )}
-                  </div>
-                  <Select
-                    value={selectedProgram}
-                    onChange={setSelectedProgram}
-                    options={GenerateProgram()}
-                    required
-                  />
-                </div>
-                <div>
-                  <div className="flex">
-                    {errors.selectedSemester && (
-                      <div className="text-red-500 text-start">{errors.selectedSemester}</div>
-                    )}
-                  </div>
-                  <Select
-                    value={selectedSemester}
-                    onChange={setSelectedSemester}
-                    options={GenerateSemester()}
-                    required
-                  />
-                </div>
-                <div>
-                  <div className="flex">
-                    {errors.selectedSection && (
-                      <div className="text-red-500 text-start">
-                        {errors.selectedSection}
-                      </div>
-                    )}
-                  </div>
-                  <Select
-                    value={selectedSection}
-                    onChange={setSelectedSection}
-                    options={GenerateSection()}
-                    required
-                  />
-                </div>
-
-                <div>
-                  <div className="flex">
-                    {errors.subcode && (
-                      <div className="text-red-500 text-start">{errors.subcode}</div>
-                    )}
-                  </div>
-                  <div className=" overflow-y-visible">
-                    <input
-                      type="text"
-                      maxLength={15}
-                      className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md"
-                      placeholder="&nbsp;Subject code&nbsp;&nbsp;&nbsp;&nbsp;eg. SUB701"
-                      value={subcode}
-                      onChange={(e) => setSubcode(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-                {/* Input for Subject name */}
-                <div>
-                  <div className="flex">
-                    {errors.subjectname && (
-                      <div className="text-red-500 text-start">{errors.subjectname}</div>
-                    )}
-                  </div>
-                  <input
-                    type="text"
-                    maxLength={30}
-                    className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md border-blue-500"
-                    placeholder="&nbsp;Subject name&nbsp;&nbsp;&nbsp;&nbsp;eg. MATHEMATICS"
-                    value={subjectname}
-                    onChange={(e) => setSubjectname(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <div className="flex">
-                    {errors.examination && (
-                      <div className="text-red-500 text-start">{errors.examination}</div>
-                    )}
-                  </div>
-                  <input
-                    type="text"
-                    maxLength={10}
-                    className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md"
-                    placeholder="&nbsp;Examination&nbsp;&nbsp;&nbsp;&nbsp;eg. MISAC-1"
-                    value={examination}
-                    onChange={(e) => setExamination(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="relative flex justify-center items-center pb-5">
-                <button
-                  className="bg-blue-500 rounded-md w-auto h-auto text-white text-lg mt-4"
-                  onClick={handleGenerate}
-                >
-                  Generate
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
+          </div>
+        </section>
+      )}
     </>
   );
 };

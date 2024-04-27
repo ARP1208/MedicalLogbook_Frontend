@@ -1106,7 +1106,7 @@ const DeleteAssessment = asyncHandler(async (req, res) => {
 
 const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
   console.log("Received data for saving task assignment:", req.body);
-  const { Task_ID, Task_Name, Task_Description, start_Date, End_Date, Submit_Time, Students } = req.body;
+  const { Task_ID, Task_Name, Task_Description, start_Date, End_Date, Submit_Time, Status, Students } = req.body;
   console.log("Task ID: ", Task_ID)
 
   try {
@@ -1125,6 +1125,7 @@ const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
       start_Date,
       End_Date,
       Submit_Time,
+      Status,
       Students
     });
     const savedTask = await newTask.save();
@@ -1174,7 +1175,7 @@ const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
 const fetchAllTasks = asyncHandler(async (req, res) => {
   try {
     await connectDB();
-    const tasks = await TaskAssign.find();
+    const tasks = await TaskAssign.find({Status: 2});
     res.status(200).json({ tasks });
   } catch (error) {
     console.error("Error fetching tasks:", error);
@@ -1260,8 +1261,6 @@ const searchTask = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error("Error searching records:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
-  } finally {
-    await closeDB();
   }
 });
 

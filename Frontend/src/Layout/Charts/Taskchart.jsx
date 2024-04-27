@@ -1,12 +1,5 @@
 import React, { PureComponent } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-
-const data = [
-  { name: "Group A", value: 400 },
-  { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
@@ -37,8 +30,15 @@ const renderCustomizedLabel = ({
   );
 };
 
-export default class Example extends PureComponent {
+export default class Taskchart extends PureComponent {
   render() {
+    const { data } = this.props;
+
+    // Check if data is null or empty
+    if (!data || data.length === 0) {
+      return <div>No data available</div>;
+    }
+
     return (
       <div
         style={{
@@ -69,6 +69,7 @@ export default class Example extends PureComponent {
                 />
               ))}
             </Pie>
+            <Tooltip contentStyle={{ fontSize: '12px', scale: '0.8' }}/>
           </PieChart>
         </ResponsiveContainer>
       </div>

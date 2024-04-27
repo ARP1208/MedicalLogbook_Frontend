@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import LogoNav from '../../Components/Admin/LogoNav'
-import FacultyNavbar from '../../Components/Faculty/FacultyNavbar'
-import FacultyStudentDash from './FacultyStudentDash.jsx';
+import NavbarHOD from '../../Components/HOD/NavbarHOD.jsx';
+import FacultyStudentDash from '../Faculty/FacultyStudentDash.jsx';
 
 
-const Dashboardhomepage = () => {
+const HodstudentDash = () => {
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
     const storedPreference = sessionStorage.getItem('sidebarCollapsed');
@@ -35,7 +35,7 @@ const Dashboardhomepage = () => {
   return (
     <section>
       <LogoNav />
-      <FacultyNavbar />
+      <NavbarHOD />
 
       <div className="fixed h-full">
         <nav className={`sideb h-full flex flex-col bg-blue-950 ${isSidebarCollapsed ? 'collapsed-sidebar' : ''}`}>
@@ -65,4 +65,4 @@ const Dashboardhomepage = () => {
   )
 }
 
-export default Dashboardhomepage
+export default HodstudentDash

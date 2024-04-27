@@ -71,7 +71,7 @@ import Taskdetails from "./Layout/Charts/Taskdetails.jsx";
 import Assessmentdetails from "./Layout/Charts/Assessmentdetails.jsx";
 import Academicsdetails from "./Layout/Charts/Academicsdetails.jsx";
 import AllCharts from "./Layout/Charts/AllCharts.jsx";
-import Admissionhomepage from "./Layout/Student/Admissionhomepage.jsx";
+import HodstudentDash from "./Layout/HOD/HODstudentDash.jsx";
 
 
 const router = createBrowserRouter(
@@ -296,6 +296,11 @@ const router = createBrowserRouter(
       ></Route>
       <Route
         index={true}
+        path="/Dashboard"
+        element={<HodstudentDash />}
+      ></Route>
+      <Route
+        index={true}
         path="/Studentdashboard"
         element={<Studentdashboard />}
       ></Route>
@@ -323,11 +328,6 @@ const router = createBrowserRouter(
         index={true}
         path="/Allcharts"
         element={<AllCharts />}
-      ></Route>
-      <Route
-        index={true}
-        path="/Admissionhomepage"
-        element={<Admissionhomepage />}
       ></Route>
 
     </Route>

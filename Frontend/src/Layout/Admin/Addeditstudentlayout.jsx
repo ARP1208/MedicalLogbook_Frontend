@@ -199,11 +199,11 @@ const Addeditstudentlayout = () => {
       newErrors.regno = "invalid format";
     }
 
-    if (!studentData.academicYear.trim()) {
-      newErrors.academicYear = "required";
-    } else if (!/^\d{4}$/.test(studentData.academicYear)) {
-      newErrors.academicYear = "Invalid Academic year";
-    }
+    // if (!studentData.academicYear.trim()) {
+    //   newErrors.academicYear = "required";
+    // } else if (!/^\d{4}$/.test(studentData.academicYear)) {
+    //   newErrors.academicYear = "Invalid Academic year";
+    // }
 
     if (!studentData.domicileStatus.trim()) {
       newErrors.domicileStatus = "required";

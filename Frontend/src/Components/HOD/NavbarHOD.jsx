@@ -41,6 +41,16 @@ const Navbar = () => {
             }
           > Profile </NavLink>
         </nav>
+        <nav className="text-lg font-semibold ">
+          <NavLink
+            to="/Dashboard"
+            className={({ isActive }) =>
+              isActive
+                ? "text-white bg-blue-500  p-3 no-underline"
+                : "text-black no-underline"
+            }
+          > Dashboard </NavLink>
+        </nav>
       </ul>
     </div>
   )

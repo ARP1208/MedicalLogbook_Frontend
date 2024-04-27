@@ -1,11 +1,5 @@
 import React, { PureComponent } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-
-const data = [
-  { name: 'Group A', value: 400 },
-  { name: 'Group B', value: 300 },
-
-];
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 const COLORS = ['#00C49F', '#FF8042'];
 
@@ -24,6 +18,8 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 export default class Example extends PureComponent {
   render() {
+    const { data } = this.props;
+    // console.log(data)
     return (
       <div style={{ width: '500px', height: '500px', position: 'relative',top:"21%",  left: '75%', transform: 'translate(-60%, -55%)' }}>        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -41,6 +37,7 @@ export default class Example extends PureComponent {
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
+            <Tooltip contentStyle={{ fontSize: '12px', scale: '0.8' }}/>
           </PieChart>
         </ResponsiveContainer>
        
