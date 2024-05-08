@@ -616,7 +616,6 @@ const getAllMarks = async (req, res) => {
           ext.semesterNumber == internal.semesterNumber &&
           ext.subjectCode == internal.subjectCode
       );
-      console.log("tamil has small pp ~ Satyam");
   
       if (external) {
         marks.push({
