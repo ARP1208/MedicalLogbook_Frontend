@@ -1,7 +1,8 @@
-
-import { Admin  } from '../models/admin.js';
+import { Admin } from '../models/admin.js';
 import { FacultyLogin, FacultyDetails } from "../models/faculty.js";
 import { StudentLogin, StudentDetails } from "../models/student.js";
+import { Parent } from "../models/parentdetails.js";
+
 import { connectDB, closeDB } from "../config/db.js";
 import asyncHandler from "express-async-handler";
 
@@ -17,7 +18,7 @@ const unifiedLogin = asyncHandler(async (req, res) => {
     const admin = await Admin.findOne({ emailId, password });
     if (admin) {
       console.log("Admin successfully logged in");
-      return res.json({ message: "Admin successfully logged in!" });
+      return res.json({ message: "Admin" });
     }
 
     // Try Faculty login
@@ -28,12 +29,12 @@ const unifiedLogin = asyncHandler(async (req, res) => {
         console.log("HOD logged in");
         return res.json({
           message: "HOD",
-          email : emailId,
+          email: emailId,
           designation: "HOD",
         });
       }
       console.log("Faculty successfully logged in");
-      return res.json({ message: "Faculty successfully logged in!" });
+      return res.json({ message: "Faculty" });
     }
 
     // Try Student login
@@ -46,8 +47,9 @@ const unifiedLogin = asyncHandler(async (req, res) => {
       }
       console.log("Student successfully logged in");
       return res.json({
-        message: "Student successfully logged in!",
-        regno: studentDetails.regno,
+        message: "Student",
+        enrollmentNumber: Parent.enrollmentNumber,
+        email: emailId,
       });
     }
   } catch (error) {
@@ -58,8 +60,5 @@ const unifiedLogin = asyncHandler(async (req, res) => {
 });
 
 export {
-    unifiedLogin
-  };
-  
-  
-  
+  unifiedLogin
+};

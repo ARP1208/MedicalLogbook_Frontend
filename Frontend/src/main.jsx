@@ -72,6 +72,8 @@ import Assessmentdetails from "./Layout/Charts/Assessmentdetails.jsx";
 import Academicsdetails from "./Layout/Charts/Academicsdetails.jsx";
 import AllCharts from "./Layout/Charts/AllCharts.jsx";
 import HodstudentDash from "./Layout/HOD/HODstudentDash.jsx";
+import Admissionhomepage from './Layout/Student/Admissionhomepage.jsx'
+import Editadhocfaculty from "./Layout/HOD/Editadhocfaculty.jsx";
 
 
 const router = createBrowserRouter(
@@ -329,7 +331,16 @@ const router = createBrowserRouter(
         path="/Allcharts"
         element={<AllCharts />}
       ></Route>
-
+      <Route
+        index={true}
+        path="/Admissionhomepage"
+        element={<Admissionhomepage />}
+      ></Route>
+        <Route
+        index={true}
+        path="/Editadhocfaculty"
+        element={<Editadhocfaculty />}
+      ></Route>
     </Route>
     
   )

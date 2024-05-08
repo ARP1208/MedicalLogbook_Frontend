@@ -1,4 +1,5 @@
 import {
+  FacultyLogin,
   FacultyDetails,
   TaskAssign,
   AssignMarks,
@@ -23,7 +24,7 @@ const faculty = asyncHandler(async (req, res) => {
   try {
     // Check if the user registering is an HOD
     if (req.body.designation === 'HOD') {
-      const newHod = new hodlogin(req.body);
+      const newHod = new FacultyLogin(req.body);
       const savedHod = await newHod.save();
       console.log("HOD credentials saved:", savedHod);
     }
@@ -55,9 +56,9 @@ const facultymail = asyncHandler(async (req, res) => {
   const password = applicationNumber;
   try {
     const mailOptions = {
-      from: "prajwalshetty@gmail.com",
+      from: "shettytejas96@gmail.com",
       to: emailId,
-      subject: "Welcome to Your App",
+      subject: "Welcome to Medical Logbook",
       text: `Thank you for registering! Your login credentials:\n\nEmail: ${emailId}\nPassword: ${applicationNumber}`,
     };
 
@@ -72,7 +73,7 @@ const facultymail = asyncHandler(async (req, res) => {
     await connectDB();
     if (designation === 'HOD') {
       try {
-        const existingHod = await hodlogin.findOneAndUpdate(
+        const existingHod = await FacultyLogin.findOneAndUpdate(
           { emailId },
           { $set: { password } },
           { new: true }
@@ -80,7 +81,7 @@ const facultymail = asyncHandler(async (req, res) => {
         if (existingHod) {
           console.log("Existing HOD credentials updated:", existingHod);
         } else {
-          const newHod = new hodlogin({ emailId, password });
+          const newHod = new FacultyLogin({ emailId, password });
           const savedHod = await newHod.save();
           console.log("New HOD credentials saved:", savedHod);
         }
@@ -486,6 +487,56 @@ const updateAssignMarks = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error("Error updating marks document:", error);
     throw error;
+  }
+});
+
+/////// get the student details for attendance///////////////
+const getStudentsDetails = asyncHandler(async (req, res) => {
+  const { AcademicYear, programName, semesterNumber, sectionName } = req.body;
+
+  console.log("data is: ", AcademicYear, programName, semesterNumber, sectionName )
+  try {
+    // Find the academic year
+    let year = await Assignedsubject.findOne({
+      'AcademicYear.year': AcademicYear
+    });
+
+    if (!year) {
+      return res.status(404).json({ error: "No document with such Academic Year found!" });
+    }
+
+    // Find the program within the academic year
+    const prog = year.AcademicYear.program.find(program => program.programname === programName);
+
+    if (!prog) {
+      return res.status(404).json({ error: "No such program in this Year" });
+    }
+
+    // Find the semester within the program
+    const semester = prog.semesters.find(sem => sem.semesterNumber === semesterNumber);
+
+    if (!semester) {
+      return res.status(404).json({ error: "No such semester in this program" });
+    }
+
+    // Find the section within the semester
+    const section = semester.sections.find(sec => sec.sectionName === sectionName);
+
+    if (!section) {
+      return res.status(404).json({ error: "No such section in this semester" });
+    }
+
+    // Extract student details with subject array
+    const studentDetails = section.students.map(student => ({
+      regno: student.regno,
+      name: student.name,
+      subjects: student.subjects.map(subject => subject.subjectName)
+    }));
+
+    return res.json(studentDetails);
+  } catch (error) {
+    console.error("Error fetching student details:", error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -1106,34 +1157,57 @@ const DeleteAssessment = asyncHandler(async (req, res) => {
 
 const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
   console.log("Received data for saving task assignment:", req.body);
-  const { Task_ID, Task_Name, Task_Description, start_Date, End_Date, Submit_Time, Status, Students } = req.body;
-  console.log("Task ID: ", Task_ID)
+  const { semesterNumber, tasks } = req.body;
 
   try {
-    // Check if Task_ID already exists
-    const existingTask = await TaskAssign.findOne({ Task_ID });
-    if (existingTask) {
-      console.error("Task_ID already exists:", Task_ID);
-      return res.status(400).json({ error: "Task_ID already exists" });
+
+    // Connect to DB
+    await connectDB();
+    // Check if semester already exists
+    let taskAssign = await TaskAssign.findOne({
+      "semesters.semesterNumber": semesterNumber,
+    });
+
+    if (taskAssign) {
+      // Semester exists, check for each task
+      for (const task of tasks) {
+        // Check if the task with the same Task_ID already exists in this semester
+        if (
+          taskAssign.semesters.tasks.find((t) => t.Task_ID === task.Task_ID)
+        ) {
+          console.error(
+            "Task_ID already exists within the semester:",
+            task.Task_ID
+          );
+          return res
+            .status(400)
+            .json({
+              error: `Task_ID ${task.Task_ID} already exists in semester ${semesterNumber}`,
+            });
+        } else {
+          // Add new task to existing semester
+          taskAssign.semesters.tasks.push(task);
+        }
+      }
+      await taskAssign.save(); // Save updated semester with new tasks
+    } else {
+      // Semester does not exist, create new semester with tasks
+      taskAssign = new TaskAssign({
+        semesters: {
+          semesterNumber,
+          tasks,
+        },
+      });
+      await taskAssign.save();
     }
 
-    // If Task_ID doesn't exist, save the new task assignment
-    const newTask = new TaskAssign({
-      Task_ID,
-      Task_Name,
-      Task_Description,
-      start_Date,
-      End_Date,
-      Submit_Time,
-      Status,
-      Students
+    // After DB operation, handle email sending
+    const studentRegnos = tasks.flatMap((task) =>
+      task.Students.map((student) => student.regno)
+    );
+    const students = await StudentDetails.find({
+      regno: { $in: studentRegnos },
     });
-    const savedTask = await newTask.save();
-    console.log("Saved task assignment:", savedTask);
-
-    // Fetch student details based on regno from the StudentDetails schema
-    const studentRegnos = Students.map(student => student.regno);
-    const students = await StudentDetails.find({ regno: { $in: studentRegnos } });
 
     // Create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
@@ -1145,30 +1219,81 @@ const saveTaskAssignAndSendEmails = asyncHandler(async (req, res) => {
     });
 
     // Compose and send email to each student
-    for (const student of students) {
-      const mailOptions = {
-        from: 'shettytejas96@gmail.com',
-        to: student.emailId,
-        subject: 'Task Assignment',
-        html: `<p>You have been assigned the following task:,</p>
-  <p>Task Name: ${Task_Name}</p>
-  <p>Task Description: ${Task_Description}</p>
-  <p>Start Date: ${start_Date}</p>
-  <p>End Date: ${End_Date}</p>
-  
-  <p>Regards,</p>
-  <p>Your Faculty</p>`
-      };
+    for (const task of tasks) {
+      for (const studentDetail of students) {
+        if (task.Students.some((s) => s.regno === studentDetail.regno)) {
+          const mailOptions = {
+            from: "shettytejas96@gmail.com",
+            to: studentDetail.emailId,
+            subject: "Task Assignment",
+            html: `<p>You have been assigned the following task:</p>
+<p>Task Name: ${task.Task_Name}</p>
+<p>Task Description: ${task.Task_Description}</p>
+<p>Start Date: ${task.start_Date}</p>
+<p>End Date: ${task.End_Date}</p>
 
-      // Send email
-      await transporter.sendMail(mailOptions);
-      console.log("Task assignment email sent to:", student.emailId);
+<p>Regards,</p>
+<p>Your Faculty</p>`,
+          };
+
+          // Send email
+          await transporter.sendMail(mailOptions);
+          console.log("Task assignment email sent to:", studentDetail.emailId);
+        }
+      }
     }
 
-    res.status(201).json({ message: "Task assigned successfully and emails sent to students" });
+    res
+      .status(201)
+      .json({
+        message: "Tasks assigned successfully and emails sent to students",
+      });
   } catch (error) {
     console.error("Error saving task assignment and sending emails:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+const approveTaskAssign = asyncHandler(async (req, res) => {
+  console.log("Received data for update:", req.body);
+  const { semesterNumber, Task_ID } = req.body;
+
+  try {
+    await connectDB();
+
+    // First, find the semester
+    const taskAssign = await TaskAssign.findOne({
+      "semesters.semesterNumber": semesterNumber
+    });
+
+    // Check if the semester exists
+    if (!taskAssign) {
+      console.error("Semester does not exist:", semesterNumber);
+      return res.status(404).json({ error: "Semester does not exist" });
+    }
+
+    // Semester exists, now find the task
+    const task = taskAssign.semesters.tasks.find(t => t.Task_ID === Task_ID);
+
+    // Check if the task exists
+    if (!task) {
+      console.error("Task ID does not exist within the semester:", Task_ID);
+      return res.status(404).json({ error: "Task ID does not exist in the provided semester" });
+    }
+
+    // Task exists, update the status
+    task.Status = 3; // Set status to "approved" which corresponds to status 3
+
+    // Save the updated document
+    await taskAssign.save();
+
+    console.log("Updated task status for Task ID:", Task_ID);
+    res.status(201).json({ message: "Task status updated successfully" });
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    await closeDB();
   }
 });
 
@@ -1296,6 +1421,7 @@ export {
   facultyGetDetails,
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
+  approveTaskAssign,
   fetchAllTasks,
   searchTask,
   //updateTaskAssign,
@@ -1308,5 +1434,6 @@ export {
   showAssessment,
   //DeleteTaskAssign,
   DeleteAssessment,
+  getStudentsDetails,
   saveAttendance
 };

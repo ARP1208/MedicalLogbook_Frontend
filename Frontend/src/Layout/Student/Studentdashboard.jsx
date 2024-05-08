@@ -6,6 +6,7 @@ import Taskdetails from '../Charts/Taskdetails';
 import Assessmentdetails from '../Charts/Assessmentdetails';
 import Academicsdetails from '../Charts/Academicsdetails';
 import AllCharts from '../Charts/AllCharts';
+import StudentCV from './StudentCV ';
 
 const Studentdashboard = () => {
 
@@ -19,6 +20,7 @@ const Studentdashboard = () => {
   const [showassessmentchart, setshowassessmentchart] = useState(false);
   const [showacademicschart, setshowacademicschart] = useState(false);
   const [showallchart, setshowallchart] = useState(false);
+  const [showcv, setshowcv] = useState(false);
 
   useEffect(() => {
     // Save collapsed state changes to sessionStorage
@@ -43,6 +45,7 @@ const Studentdashboard = () => {
     setshowassessmentchart(false);
     setshowacademicschart(false);
     setshowallchart(false);
+    setshowcv(false);
 
     // Show the respective chart based on the selected option
     if (component === "Home") {
@@ -59,6 +62,9 @@ const Studentdashboard = () => {
     }
     else if (component === "Academics") {
       setshowacademicschart(true);
+    }
+    else if(component === "CV"){
+      setshowcv(true);
     }
   };
 
@@ -95,11 +101,11 @@ const Studentdashboard = () => {
           <i className="fa-solid fa-user-check p-2" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;Attendance</p>
           </button>
-          <button  onClick={() => handleOptions("Academics")}   className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+          <button onClick={() => handleOptions("Academics")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             <i class="fa-solid fa-book-open-reader" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;Academics</p>
           </button>
-          <button  className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
+          <button onClick={() => handleOptions("CV")} className="w-100 rounded-md h-10 flex justify-center items-center px-4 text-white bg-blue-600 ">
             <i className="fa-regular fa-address-card" style={{ color: "#ffffff" }} />
             <p className="relative top-2 text-base">&nbsp;CV</p>
           </button>
@@ -110,6 +116,7 @@ const Studentdashboard = () => {
       {showassessmentchart && <Assessmentdetails/>}
       {showacademicschart && <Academicsdetails/>}
       {showallchart && <AllCharts/>}
+      {showcv && <StudentCV/>}
     </section>
   )
 }

@@ -3,10 +3,10 @@ import { useLocation } from "react-router-dom";
 
 import axios from "axios";
 import LogoNav from "../../Components/Admin/LogoNav";
-import Navbar from "../../Components/Admin/Navbar";
-import Regback from "../../Components/Admin/Regback";
+import NavbarHOD from '../../Components/HOD/NavbarHOD'
+import Regbackhod from "../../Components/HOD/Regbackhod";
 
-const Editfaculty = () => {
+const Editadhocfaculty = () => {
   const [formData, setFormData] = useState({
     facultyname: "",
     applicationNumber: "",
@@ -411,13 +411,13 @@ const Editfaculty = () => {
   };
 
   return (
-    <section className="relative h-84vh ">
+    <section>
       <LogoNav />
-      <Navbar />
-      <Regback />
+      <NavbarHOD/>
+      <Regbackhod/>
       <div className="fixed left-12 top-30 ml-40">
         <button className=" bg-blue-500 w-48 h-10 rounded-lg ml-8 pl-1 pt-1 text-lg mt-7 focus:outline-none ">
-          Edit Faculty
+          Edit Adhoc Faculty
         </button>
       </div>
       <div className="flex justify-center item-center">
@@ -662,4 +662,4 @@ const Editfaculty = () => {
   );
 };
 
-export default Editfaculty;
+export default Editadhocfaculty;

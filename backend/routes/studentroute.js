@@ -3,6 +3,8 @@ import {
     student,
     parent,
     studentmail,
+    StudentGetDetails,
+    ParentGetDetails,
     searchStudent,
     getStudent,
     UpdateStudentDetails,
@@ -28,6 +30,7 @@ router.route("/send-mail").post(studentmail)
 router.route("/search-student").post(searchStudent)
 router.route("/get-student").post(getStudent)
 router.route("/updatestudent-details").patch(UpdateStudentDetails)
+router.route("/getParentDetails").post(ParentGetDetails)
 
 ///////////PG log Component//////////////////////////////
 router.route("/saveTaskAssignStudent").post(saveTaskAssignStudent)
@@ -42,9 +45,10 @@ router.route("/saveAssessmentStudent").post(saveAssessmentStudent)
 /////////////////Academic///////////////////////////
 router.route("/fetchStudentGradeSheet").post(fetchStudentGradeSheet);
 router.route("/fetchStudentTestMarks").post(fetchStudentTestMarks);
-router.route("/fetchStudentCourseDetails").get(fetchStudentCourseDetails);
+router.route("/getStudentDetails").post(StudentGetDetails);
+router.route("/fetchStudentCourseDetails").post(fetchStudentCourseDetails);
 router.route("/fetchAttendance").post(fetchAttendance);
-router.route("/fetchAttendancedialy").get(fetchdialyAttendance);
+router.route("/fetchAttendancedialy").post(fetchdialyAttendance);
 
 
 

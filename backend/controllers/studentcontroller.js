@@ -2,6 +2,7 @@ import {
   StudentDetails,
   TaskAssignStudent,
   StudentAssessmentMark,
+  StudentLogin
 } from "../models/student.js";
 import { Assignedsubject } from "../models/admin.js";
 import {
@@ -12,7 +13,7 @@ import {
 } from "../models/faculty.js";
 import { connectDB, closeDB } from "../config/db.js";
 import nodemailer from "nodemailer";
-import Parent from "../models/parentdetails.js";
+import {Parent} from "../models/parentdetails.js";
 import express from "express";
 import asyncHandler from "express-async-handler";
 
@@ -50,7 +51,7 @@ const studentmail = asyncHandler(async (req, res) => {
     const mailOptions = {
       from: "shettytejas96@gmail.com",
       to: emailId,
-      subject: "Welcome to Your App",
+      subject: "Welcome to Medical Logbook",
       text: `Thank you for registering! Your login credentials:\n\nEmail: ${emailId}\nPassword: ${applicationNumber}\n\n Update the password with your enrollement number:- ${enrollmentNumber}`,
     };
 
@@ -101,6 +102,27 @@ const parent = asyncHandler(async (req, res) => {
   } finally {
     // Close the database connection
     await closeDB();
+  }
+});
+
+const ParentGetDetails = asyncHandler(async (req, res) => {
+  const { enrollmentNumber } = req.body;
+
+  try {
+    await connectDB();
+
+    // Check if the enrollment number exists in the parent schema
+    const parent = await Parent.findOne({ enrollmentNumber });
+    if (parent) {
+      console.log("Parent details:", parent);
+      res.status(200).json({ message: "Parent found", parent });
+    } else {
+      console.log("Parent not found for enrollment:", enrollmentNumber);
+      res.status(404).json({ error: "Parent not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching parent details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -242,73 +264,109 @@ const UpdateStudentDetails = asyncHandler(async (req, res) => {
 ///////////PG log Component///////////////////////////////////////
 const saveTaskAssignStudent = asyncHandler(async (req, res) => {
   console.log("Received data for saving task assignment:", req.body);
-  const { Task_ID } = req.body;
+  const { semesterNumber, tasks } = req.body;
 
   try {
-    // Check if Task_ID already exists
-    const existingTask = await TaskAssignStudent.findOne({ Task_ID });
-    if (existingTask) {
-      console.error("Task_ID already exists:", Task_ID);
-      return res.status(400).json({ error: "Task_ID already exists" });
-    }
-
-    // Save the new task assignment
-    const newTask = new TaskAssignStudent(req.body);
-    const savedTask = await newTask.save();
-    console.log("Saved task assignment:", savedTask);
-
-    // Connect to DB
+     // Connect to DB
     await connectDB();
-    console.log("updated task ID", Task_ID);
 
-    // Define the update operation to set Task_Completed to "completed"
-    const updateOperation = {
-      $set: { Task_Completed: "completed" },
-    };
+    // Find the semester and task in TaskAssign schema
+    let taskAssign = await TaskAssign.findOne({
+      "semesters.semesterNumber": semesterNumber
+    });
 
-    // Use TaskAssign.updateOne to update the specified task
-    const UpdatedTask = await TaskAssign.updateOne(
-      { Task_ID },
-      updateOperation
-    );
+    if (taskAssign) {
+      // Semester exists, check for each task
+      for (const task of tasks) {
+        // Check if the task with the same Task_ID already exists in this semester
+        const existingTask = taskAssign.semesters.tasks.find((t) => t.Task_ID === task.Task_ID);
+        if (existingTask) {
+          existingTask.Status = 2;
+          console.log("Task status updated for task ID:", task.Task_ID);
+        } else {
+          console.error("Task ID does not exist within the semester:", task.Task_ID);
+          return res.status(404).json({ error: "Task ID does not exist in the provided semester" });
+        }
+      }
+      await taskAssign.save(); // Save updated semester with new tasks
 
-    console.log("saved data is: ", UpdatedTask);
+      // Check if Task_ID already exists in TaskAssignStudent schema
+      let StudentexistingTask = await TaskAssignStudent.findOne({ "semesters.semesterNumber": semesterNumber });
+      if (StudentexistingTask) {
+        // Semester exists, check for each task
+        for (const task of tasks) {
+          // Check if the task with the same Task_ID already exists in this semester
+          if (StudentexistingTask.semesters.tasks.find((t) => t.Task_ID === task.Task_ID)) {
+            console.error("Task_ID already exists within the semester:", task.Task_ID);
+            return res.status(400).json({
+              error: `Task_ID ${task.Task_ID} already exists in semester ${semesterNumber}`,
+            });
+          } else {
+            // Add new task to existing semester
+            StudentexistingTask.semesters.tasks.push(task);
+          }
+        }
+        await StudentexistingTask.save(); // Save updated semester with new tasks
+      } else {
+        // Semester does not exist, create new semester with tasks
+        StudentexistingTask = new TaskAssignStudent({
+          semesters: {
+            semesterNumber,
+            tasks,
+          },
+        });
+        await StudentexistingTask.save();
+      }
 
-    res
-      .status(201)
-      .json({ message: "Task assigned successfully and faculty task updated" });
+      return res.status(200).json({ message: "Task status updated successfully" });
+    } else {
+      console.error("Semester does not exist in TaskAssign:", semesterNumber);
+      return res.status(404).json({ error: "Semester does not exist in TaskAssign" });
+    }
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    await closeDB();
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
+
 const onclickCheckInUpdateTaskAssign = asyncHandler(async (req, res) => {
   console.log("Received data for update:", req.body);
-  const { Task_ID } = req.body;
+  const { semesterNumber, Task_ID } = req.body;
+
   try {
     await connectDB();
-    const Taskdetail = Task_ID;
-    console.log("updated task ID", Taskdetail);
 
-    // Define the update operation to set Task_Completed to "yet to complete"
-    const updateOperation = {
-      $set: { Task_Completed: "yet to complete" },
-    };
+    // First, find the semester
+    const taskAssign = await TaskAssign.findOne({
+      "semesters.semesterNumber": semesterNumber
+    });
 
-    // Use TaskAssign.updateOne to update the specified task
-    const UpdatedTask = await TaskAssign.updateOne(
-      { Task_ID: Taskdetail },
-      updateOperation
-    );
+    // Check if the semester exists
+    if (!taskAssign) {
+      console.error("Semester does not exist:", semesterNumber);
+      return res.status(404).json({ error: "Semester does not exist" });
+    }
 
-    console.log("saved data is: ", UpdatedTask);
+    // Semester exists, now find the task
+    const task = taskAssign.semesters.tasks.find(t => t.Task_ID === Task_ID);
 
-    res.status(201).json({ message: "UpdatedTaskAssign" });
+    // Check if the task exists
+    if (!task) {
+      console.error("Task ID does not exist within the semester:", Task_ID);
+      return res.status(404).json({ error: "Task ID does not exist in the provided semester" });
+    }
+
+    // Task exists, update the status
+    task.Status = 1; // Set status to "yet to complete" which corresponds to status 1
+
+    // Save the updated document
+    await taskAssign.save();
+
+    console.log("Updated task status for Task ID:", Task_ID);
+    res.status(201).json({ message: "Task status updated successfully" });
   } catch (error) {
-    console.error("Error saving UpdatedTaskAssign document:", error);
+    console.error("Error updating task status:", error);
     res.status(500).json({ error: "Internal Server Error" });
   } finally {
     await closeDB();
@@ -962,68 +1020,94 @@ const fetchStudentTestMarks = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const fetchStudentCourseDetails = async (req, res) => {
-  const { regno, name, semesters } = req.body;
 
-  console.log("data is: ", regno, name, semesters);
+const fetchStudentCourseDetails = asyncHandler(async (req, res) => {
+  const { regno, name, AcademicYear, programName } = req.body;
+
+  console.log("data is: ", regno, name, AcademicYear, programName);
 
   try {
-    // Find the semester from the database Assignedsubject
-    const result = await Assignedsubject.findOne({
-      "AcademicYear.program.semesters.semesterNumber": semesters,
+
+    let year = await Assignedsubject.findOne({
+      'AcademicYear.year': AcademicYear
     });
 
-    console.log("semester data is: ", result);
+    console.log("year is: ", year);
 
-    // If semester does not exist, show error
-    if (!result) {
-      return res.status(404).json({ error: "Semester does not exist" });
+    if (!year) {
+      return res.status(404).json({ error: "No document with such Academic Year found!" });
     }
 
-    // Find the student by regno and name inside the found semester
-    const studentsection = result.AcademicYear.program
-      .flatMap((program) =>
-        program.semesters.flatMap((sem) =>
-          sem.sections.map((section) => ({
-            sectionName: section.sectionName,
-          }))
-        )
-      )
-      .filter(Boolean)[0];
+    const prog = year.AcademicYear.program.find(program => program.programname === programName);
 
-    console.log("studentsection data: ", studentsection);
+    console.log("program is: ", prog);
 
-    // Find the student by regno and name inside the found semester
-    const student = result.AcademicYear.program
-      .flatMap((program) =>
-        program.semesters.flatMap((sem) =>
-          sem.sections.flatMap((section) =>
-            section.students.find(
-              (student) => student.regno === regno && student.name === name
-            )
-          )
-        )
-      )
-      .filter(Boolean)[0];
-
-    console.log("student data is: ", student);
-
-    // If student does not exist, show error
-    if (!student) {
-      return res.status(404).json({ error: "Student does not exist" });
+    if (!prog) {
+      return res.status(404).json({ error: "No such program in this Year" });
     }
 
-    // Get the subjects array of the student
-    const section = studentsection;
-    const subjects = student;
+    const subjectsBySemester = prog.semesters.map(semester => {
+      let studentSection = null;
+      const student = semester.sections.flatMap(section => {
+        const foundStudent = section.students.find(student => student.regno === regno && student.name === name);
+        if (foundStudent) {
+          studentSection = section; // capture the section where the student is found
+        }
+        return foundStudent;
+      }).filter(Boolean)[0];
 
-    // Return the subjects array
-    res.json({ section, subjects });
+      if (!student) {
+        return { 
+          semesterNumber: semester.semesterNumber,
+          sectionName: studentSection 
+        };
+      }
+
+      const subjects = student.subjects.reduce((acc, subject) => {
+        acc[subject.subjectName] = {
+          facultyname: subject.facultyname,
+          subjectcode: subject.subjectcode,
+          credit: subject.credit,
+          marks: subject.marks,
+          _id: subject._id
+        };
+        return acc;
+      }, {});
+
+      return {
+        semesterNumber: semester.semesterNumber,
+        sectionName: studentSection.sectionName, // include section name here
+        subjects: subjects
+      };
+    }).filter(Boolean);
+
+    console.log("data sent to frontend: ", subjectsBySemester);
+
+    // Return the formatted response
+    return res.json(subjectsBySemester);
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Error fetching student course details:", error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
-};
+});
+
+const StudentGetDetails = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+  console.log("Looking for: ", req.body)
+  try {
+    await connectDB();
+    const Student = await StudentDetails.findOne({ emailId: email });
+    console.log(Student);
+    if (Student) {
+      res.send(Student);
+    } else {
+      res.status(404);
+    }
+  } catch (e) {
+    console.log(e)
+  }
+})
 
 const fetchAttendance = asyncHandler(async (req, res) => {
   const { regno, name, AcademicYear, programName } = req.body;
@@ -1085,71 +1169,82 @@ const fetchdialyAttendance = async (req, res) => {
   console.log("Request data: ", regno, name, semesters, date, subjectName);
 
   try {
-    // Find the semester from the database Assignedsubject
-    const result = await attendance.findOne({
-      "AcademicYear.program.semesters.semesterNumber": semesters,
+    // Check if semesters is an array and has at least one element
+    if (!Array.isArray(semesters) || semesters.length === 0) {
+      return res.status(400).json({ error: 'Semesters array is missing or empty' });
+    }
+
+    // Assuming academicYear is not required for fetching attendance
+
+    // Find the semesters from the database Assignedsubject
+    const results = await attendance.find({
+      'AcademicYear.program.semesters.semesterNumber': { $in: semesters }
     });
 
-    console.log("Semester data: ", result);
+    console.log("Semester data: ", results);
 
-    // If semester does not exist, show error
-    if (!result) {
-      return res.status(404).json({ error: "Semester does not exist" });
+    // If no semesters are found, show error
+    if (!results || results.length === 0) {
+      return res.status(404).json({ error: 'Semesters not found' });
     }
 
-    // Find the student by regno and name inside the found semester
-    const student = result.AcademicYear.program
-      .flatMap((program) =>
-        program.semesters.flatMap((sem) =>
-          sem.sections.flatMap((section) =>
-            section.students.find(
-              (student) => student.regno === regno && student.name === name
-            )
-          )
-        )
-      )
-      .filter(Boolean)[0];
+    // Prepare an array to hold attendance data for each semester
+    const semesterAttendances = [];
 
-    console.log("Student data: ", student);
+    // Iterate over each semester result
+    for (const result of results) {
+      // Find the student by regno and name inside the found semester
+      const student = result.AcademicYear.program[0].semesters[0].sections[0].students.find(student => student.regno === regno && student.name === name);
 
-    // If student does not exist, show error
-    if (!student) {
-      return res.status(404).json({ error: "Student does not exist" });
+      console.log("Student data for semester", result.AcademicYear.program[0].semesters[0].semesterNumber, ":", student);
+
+      // If student does not exist, continue to the next semester
+      if (!student) {
+        console.error("Student not found for semester", result.AcademicYear.program[0].semesters[0].semesterNumber);
+        continue;
+      }
+
+      // Get the subjects array of the student
+      const subjects = student.subjects;
+
+      // Find the subject by name and get its attendance for the specified date
+      const subject = subjects.find(sub => sub.subjectName === subjectName);
+      if (!subject) {
+        console.error("Subject not found for semester", result.AcademicYear.program[0].semesters[0].semesterNumber);
+        continue;
+      }
+
+      const attendanceEntries = subject.attendance.filter(att => att.date === date);
+
+      // Separate the attendance data into separate arrays for date, day, and status
+      const attendanceDates = attendanceEntries.map(entry => entry.date);
+      const attendanceDays = attendanceEntries.map(entry => entry.day);
+      const attendanceStatus = attendanceEntries.map(entry => entry.status);
+
+      // Add the attendance data to the array for this semester
+      semesterAttendances.push({
+        semester: result.AcademicYear.program[0].semesters[0].semesterNumber,
+        regno: student.regno, // Include registration number in the response
+        name: student.name, // Include name in the response
+        subjectName,
+        attendanceDates,
+        attendanceDays,
+        attendanceStatus
+      });
     }
 
-    // Get the subjects array of the student
-    const subjects = student.subjects;
-
-    // Find the subject by name and get its attendance for the specified date
-    const subject = subjects.find((sub) => sub.subjectName === subjectName);
-    if (!subject) {
-      return res.status(404).json({ error: "Subject not found" });
-    }
-
-    const attendanceEntry = subject.attendance.find(
-      (att) => att.date.toISOString().split("T")[0] === date
-    );
-    if (!attendanceEntry) {
-      return res
-        .status(404)
-        .json({ error: "Attendance entry not found for the specified date" });
-    }
-
-    // Return the attendance entry for the subject on the specified date
-    res.json({
-      semester: semesters[0],
-      subjectName,
-      attendance: attendanceEntry,
-    });
+    // Return the attendance entries for all matching semesters
+    res.json(semesterAttendances);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 export {
   student,
   parent,
+  ParentGetDetails,
   studentmail,
   searchStudent,
   getStudent,
@@ -1165,6 +1260,8 @@ export {
   fetchStudentGradeSheet,
   fetchStudentTestMarks,
   fetchStudentCourseDetails,
+  StudentGetDetails,
   fetchAttendance,
   fetchdialyAttendance,
+
 };

@@ -7,6 +7,7 @@ import {
   UpdateFacultyDetails,
   saveTaskAssignAndSendEmails,
   fetchAllTasks,
+  approveTaskAssign,
   searchTask,
   //updateTaskAssign,
   fetchDetails,
@@ -18,6 +19,7 @@ import {
   showAssessment,
   //DeleteTaskAssign,
   DeleteAssessment,
+  getStudentsDetails,
   saveAttendance
 } from "../controllers/facultycontroller.js";
 
@@ -37,6 +39,7 @@ router.route("/updatefaculty").patch(UpdateFacultyDetails);
 router.route("/fetchprosemsub").post(fetchDetails);
 router.route("/saveassignmarks").post(saveAssignMarks);
 router.route("/updateAssignMarks").patch(updateAssignMarks);
+router.route("/getStudentsDetails").post(getStudentsDetails);
 router.route("/SaveAttendancesheet").post(saveAttendance);
 
 /////////Assessment Component////////////////////////////
@@ -50,6 +53,7 @@ router.route("/DeleteAssessment").delete(DeleteAssessment);
 
 //////////////PG Log Component////////////////////////
 router.route("/saveandemailtask").post(saveTaskAssignAndSendEmails);
+router.route("/approveTaskAssign").patch(approveTaskAssign);
 router.route("/searchTask").post(searchTask);
 router.route('/fetchalltasks').get(fetchAllTasks);
 // router.route("/updateTask").patch(updateTaskAssign);

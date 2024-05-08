@@ -64,6 +64,7 @@ const Editmarks = () => {
   const [subcode, setsubjectcode] = useState("");
   const [examination, setExamination] = useState("");
   const [errors, setErrors] = useState({});
+  const [maxMarks, setMaxMarks] = useState(null);
 
   const [academicYear, setAcademicYear] = useState({
     value: "select Academic year",
@@ -141,7 +142,8 @@ const Editmarks = () => {
         <Editgeneratemarks
         subjectname={subjectname}
         subcode={subcode}
-        examination={examination} />
+        examination={examination}
+        max_marks={maxMarks} />
       ) : (
         <section className="absolute top-18 left-38 m-10">
         <div className="flex relative left-7 top-7 w-auto mb-10">
@@ -258,6 +260,17 @@ const Editmarks = () => {
                 required
               />
             </div>
+            <div>
+              <input
+                  type="text"
+                  maxLength={10}
+                  className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md"
+                  placeholder="Max Marks"
+                  value={maxMarks}
+                  onChange={(e) => setMaxMarks(e.target.value)}
+                  required
+                />
+              </div>
           </div>
 
           <div className="relative flex justify-center items-center pb-5">

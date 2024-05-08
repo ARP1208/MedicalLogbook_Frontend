@@ -3,8 +3,30 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import TextareaAutosize from "react-textarea-autosize";
+import Select from "react-select";
+
+const GenerateSemester = () => {
+  return [
+    { value: "select Semester", label: "select Semester" },
+    { value: "1", label: "1 Semester" },
+    { value: "2", label: "2 Semester" },
+    { value: "3", label: "3 Semester" },
+    { value: "4", label: "4 Semester" },
+    { value: "5", label: "5 Semester" },
+    { value: "6", label: "6 Semester" },
+    { value: "7", label: "7 Semester" },
+    { value: "8", label: "8 Semester" },
+    { value: "9", label: "9 Semester" },
+  ];
+};
 
 const CreateTaskPglogbook = () => {
+
+  const [selectedSemester, setSelectedSemester] = useState({
+    value: "select Semester",
+    label: "select Semester",
+  });
+
   const [studentCount, setStudentCount] = useState(1);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -125,6 +147,15 @@ const CreateTaskPglogbook = () => {
                 className="shadow appearance-none border rounded w-full py-2 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 value={formData.Task_Name}
                 onChange={(e) => { handleInputChange(e, "Task_Name") }}
+              />
+            </label>
+            <label className="block text-start text-gray-700 font-bold mb-2">
+              Semester
+              <Select
+                value={selectedSemester}
+                onChange={setSelectedSemester}
+                options={GenerateSemester()}
+                required
               />
             </label>
           </div>

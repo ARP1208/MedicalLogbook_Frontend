@@ -125,7 +125,7 @@ const Studentgradesheet = ({ subjectname, subcode, examination }) => {
     const numSubjects = selectedSemGPA[1];
 
     const gpa = ((totalMarks / (numSubjects * 100)) * 9.5).toFixed(2);
-    if (gpa == NaN) return "-"
+    if (isNaN(gpa)) return "-"
     return gpa;
   };
 

@@ -43,18 +43,23 @@ studentLoginSchema.methods.comparePassword = function (password) {
 };
 
 const TaskAssignStudentschema = new mongoose.Schema({
-  start_Date: { type: Date },
-  End_Date: { type: Date },
-  Task_Name: { type: String },
-  Task_ID: { type: String },
-  Task_Description: { type: String },
-  Student_Description: { type: String },
-  uploadFileName: { type: String },
-  Students: [{
-    regno: { type: Number },
-    Name: { type: String }
-   
-  }]
+  semesters: {
+    semesterNumber: { type: Number },
+    tasks: [{
+      start_Date: { type: Date },
+      End_Date: { type: Date },
+      Submit_Time: { type: String },
+      Task_Name: { type: String },
+      Task_ID: { type: String },
+      Task_Description: { type: String },
+      Student_Description: { type: String },
+      uploadFileName: { type: String },
+      Students: [{
+        regno: { type: Number },
+        Name: { type: String }
+      }] 
+    }]
+  }
 });
 
 

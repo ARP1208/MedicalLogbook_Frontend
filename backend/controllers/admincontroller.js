@@ -338,94 +338,7 @@ const DeleteAnnouncement = asyncHandler(async (req, res) => {
   }
 });
 
-const filter_students = asyncHandler(async (req, res) => {
-  console.log("Received data:", req.body);
-  const { AcademicYear, programName, semesterNumber, sectionName } = req.body;
-  try {
-    await connectDB();
-    const result = await Assignedsubject.findOne({
-      "AcademicYear.year": AcademicYear,
-    });
 
-    if (result) {
-      const existingProgram = result.AcademicYear.program.find(program => program.programname === programName);
-      if (existingProgram) {
-        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === semesterNumber);
-        if (semesterIndex !== -1) {
-          const sections = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === sectionName);
-          if (sections !== -1) {
-            const students = existingProgram.semesters[semesterIndex].sections[sections].students;
-            console.log(students);
-            res.status(200).json({ students });
-          }
-        }
-      }
-    }
-
-  } catch (error) {
-    console.error('Error filtering :', error);
-  }
-});
-
-const setMarks = asyncHandler(async (req, res) => {
-  console.log("Received data:", req.body);
-  const { AcademicYear, programName, semesterNumber, sectionName, regno, marks } = req.body;
-
-  try {
-    // Ensure database connection is established
-    await connectDB();
-
-    // Query the database to find the relevant document
-    const result = await Assignedsubject.findOne({
-      "AcademicYear.year": AcademicYear,
-    });
-
-    console.log("Result:", result);
-
-    // If document found, update marks for the student
-    if (result) {
-      const existingProgram = result.AcademicYear.program.find(program => program.programname === programName);
-
-      if (existingProgram) {
-        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === semesterNumber);
-
-        if (semesterIndex !== -1) {
-          const sectionIndex = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === sectionName);
-
-          if (sectionIndex !== -1) {
-            const studentIndex = existingProgram.semesters[semesterIndex].sections[sectionIndex].students.findIndex(student => student.regno === regno);
-
-            if (studentIndex !== -1) {
-              console.log("Setting marks for student:", existingProgram.semesters[semesterIndex].sections[sectionIndex].students[studentIndex]);
-
-              // Update marks for each subject
-              existingProgram.semesters[semesterIndex].sections[sectionIndex].students[studentIndex].subjects.forEach(subject => {
-                if (marks.hasOwnProperty(subject.subjectName)) {
-                  subject.marks = marks[subject.subjectName];
-                }
-              });
-
-              // Save the updated document
-              await result.save();
-              console.log("Marks updated successfully.");
-
-              // Respond with success message
-              return res.status(200).json({ message: "Marks updated successfully" });
-            }
-          }
-        }
-      }
-    }
-
-    // If no matching data found, respond with 404 status
-    console.log("No matching data found.");
-    return res.status(404).json({ message: "No matching data found" });
-  } catch (error) {
-    // Log and respond with internal server error
-    console.error('Error updating marks:', error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
 
 
 //////////////// Grade Sheet //////////////////////////
@@ -721,6 +634,95 @@ const getAdminindividualGradesheet = asyncHandler(async (req, res) => {
   } catch (error) {
     console.error('Error fetching data:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+const filter_students = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  const { AcademicYear, programName, semesterNumber, sectionName } = req.body;
+  try {
+    await connectDB();
+    const result = await Assignedsubject.findOne({
+      "AcademicYear.year": AcademicYear,
+    });
+
+    if (result) {
+      const existingProgram = result.AcademicYear.program.find(program => program.programname === programName);
+      if (existingProgram) {
+        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === semesterNumber);
+        if (semesterIndex !== -1) {
+          const sections = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === sectionName);
+          if (sections !== -1) {
+            const students = existingProgram.semesters[semesterIndex].sections[sections].students;
+            console.log(students);
+            res.status(200).json({ students });
+          }
+        }
+      }
+    }
+
+  } catch (error) {
+    console.error('Error filtering :', error);
+  }
+});
+
+const setMarks = asyncHandler(async (req, res) => {
+  console.log("Received data:", req.body);
+  const { AcademicYear, programName, semesterNumber, sectionName, regno, marks } = req.body;
+
+  try {
+    // Ensure database connection is established
+    await connectDB();
+
+    // Query the database to find the relevant document
+    const result = await Assignedsubject.findOne({
+      "AcademicYear.year": AcademicYear,
+    });
+
+    console.log("Result:", result);
+
+    // If document found, update marks for the student
+    if (result) {
+      const existingProgram = result.AcademicYear.program.find(program => program.programname === programName);
+
+      if (existingProgram) {
+        const semesterIndex = existingProgram.semesters.findIndex(semester => semester.semesterNumber === semesterNumber);
+
+        if (semesterIndex !== -1) {
+          const sectionIndex = existingProgram.semesters[semesterIndex].sections.findIndex(section => section.sectionName === sectionName);
+
+          if (sectionIndex !== -1) {
+            const studentIndex = existingProgram.semesters[semesterIndex].sections[sectionIndex].students.findIndex(student => student.regno === regno);
+
+            if (studentIndex !== -1) {
+              console.log("Setting marks for student:", existingProgram.semesters[semesterIndex].sections[sectionIndex].students[studentIndex]);
+
+              // Update marks for each subject
+              existingProgram.semesters[semesterIndex].sections[sectionIndex].students[studentIndex].subjects.forEach(subject => {
+                if (marks.hasOwnProperty(subject.subjectName)) {
+                  subject.marks = marks[subject.subjectName];
+                }
+              });
+
+              // Save the updated document
+              await result.save();
+              console.log("Marks updated successfully.");
+
+              // Respond with success message
+              return res.status(200).json({ message: "Marks updated successfully" });
+            }
+          }
+        }
+      }
+    }
+
+    // If no matching data found, respond with 404 status
+    console.log("No matching data found.");
+    return res.status(404).json({ message: "No matching data found" });
+  } catch (error) {
+    // Log and respond with internal server error
+    console.error('Error updating marks:', error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 });
 

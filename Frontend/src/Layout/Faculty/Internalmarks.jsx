@@ -289,7 +289,10 @@ const Internalmarks = () => {
                   onChange={(e) => setExamination(e.target.value)}
                   required
                 />
-                <input
+               
+              </div>
+              <div>
+              <input
                   type="text"
                   maxLength={10}
                   className="flex border border-gray h-10 lg:w-80 sm:w-50 md:w-40 rounded-md"

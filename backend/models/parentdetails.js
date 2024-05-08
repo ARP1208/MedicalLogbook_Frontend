@@ -26,4 +26,4 @@ const parentDetailsSchema = new mongoose.Schema({
 // Model for Combined Parent Details
 const Parent = mongoose.model('ParentDetails', parentDetailsSchema);
 
-export default Parent;
+export {Parent} ;

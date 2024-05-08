@@ -81,7 +81,7 @@ const SearchAdhocFaculty = () => {
 
   const handleeditfaculty =  (selectedFaculty) => {
     setSelectedFacultyData(selectedFaculty);
-    history("/Editfaculty", {
+    history("/Editadhocfaculty", {
       state: { facultyData: selectedFaculty },
     });
   };

@@ -126,7 +126,7 @@ const GenrateInternalMarks = ({ subjectname, subcode, examination, max_marks }) 
       </div>
       <div className="border-2 px-10 py-4 h-auto h-60vh w-auto overflow-hidden rounded-md border-sky-500 flex flex-col justify-center items-center m-10">
         <div className="overflow-hidden block">
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-x-10 text-balance">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-x-10 text-balance">
             <h4>Subject: {subjectname}</h4>
             <h4>Subject code: {subcode}</h4>
             <h4>Max Marks: {max_marks}</h4>

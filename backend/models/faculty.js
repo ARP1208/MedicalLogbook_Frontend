@@ -34,17 +34,22 @@ facultyLoginSchema.methods.comparePassword = function (password) {
 };
 
 const TaskAssignschema = new mongoose.Schema({
-  Task_Name: { type: String },
-  Task_ID: { type: String },
-  Task_Description: { type: String },
-  start_Date: { type: String },
-  End_Date: { type: String },
-  Status: { type: Number },  // 0 - Task Assigned, 1 - Task accepted by Student, 2 - Task Completed by Student, 3 - Task completion approved by
-  Submit_Time: { type: String },
-  Students: [{
-    regno: { type: String },
-    Name: { type: String },
-  }]
+  semesters: {
+    semesterNumber: { type: Number },
+    tasks: [{
+      Task_Name: { type: String },
+      Task_ID: { type: String },
+      Task_Description: { type: String },
+      start_Date: { type: String },
+      End_Date: { type: String },
+      Status: { type: Number },  // 0 - Task Assigned, 1 - Task accepted by Student, 2 - Task Completed by Student, 3 - Task completion approved by
+      Submit_Time: { type: String },
+      Students: [{
+        regno: { type: String },
+        Name: { type: String },
+      }]
+    }]
+  }
 });
 
 
@@ -66,6 +71,7 @@ const assignmarks = new mongoose.Schema({
                   {
                     subjectcode: String,
                     subjectName: String,
+                    totalMark: Number,
                     students: [
                       {
                         regno: Number,
@@ -88,6 +94,7 @@ const assignmarks = new mongoose.Schema({
     ],
   },
 });
+
 
 ////////// adding assessemnt by faculty /////////
 const addassessment = new mongoose.Schema({
@@ -156,7 +163,7 @@ const Attendance = new mongoose.Schema({
 
                         attendance: [
                           {
-                            date: Date,
+                            date: String,
                             day: String,
                             // Ensure these are defined as Number fields with default value 0
                             status: Number

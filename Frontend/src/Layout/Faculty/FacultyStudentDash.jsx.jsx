@@ -231,7 +231,7 @@ const FacultyStudentDash = () => {
               <thead>
                 <tr>
                   <th className="border bg-blue-950 text-white px-2 py-2">S.No.</th>
-                  <th className="border bg-blue-950 text-white px-3 py-2">Regestration no.</th>
+                  <th className="border bg-blue-950 text-white px-3 py-2">Registration no.</th>
                   <th className="border bg-blue-950 text-white px-5 py-2">Name</th>
                   <th className="border bg-blue-950 text-white px-4 py-2">View</th>
                 </tr>
